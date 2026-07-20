@@ -1,0 +1,1890 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>인사평가 시스템 · DEMO</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone@7.23.6/babel.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={darkMode:'class'}</script>
+<script>(function(){try{var t=localStorage.getItem('demo-theme')||'system';var el=document.documentElement;el.classList.toggle('dark',t==='dark');el.classList.toggle('claude',t==='system');}catch(e){}})();</script>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" />
+<style>
+  body { font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
+  .inp{ width:100%;padding:.5rem .625rem;border:1px solid #cbd5e1;border-radius:.5rem;font-size:.8125rem;outline:none }
+  .inp:focus{ border-color:#4f46e5;box-shadow:0 0 0 1px #4f46e5 }
+  /* DARKMODE_INJECTED */
+  html.dark body{ background:#0f172a; color:#e2e8f0; }
+  html.dark input, html.dark textarea, html.dark select{ background:#1e293b; color:#e2e8f0; border-color:#334155; }
+  html.dark input::placeholder, html.dark textarea::placeholder{ color:#64748b; }
+  /* CLAUDE(시스템) 웜 크림 테마 */
+  html.claude body{ background:#eeeae0; color:#3d3a34; }
+  html.claude .bg-white{ background-color:#faf8f2 !important; }
+  html.claude .bg-slate-50{ background-color:#f3efe4 !important; }
+  html.claude .bg-slate-50\/50{ background-color:#f3efe4 !important; }
+  html.claude .bg-slate-100{ background-color:#ece7d9 !important; }
+  html.claude .border-slate-200{ border-color:#e7e0d0 !important; }
+  html.claude .border-slate-100{ border-color:#efe9db !important; }
+  html.claude .inp{ background:#faf8f2; border-color:#d9d2c2; }
+  /* 가독성 보정 — 다크 */
+  html.dark .text-indigo-800{ color:#c7d2fe !important; }
+  html.dark .text-indigo-700{ color:#c7d2fe !important; }
+  html.dark .text-emerald-800,html.dark .text-emerald-700{ color:#6ee7b7 !important; }
+  html.dark .text-amber-800,html.dark .text-amber-700{ color:#fcd34d !important; }
+  html.dark .text-rose-800,html.dark .text-rose-700{ color:#fda4af !important; }
+  html.dark .text-slate-400{ color:#cbd5e1 !important; }
+  html.dark .text-slate-500{ color:#b9c2d0 !important; }
+  html.dark .text-slate-600{ color:#cbd5e1 !important; }
+  html.dark .border-indigo-100{ border-color:#3730a3 !important; }
+  /* 가독성 보정 — 클로드(시스템) 웜 */
+  html.claude .text-slate-400{ color:#8a8371 !important; }
+  html.claude .text-slate-500{ color:#6b6454 !important; }
+  html.claude .text-slate-600{ color:#4a4438 !important; }
+  html.claude .bg-indigo-50{ background-color:#eceafc !important; }
+</style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900">
+<div style="background:#FFF4E2;color:#B77B12;text-align:center;font-size:13px;font-weight:700;padding:7px;font-family:sans-serif">● 데모 화면입니다 · 모든 데이터는 가상입니다</div>
+<div id="root"></div>
+
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useMemo } = React;
+// ── [데모] 백엔드 제거 · 가짜 데이터 · 로그인 우회 (실데이터/키 없음) ──
+const DEMO_DATA = {"employees":[{"id":"e1","name":"김대표","group_id":"g1","manager_id":null,"position":"대표이사","rank":"대표","team":"대표이사","email":"demo@demo.local","emp_no":"1001","monthly_pay":9000000,"join_date":"2019-03-02","status":"active"},{"id":"e2","name":"이본부","group_id":"g2","manager_id":"e1","position":"본부장","rank":"이사","team":"경영지원","email":"lee@demo.local","emp_no":"1002","monthly_pay":6500000,"join_date":"2020-01-06","status":"active"},{"id":"e3","name":"박개발","group_id":"g3","manager_id":"e1","position":"본부장","rank":"이사","team":"개발","email":"park@demo.local","emp_no":"1003","monthly_pay":6800000,"join_date":"2020-05-11","status":"active"},{"id":"e4","name":"최영업","group_id":"g4","manager_id":"e1","position":"본부장","rank":"이사","team":"영업","email":"choi@demo.local","emp_no":"1004","monthly_pay":6600000,"join_date":"2021-02-01","status":"active"},{"id":"e11","name":"윤품질","group_id":"g9","manager_id":"e1","position":"품질책임자","rank":"이사","team":"품질경영","email":"quality@demo.local","emp_no":"1011","monthly_pay":6200000,"join_date":"2021-06-01","status":"active"},{"id":"e5","name":"정인사","group_id":"g5","manager_id":"e2","position":"팀장","rank":"부장","team":"인사팀","email":"hr@demo.local","emp_no":"1005","monthly_pay":5200000,"join_date":"2021-08-17","status":"active"},{"id":"e6","name":"한재무","group_id":"g6","manager_id":"e2","position":"팀장","rank":"부장","team":"재무팀","email":"fin@demo.local","emp_no":"1006","monthly_pay":5300000,"join_date":"2021-09-01","status":"active"},{"id":"e7","name":"오선임","group_id":"g7","manager_id":"e3","position":"선임연구원","rank":"차장","team":"개발1팀","email":"dev1@demo.local","emp_no":"1007","monthly_pay":4600000,"join_date":"2022-03-14","status":"active"},{"id":"e8","name":"유주임","group_id":"g7","manager_id":"e3","position":"주임","rank":"대리","team":"개발1팀","email":"dev2@demo.local","emp_no":"1008","monthly_pay":3800000,"join_date":"2023-07-03","status":"active"},{"id":"e9","name":"강대리","group_id":"g8","manager_id":"e4","position":"대리","rank":"대리","team":"영업1팀","email":"sales1@demo.local","emp_no":"1009","monthly_pay":4000000,"join_date":"2022-11-21","status":"active"},{"id":"e10","name":"신사원","group_id":"g8","manager_id":"e4","position":"사원","rank":"사원","team":"영업1팀","email":"sales2@demo.local","emp_no":"1010","monthly_pay":3200000,"join_date":"2022-06-15","status":"active"}],"user_roles":[{"id":"r1","email":"demo@demo.local","app":"eval","role":"SUPER"},{"id":"r2","email":"demo@demo.local","app":"payroll","role":"SUPER"},{"id":"r3","email":"demo@demo.local","app":"hr","role":"SUPER"}],"eval_config":[{"key":"ratio_general","value":"60:40"},{"key":"ratio_leader","value":"40:60"},{"key":"ratio_newhire","value":"100:0"},{"key":"leadership_roles","value":"팀장,본부장,대표이사,파트장,품질책임자"},{"key":"min_kpi_count","value":"3"},{"key":"max_kpi_count","value":"7"},{"key":"salary_h1_weight","value":"50"},{"key":"salary_h2_weight","value":"50"},{"key":"rater_weight_self","value":"10"},{"key":"rater_weight_manager","value":"50"},{"key":"rater_weight_peer","value":"30"},{"key":"rater_weight_subordinate","value":"10"},{"key":"newhire_defer_months","value":"3"},{"key":"newhire_ramp_months","value":"6"},{"key":"fb_release_2026H1","value":"true"}],"eval_competencies":[{"comp_id":"C1","track":"COMMON","category":"COMMON","name":"책임감","description":"맡은 업무를 끝까지 완수하고 결과에 책임을 진다","rubric":"S(90+) 탁월한 수준으로 조직에 기여 / A(80) 기대 이상 / B(70) 기대 충족 / C(60) 부분 충족 / D(60미만) 개선 필요","weight":25,"display_order":1,"active":true,"is_core":true},{"comp_id":"C2","track":"COMMON","category":"COMMON","name":"협업·소통","description":"동료와 원활히 협력하고 명확하게 소통한다","rubric":"S(90+) 탁월한 수준으로 조직에 기여 / A(80) 기대 이상 / B(70) 기대 충족 / C(60) 부분 충족 / D(60미만) 개선 필요","weight":25,"display_order":2,"active":true,"is_core":false},{"comp_id":"C3","track":"COMMON","category":"COMMON","name":"문제해결","description":"문제의 원인을 분석하고 실행 가능한 해결책을 제시한다","rubric":"S(90+) 탁월한 수준으로 조직에 기여 / A(80) 기대 이상 / B(70) 기대 충족 / C(60) 부분 충족 / D(60미만) 개선 필요","weight":25,"display_order":3,"active":true,"is_core":false},{"comp_id":"C4","track":"COMMON","category":"COMMON","name":"자기계발","description":"직무 전문성 향상을 위해 지속적으로 학습한다","rubric":"S(90+) 탁월한 수준으로 조직에 기여 / A(80) 기대 이상 / B(70) 기대 충족 / C(60) 부분 충족 / D(60미만) 개선 필요","weight":25,"display_order":4,"active":true,"is_core":false},{"comp_id":"L1","track":"LEADER","category":"LEADER","name":"비전 제시","description":"조직의 방향성을 제시하고 구성원을 동기부여한다","rubric":"S(90+) 탁월한 수준으로 조직에 기여 / A(80) 기대 이상 / B(70) 기대 충족 / C(60) 부분 충족 / D(60미만) 개선 필요","weight":20,"display_order":5,"active":true,"is_core":false},{"comp_id":"L2","track":"LEADER","category":"LEADER","name":"팀 육성","description":"구성원의 성장을 지원하고 피드백을 제공한다","rubric":"S(90+) 탁월한 수준으로 조직에 기여 / A(80) 기대 이상 / B(70) 기대 충족 / C(60) 부분 충족 / D(60미만) 개선 필요","weight":20,"display_order":6,"active":true,"is_core":false},{"comp_id":"L3","track":"LEADER","category":"LEADER","name":"성과 관리","description":"목표를 배분하고 진척을 관리하여 성과를 만든다","rubric":"S(90+) 탁월한 수준으로 조직에 기여 / A(80) 기대 이상 / B(70) 기대 충족 / C(60) 부분 충족 / D(60미만) 개선 필요","weight":20,"display_order":7,"active":true,"is_core":false},{"comp_id":"F1","track":"FOLLOWER","category":"FOLLOWER","name":"실행력","description":"계획된 업무를 기한 내 정확하게 실행한다","rubric":"S(90+) 탁월한 수준으로 조직에 기여 / A(80) 기대 이상 / B(70) 기대 충족 / C(60) 부분 충족 / D(60미만) 개선 필요","weight":20,"display_order":8,"active":true,"is_core":false},{"comp_id":"F2","track":"FOLLOWER","category":"FOLLOWER","name":"주도성","description":"지시가 없어도 필요한 일을 찾아 수행한다","rubric":"S(90+) 탁월한 수준으로 조직에 기여 / A(80) 기대 이상 / B(70) 기대 충족 / C(60) 부분 충족 / D(60미만) 개선 필요","weight":20,"display_order":9,"active":true,"is_core":false},{"comp_id":"F3","track":"FOLLOWER","category":"FOLLOWER","name":"학습 민첩성","description":"새로운 지식과 도구를 빠르게 습득해 적용한다","rubric":"S(90+) 탁월한 수준으로 조직에 기여 / A(80) 기대 이상 / B(70) 기대 충족 / C(60) 부분 충족 / D(60미만) 개선 필요","weight":20,"display_order":10,"active":true,"is_core":false},{"comp_id":"CORP1","track":"CORP","category":"CORP","name":"기획·분석력","description":"경영 데이터를 분석하고 개선안을 기획한다","rubric":"S(90+) 탁월한 수준으로 조직에 기여 / A(80) 기대 이상 / B(70) 기대 충족 / C(60) 부분 충족 / D(60미만) 개선 필요","weight":30,"display_order":11,"active":true,"is_core":false},{"comp_id":"CORP2","track":"CORP","category":"CORP","name":"업무 정확성","description":"규정과 일정에 맞게 정확하게 업무를 처리한다","rubric":"S(90+) 탁월한 수준으로 조직에 기여 / A(80) 기대 이상 / B(70) 기대 충족 / C(60) 부분 충족 / D(60미만) 개선 필요","weight":30,"display_order":12,"active":true,"is_core":false},{"comp_id":"QA1","track":"QA","category":"QA","name":"품질기준 준수","description":"품질 표준과 인허가 요구사항을 준수한다","rubric":"S(90+) 탁월한 수준으로 조직에 기여 / A(80) 기대 이상 / B(70) 기대 충족 / C(60) 부분 충족 / D(60미만) 개선 필요","weight":30,"display_order":13,"active":true,"is_core":false},{"comp_id":"QA2","track":"QA","category":"QA","name":"문서화 역량","description":"품질 문서를 체계적으로 작성·관리한다","rubric":"S(90+) 탁월한 수준으로 조직에 기여 / A(80) 기대 이상 / B(70) 기대 충족 / C(60) 부분 충족 / D(60미만) 개선 필요","weight":30,"display_order":14,"active":true,"is_core":false},{"comp_id":"SALES1","track":"SALES","category":"SALES","name":"고객 관리","description":"핵심 고객과의 관계를 구축하고 유지한다","rubric":"S(90+) 탁월한 수준으로 조직에 기여 / A(80) 기대 이상 / B(70) 기대 충족 / C(60) 부분 충족 / D(60미만) 개선 필요","weight":30,"display_order":15,"active":true,"is_core":false},{"comp_id":"SALES2","track":"SALES","category":"SALES","name":"수주 실행력","description":"영업 기회를 발굴하고 계약으로 연결한다","rubric":"S(90+) 탁월한 수준으로 조직에 기여 / A(80) 기대 이상 / B(70) 기대 충족 / C(60) 부분 충족 / D(60미만) 개선 필요","weight":30,"display_order":16,"active":true,"is_core":false},{"comp_id":"SWDEV1","track":"SWDEV","category":"SWDEV","name":"설계 역량","description":"유지보수 가능한 구조로 소프트웨어를 설계한다","rubric":"S(90+) 탁월한 수준으로 조직에 기여 / A(80) 기대 이상 / B(70) 기대 충족 / C(60) 부분 충족 / D(60미만) 개선 필요","weight":30,"display_order":17,"active":true,"is_core":false},{"comp_id":"SWDEV2","track":"SWDEV","category":"SWDEV","name":"코드 품질","description":"테스트와 리뷰를 통해 코드 품질을 확보한다","rubric":"S(90+) 탁월한 수준으로 조직에 기여 / A(80) 기대 이상 / B(70) 기대 충족 / C(60) 부분 충족 / D(60미만) 개선 필요","weight":30,"display_order":18,"active":true,"is_core":false},{"comp_id":"AIDEV1","track":"AIDEV","category":"AIDEV","name":"모델링 역량","description":"문제에 적합한 모델을 설계·학습시킨다","rubric":"S(90+) 탁월한 수준으로 조직에 기여 / A(80) 기대 이상 / B(70) 기대 충족 / C(60) 부분 충족 / D(60미만) 개선 필요","weight":30,"display_order":19,"active":true,"is_core":false},{"comp_id":"AIDEV2","track":"AIDEV","category":"AIDEV","name":"실험 관리","description":"실험을 체계적으로 설계하고 결과를 검증한다","rubric":"S(90+) 탁월한 수준으로 조직에 기여 / A(80) 기대 이상 / B(70) 기대 충족 / C(60) 부분 충족 / D(60미만) 개선 필요","weight":30,"display_order":20,"active":true,"is_core":false},{"comp_id":"MKT1","track":"MKT","category":"MKT","name":"시장 분석","description":"시장·경쟁 동향을 분석해 전략에 반영한다","rubric":"S(90+) 탁월한 수준으로 조직에 기여 / A(80) 기대 이상 / B(70) 기대 충족 / C(60) 부분 충족 / D(60미만) 개선 필요","weight":30,"display_order":21,"active":true,"is_core":false},{"comp_id":"MKT2","track":"MKT","category":"MKT","name":"콘텐츠 기획","description":"브랜드 메시지를 효과적으로 기획·전달한다","rubric":"S(90+) 탁월한 수준으로 조직에 기여 / A(80) 기대 이상 / B(70) 기대 충족 / C(60) 부분 충족 / D(60미만) 개선 필요","weight":30,"display_order":22,"active":true,"is_core":false}],"eval_grades":[{"grade":"S","min_score":95,"max_score":100,"raise_rate":7},{"grade":"A","min_score":85,"max_score":94.99,"raise_rate":5},{"grade":"B","min_score":70,"max_score":84.99,"raise_rate":3},{"grade":"C","min_score":60,"max_score":69.99,"raise_rate":1},{"grade":"D","min_score":0,"max_score":59.99,"raise_rate":0}],"eval_cycles":[{"cycle_id":"2026H1","name":"2026 상반기 정기평가","status":"IN_PROGRESS","start_date":"2026-01-02","end_date":"2026-06-30","created_at":"2026-01-05T09:00:00","created_by":"demo@demo.local"}],"eval_targets":[{"id":"t1","cycle_id":"2026H1","employee_id":"e1","eval_type":"REGULAR","peer_rater_ids":["e2","e3"]},{"id":"t2","cycle_id":"2026H1","employee_id":"e2","eval_type":"REGULAR","peer_rater_ids":["e5","e6"]},{"id":"t3","cycle_id":"2026H1","employee_id":"e3","eval_type":"REGULAR","peer_rater_ids":["e7","e8"]},{"id":"t4","cycle_id":"2026H1","employee_id":"e4","eval_type":"REGULAR","peer_rater_ids":["e9","e10"]},{"id":"t5","cycle_id":"2026H1","employee_id":"e11","eval_type":"REGULAR","peer_rater_ids":["e3","e6"]},{"id":"t6","cycle_id":"2026H1","employee_id":"e5","eval_type":"REGULAR","peer_rater_ids":["e6","e8"]},{"id":"t7","cycle_id":"2026H1","employee_id":"e6","eval_type":"REGULAR","peer_rater_ids":["e5","e9"]},{"id":"t8","cycle_id":"2026H1","employee_id":"e7","eval_type":"REGULAR","peer_rater_ids":["e8","e5"]},{"id":"t9","cycle_id":"2026H1","employee_id":"e8","eval_type":"REGULAR","peer_rater_ids":["e7","e10"]},{"id":"t10","cycle_id":"2026H1","employee_id":"e9","eval_type":"REGULAR","peer_rater_ids":["e10","e7"]},{"id":"t11","cycle_id":"2026H1","employee_id":"e10","eval_type":"REGULAR","peer_rater_ids":["e9","e8"]}],"eval_kpi":[{"id":1,"cycle_id":"2026H1","employee_id":"e1","kpi_name":"신제품 출시","metric":"출시 건수","target_value":"2건","actual_value":"2건","achievement_rate":100,"weight":40,"final_score":95,"comment":"일정 내 출시 완료"},{"id":2,"cycle_id":"2026H1","employee_id":"e1","kpi_name":"매출 성장","metric":"전년 대비 성장률","target_value":"20%","actual_value":"17%","achievement_rate":85,"weight":30,"final_score":85,"comment":"하반기 가속 필요"},{"id":3,"cycle_id":"2026H1","employee_id":"e1","kpi_name":"조직 안정화","metric":"핵심인력 유지율","target_value":"95%","actual_value":"96%","achievement_rate":100,"weight":30,"final_score":92,"comment":"이직률 관리 우수"},{"id":4,"cycle_id":"2026H1","employee_id":"e2","kpi_name":"경영지원 프로세스 개선","metric":"자동화 과제 수","target_value":"4건","actual_value":"4건","achievement_rate":100,"weight":40,"final_score":90,"comment":"급여·인사 자동화 완료"},{"id":5,"cycle_id":"2026H1","employee_id":"e2","kpi_name":"예산 절감","metric":"절감률","target_value":"5%","actual_value":"6%","achievement_rate":120,"weight":30,"final_score":93,"comment":"목표 초과 달성"},{"id":6,"cycle_id":"2026H1","employee_id":"e2","kpi_name":"내부 규정 정비","metric":"개정 건수","target_value":"6건","actual_value":"5건","achievement_rate":83,"weight":30,"final_score":82,"comment":"2건 하반기 이월"},{"id":7,"cycle_id":"2026H1","employee_id":"e5","kpi_name":"채용 리드타임 단축","metric":"평균 소요일","target_value":"30일","actual_value":"27일","achievement_rate":110,"weight":40,"final_score":90,"comment":"프로세스 개선 효과"},{"id":8,"cycle_id":"2026H1","employee_id":"e5","kpi_name":"교육 이수율","metric":"전사 이수율","target_value":"90%","actual_value":"88%","achievement_rate":98,"weight":30,"final_score":86,"comment":"부서별 편차 존재"},{"id":9,"cycle_id":"2026H1","employee_id":"e5","kpi_name":"평가제도 개편","metric":"개편안 확정","target_value":"1건","actual_value":"1건","achievement_rate":100,"weight":30,"final_score":88,"comment":"노무 검토 완료"},{"id":10,"cycle_id":"2026H1","employee_id":"e7","kpi_name":"핵심 모듈 리팩터링","metric":"완료율","target_value":"100%","actual_value":"90%","achievement_rate":90,"weight":40,"final_score":84,"comment":"테스트 커버리지 확대 중"},{"id":11,"cycle_id":"2026H1","employee_id":"e7","kpi_name":"신규 기능 개발","metric":"릴리스 수","target_value":"6건","actual_value":"6건","achievement_rate":100,"weight":35,"final_score":88,"comment":"일정 준수"},{"id":12,"cycle_id":"2026H1","employee_id":"e7","kpi_name":"장애 대응","metric":"평균 복구시간","target_value":"2시간","actual_value":"2.5시간","achievement_rate":80,"weight":25,"final_score":78,"comment":"모니터링 보강 필요"},{"id":13,"cycle_id":"2026H1","employee_id":"e9","kpi_name":"신규 고객 발굴","metric":"신규 계약 수","target_value":"8건","actual_value":"6건","achievement_rate":75,"weight":40,"final_score":76,"comment":"파이프라인 확대 중"},{"id":14,"cycle_id":"2026H1","employee_id":"e9","kpi_name":"기존 고객 갱신","metric":"갱신율","target_value":"90%","actual_value":"92%","achievement_rate":102,"weight":35,"final_score":86,"comment":"주요 고객 전원 갱신"},{"id":15,"cycle_id":"2026H1","employee_id":"e9","kpi_name":"고객 만족도","metric":"조사 점수","target_value":"4.5","actual_value":"4.3","achievement_rate":96,"weight":25,"final_score":80,"comment":"응대 속도 개선 필요"}],"eval_kpi_status":[{"id":"ks1","cycle_id":"2026H1","employee_id":"e1","status":"APPROVED","approver_id":null,"submitted_by":"e1","submitted_at":"2026-02-01T09:00:00","approved_at":"2026-02-03T09:00:00","reject_reason":null,"updated_at":"2026-04-10T10:00:00"},{"id":"ks2","cycle_id":"2026H1","employee_id":"e2","status":"SUBMITTED","approver_id":"e1","submitted_by":"e2","submitted_at":"2026-04-08T09:00:00","approved_at":null,"reject_reason":null,"updated_at":"2026-04-10T10:00:00"},{"id":"ks3","cycle_id":"2026H1","employee_id":"e5","status":"APPROVED","approver_id":"e2","submitted_by":"e5","submitted_at":"2026-02-05T09:00:00","approved_at":"2026-02-06T09:00:00","reject_reason":null,"updated_at":"2026-04-10T10:00:00"},{"id":"ks4","cycle_id":"2026H1","employee_id":"e7","status":"APPROVED","approver_id":"e3","submitted_by":"e7","submitted_at":"2026-02-04T09:00:00","approved_at":"2026-02-05T09:00:00","reject_reason":null,"updated_at":"2026-04-10T10:00:00"},{"id":"ks5","cycle_id":"2026H1","employee_id":"e9","status":"SUBMITTED","approver_id":"e1","submitted_by":"e9","submitted_at":"2026-04-09T09:00:00","approved_at":null,"reject_reason":null,"updated_at":"2026-04-10T10:00:00"}],"eval_360":[{"id":1,"cycle_id":"2026H1","ratee_id":"e2","rater_id":"e1","rater_type":"manager","comp_id":"C1","score":88},{"id":2,"cycle_id":"2026H1","ratee_id":"e2","rater_id":"e2","rater_type":"self","comp_id":"C1","score":91},{"id":3,"cycle_id":"2026H1","ratee_id":"e2","rater_id":"e5","rater_type":"peer","comp_id":"C1","score":86},{"id":4,"cycle_id":"2026H1","ratee_id":"e2","rater_id":"e1","rater_type":"manager","comp_id":"C2","score":91},{"id":5,"cycle_id":"2026H1","ratee_id":"e2","rater_id":"e2","rater_type":"self","comp_id":"C2","score":94},{"id":6,"cycle_id":"2026H1","ratee_id":"e2","rater_id":"e5","rater_type":"peer","comp_id":"C2","score":89},{"id":7,"cycle_id":"2026H1","ratee_id":"e2","rater_id":"e1","rater_type":"manager","comp_id":"C3","score":89},{"id":8,"cycle_id":"2026H1","ratee_id":"e2","rater_id":"e2","rater_type":"self","comp_id":"C3","score":92},{"id":9,"cycle_id":"2026H1","ratee_id":"e2","rater_id":"e5","rater_type":"peer","comp_id":"C3","score":87},{"id":10,"cycle_id":"2026H1","ratee_id":"e2","rater_id":"e1","rater_type":"manager","comp_id":"C4","score":92},{"id":11,"cycle_id":"2026H1","ratee_id":"e2","rater_id":"e2","rater_type":"self","comp_id":"C4","score":95},{"id":12,"cycle_id":"2026H1","ratee_id":"e2","rater_id":"e5","rater_type":"peer","comp_id":"C4","score":90},{"id":13,"cycle_id":"2026H1","ratee_id":"e2","rater_id":"e1","rater_type":"manager","comp_id":"L1","score":90},{"id":14,"cycle_id":"2026H1","ratee_id":"e2","rater_id":"e2","rater_type":"self","comp_id":"L1","score":93},{"id":15,"cycle_id":"2026H1","ratee_id":"e2","rater_id":"e5","rater_type":"peer","comp_id":"L1","score":88},{"id":16,"cycle_id":"2026H1","ratee_id":"e2","rater_id":"e1","rater_type":"manager","comp_id":"L2","score":88},{"id":17,"cycle_id":"2026H1","ratee_id":"e2","rater_id":"e2","rater_type":"self","comp_id":"L2","score":91},{"id":18,"cycle_id":"2026H1","ratee_id":"e2","rater_id":"e5","rater_type":"peer","comp_id":"L2","score":86},{"id":19,"cycle_id":"2026H1","ratee_id":"e2","rater_id":"e1","rater_type":"manager","comp_id":"L3","score":91},{"id":20,"cycle_id":"2026H1","ratee_id":"e2","rater_id":"e2","rater_type":"self","comp_id":"L3","score":94},{"id":21,"cycle_id":"2026H1","ratee_id":"e2","rater_id":"e5","rater_type":"peer","comp_id":"L3","score":89},{"id":22,"cycle_id":"2026H1","ratee_id":"e2","rater_id":"e1","rater_type":"manager","comp_id":"CORP1","score":89},{"id":23,"cycle_id":"2026H1","ratee_id":"e2","rater_id":"e2","rater_type":"self","comp_id":"CORP1","score":92},{"id":24,"cycle_id":"2026H1","ratee_id":"e2","rater_id":"e5","rater_type":"peer","comp_id":"CORP1","score":87},{"id":25,"cycle_id":"2026H1","ratee_id":"e2","rater_id":"e1","rater_type":"manager","comp_id":"CORP2","score":92},{"id":26,"cycle_id":"2026H1","ratee_id":"e2","rater_id":"e2","rater_type":"self","comp_id":"CORP2","score":95},{"id":27,"cycle_id":"2026H1","ratee_id":"e2","rater_id":"e5","rater_type":"peer","comp_id":"CORP2","score":90},{"id":28,"cycle_id":"2026H1","ratee_id":"e5","rater_id":"e2","rater_type":"manager","comp_id":"C1","score":85},{"id":29,"cycle_id":"2026H1","ratee_id":"e5","rater_id":"e5","rater_type":"self","comp_id":"C1","score":88},{"id":30,"cycle_id":"2026H1","ratee_id":"e5","rater_id":"e6","rater_type":"peer","comp_id":"C1","score":83},{"id":31,"cycle_id":"2026H1","ratee_id":"e5","rater_id":"e2","rater_type":"manager","comp_id":"C2","score":88},{"id":32,"cycle_id":"2026H1","ratee_id":"e5","rater_id":"e5","rater_type":"self","comp_id":"C2","score":91},{"id":33,"cycle_id":"2026H1","ratee_id":"e5","rater_id":"e6","rater_type":"peer","comp_id":"C2","score":86},{"id":34,"cycle_id":"2026H1","ratee_id":"e5","rater_id":"e2","rater_type":"manager","comp_id":"C3","score":86},{"id":35,"cycle_id":"2026H1","ratee_id":"e5","rater_id":"e5","rater_type":"self","comp_id":"C3","score":89},{"id":36,"cycle_id":"2026H1","ratee_id":"e5","rater_id":"e6","rater_type":"peer","comp_id":"C3","score":84},{"id":37,"cycle_id":"2026H1","ratee_id":"e5","rater_id":"e2","rater_type":"manager","comp_id":"C4","score":89},{"id":38,"cycle_id":"2026H1","ratee_id":"e5","rater_id":"e5","rater_type":"self","comp_id":"C4","score":92},{"id":39,"cycle_id":"2026H1","ratee_id":"e5","rater_id":"e6","rater_type":"peer","comp_id":"C4","score":87},{"id":40,"cycle_id":"2026H1","ratee_id":"e5","rater_id":"e2","rater_type":"manager","comp_id":"L1","score":87},{"id":41,"cycle_id":"2026H1","ratee_id":"e5","rater_id":"e5","rater_type":"self","comp_id":"L1","score":90},{"id":42,"cycle_id":"2026H1","ratee_id":"e5","rater_id":"e6","rater_type":"peer","comp_id":"L1","score":85},{"id":43,"cycle_id":"2026H1","ratee_id":"e5","rater_id":"e2","rater_type":"manager","comp_id":"L2","score":85},{"id":44,"cycle_id":"2026H1","ratee_id":"e5","rater_id":"e5","rater_type":"self","comp_id":"L2","score":88},{"id":45,"cycle_id":"2026H1","ratee_id":"e5","rater_id":"e6","rater_type":"peer","comp_id":"L2","score":83},{"id":46,"cycle_id":"2026H1","ratee_id":"e5","rater_id":"e2","rater_type":"manager","comp_id":"L3","score":88},{"id":47,"cycle_id":"2026H1","ratee_id":"e5","rater_id":"e5","rater_type":"self","comp_id":"L3","score":91},{"id":48,"cycle_id":"2026H1","ratee_id":"e5","rater_id":"e6","rater_type":"peer","comp_id":"L3","score":86},{"id":49,"cycle_id":"2026H1","ratee_id":"e5","rater_id":"e2","rater_type":"manager","comp_id":"CORP1","score":86},{"id":50,"cycle_id":"2026H1","ratee_id":"e5","rater_id":"e5","rater_type":"self","comp_id":"CORP1","score":89},{"id":51,"cycle_id":"2026H1","ratee_id":"e5","rater_id":"e6","rater_type":"peer","comp_id":"CORP1","score":84},{"id":52,"cycle_id":"2026H1","ratee_id":"e5","rater_id":"e2","rater_type":"manager","comp_id":"CORP2","score":89},{"id":53,"cycle_id":"2026H1","ratee_id":"e5","rater_id":"e5","rater_type":"self","comp_id":"CORP2","score":92},{"id":54,"cycle_id":"2026H1","ratee_id":"e5","rater_id":"e6","rater_type":"peer","comp_id":"CORP2","score":87},{"id":55,"cycle_id":"2026H1","ratee_id":"e7","rater_id":"e3","rater_type":"manager","comp_id":"C1","score":81},{"id":56,"cycle_id":"2026H1","ratee_id":"e7","rater_id":"e7","rater_type":"self","comp_id":"C1","score":84},{"id":57,"cycle_id":"2026H1","ratee_id":"e7","rater_id":"e8","rater_type":"peer","comp_id":"C1","score":79},{"id":58,"cycle_id":"2026H1","ratee_id":"e7","rater_id":"e3","rater_type":"manager","comp_id":"C2","score":84},{"id":59,"cycle_id":"2026H1","ratee_id":"e7","rater_id":"e7","rater_type":"self","comp_id":"C2","score":87},{"id":60,"cycle_id":"2026H1","ratee_id":"e7","rater_id":"e8","rater_type":"peer","comp_id":"C2","score":82},{"id":61,"cycle_id":"2026H1","ratee_id":"e7","rater_id":"e3","rater_type":"manager","comp_id":"C3","score":82},{"id":62,"cycle_id":"2026H1","ratee_id":"e7","rater_id":"e7","rater_type":"self","comp_id":"C3","score":85},{"id":63,"cycle_id":"2026H1","ratee_id":"e7","rater_id":"e8","rater_type":"peer","comp_id":"C3","score":80},{"id":64,"cycle_id":"2026H1","ratee_id":"e7","rater_id":"e3","rater_type":"manager","comp_id":"C4","score":85},{"id":65,"cycle_id":"2026H1","ratee_id":"e7","rater_id":"e7","rater_type":"self","comp_id":"C4","score":88},{"id":66,"cycle_id":"2026H1","ratee_id":"e7","rater_id":"e8","rater_type":"peer","comp_id":"C4","score":83},{"id":67,"cycle_id":"2026H1","ratee_id":"e7","rater_id":"e3","rater_type":"manager","comp_id":"F1","score":83},{"id":68,"cycle_id":"2026H1","ratee_id":"e7","rater_id":"e7","rater_type":"self","comp_id":"F1","score":86},{"id":69,"cycle_id":"2026H1","ratee_id":"e7","rater_id":"e8","rater_type":"peer","comp_id":"F1","score":81},{"id":70,"cycle_id":"2026H1","ratee_id":"e7","rater_id":"e3","rater_type":"manager","comp_id":"F2","score":81},{"id":71,"cycle_id":"2026H1","ratee_id":"e7","rater_id":"e7","rater_type":"self","comp_id":"F2","score":84},{"id":72,"cycle_id":"2026H1","ratee_id":"e7","rater_id":"e8","rater_type":"peer","comp_id":"F2","score":79},{"id":73,"cycle_id":"2026H1","ratee_id":"e7","rater_id":"e3","rater_type":"manager","comp_id":"F3","score":84},{"id":74,"cycle_id":"2026H1","ratee_id":"e7","rater_id":"e7","rater_type":"self","comp_id":"F3","score":87},{"id":75,"cycle_id":"2026H1","ratee_id":"e7","rater_id":"e8","rater_type":"peer","comp_id":"F3","score":82},{"id":76,"cycle_id":"2026H1","ratee_id":"e7","rater_id":"e3","rater_type":"manager","comp_id":"CORP1","score":82},{"id":77,"cycle_id":"2026H1","ratee_id":"e7","rater_id":"e7","rater_type":"self","comp_id":"CORP1","score":85},{"id":78,"cycle_id":"2026H1","ratee_id":"e7","rater_id":"e8","rater_type":"peer","comp_id":"CORP1","score":80},{"id":79,"cycle_id":"2026H1","ratee_id":"e7","rater_id":"e3","rater_type":"manager","comp_id":"CORP2","score":85},{"id":80,"cycle_id":"2026H1","ratee_id":"e7","rater_id":"e7","rater_type":"self","comp_id":"CORP2","score":88},{"id":81,"cycle_id":"2026H1","ratee_id":"e7","rater_id":"e8","rater_type":"peer","comp_id":"CORP2","score":83},{"id":82,"cycle_id":"2026H1","ratee_id":"e9","rater_id":"e4","rater_type":"manager","comp_id":"C1","score":76},{"id":83,"cycle_id":"2026H1","ratee_id":"e9","rater_id":"e9","rater_type":"self","comp_id":"C1","score":79},{"id":84,"cycle_id":"2026H1","ratee_id":"e9","rater_id":"e10","rater_type":"peer","comp_id":"C1","score":74},{"id":85,"cycle_id":"2026H1","ratee_id":"e9","rater_id":"e4","rater_type":"manager","comp_id":"C2","score":79},{"id":86,"cycle_id":"2026H1","ratee_id":"e9","rater_id":"e9","rater_type":"self","comp_id":"C2","score":82},{"id":87,"cycle_id":"2026H1","ratee_id":"e9","rater_id":"e10","rater_type":"peer","comp_id":"C2","score":77},{"id":88,"cycle_id":"2026H1","ratee_id":"e9","rater_id":"e4","rater_type":"manager","comp_id":"C3","score":77},{"id":89,"cycle_id":"2026H1","ratee_id":"e9","rater_id":"e9","rater_type":"self","comp_id":"C3","score":80},{"id":90,"cycle_id":"2026H1","ratee_id":"e9","rater_id":"e10","rater_type":"peer","comp_id":"C3","score":75},{"id":91,"cycle_id":"2026H1","ratee_id":"e9","rater_id":"e4","rater_type":"manager","comp_id":"C4","score":80},{"id":92,"cycle_id":"2026H1","ratee_id":"e9","rater_id":"e9","rater_type":"self","comp_id":"C4","score":83},{"id":93,"cycle_id":"2026H1","ratee_id":"e9","rater_id":"e10","rater_type":"peer","comp_id":"C4","score":78},{"id":94,"cycle_id":"2026H1","ratee_id":"e9","rater_id":"e4","rater_type":"manager","comp_id":"F1","score":78},{"id":95,"cycle_id":"2026H1","ratee_id":"e9","rater_id":"e9","rater_type":"self","comp_id":"F1","score":81},{"id":96,"cycle_id":"2026H1","ratee_id":"e9","rater_id":"e10","rater_type":"peer","comp_id":"F1","score":76},{"id":97,"cycle_id":"2026H1","ratee_id":"e9","rater_id":"e4","rater_type":"manager","comp_id":"F2","score":76},{"id":98,"cycle_id":"2026H1","ratee_id":"e9","rater_id":"e9","rater_type":"self","comp_id":"F2","score":79},{"id":99,"cycle_id":"2026H1","ratee_id":"e9","rater_id":"e10","rater_type":"peer","comp_id":"F2","score":74},{"id":100,"cycle_id":"2026H1","ratee_id":"e9","rater_id":"e4","rater_type":"manager","comp_id":"F3","score":79},{"id":101,"cycle_id":"2026H1","ratee_id":"e9","rater_id":"e9","rater_type":"self","comp_id":"F3","score":82},{"id":102,"cycle_id":"2026H1","ratee_id":"e9","rater_id":"e10","rater_type":"peer","comp_id":"F3","score":77},{"id":103,"cycle_id":"2026H1","ratee_id":"e9","rater_id":"e4","rater_type":"manager","comp_id":"CORP1","score":77},{"id":104,"cycle_id":"2026H1","ratee_id":"e9","rater_id":"e9","rater_type":"self","comp_id":"CORP1","score":80},{"id":105,"cycle_id":"2026H1","ratee_id":"e9","rater_id":"e10","rater_type":"peer","comp_id":"CORP1","score":75},{"id":106,"cycle_id":"2026H1","ratee_id":"e9","rater_id":"e4","rater_type":"manager","comp_id":"CORP2","score":80},{"id":107,"cycle_id":"2026H1","ratee_id":"e9","rater_id":"e9","rater_type":"self","comp_id":"CORP2","score":83},{"id":108,"cycle_id":"2026H1","ratee_id":"e9","rater_id":"e10","rater_type":"peer","comp_id":"CORP2","score":78}],"eval_360_exclusions":[],"eval_feedback":[{"id":"fb1","cycle_id":"2026H1","employee_id":"e7","author_id":"e3","period":"Q1","content":"핵심 모듈 리팩터링 진행 순조. 테스트 자동화 비중을 높이기로 합의.","updated_at":"2026-03-28T15:00:00"},{"id":"fb2","cycle_id":"2026H1","employee_id":"e7","author_id":"e3","period":"Q2","content":"신규 기능 릴리스 일정 준수. 장애 대응 프로세스 문서화 진행 중.","updated_at":"2026-06-20T15:00:00"},{"id":"fb3","cycle_id":"2026H1","employee_id":"e5","author_id":"e2","period":"Q1","content":"채용 리드타임 단축 성과 우수. 교육 이수율 부서별 편차 관리 필요.","updated_at":"2026-03-27T14:00:00"},{"id":"fb4","cycle_id":"2026H1","employee_id":"e9","author_id":"e4","period":"Q1","content":"신규 고객 파이프라인 확대 중. 제안서 품질 개선 코칭 진행.","updated_at":"2026-03-29T11:00:00"}],"eval_results":[{"id":"rs1","cycle_id":"2026H1","employee_id":"e2","kpi_total":89.2,"comp_total":90.4,"grand_total":89.9,"grade":"A","base_raise_rate":5,"final_salary":null,"status":"CALCULATED","feedback":"경영지원 자동화 성과가 뛰어났습니다. 하반기에는 규정 정비 완료에 집중해 주세요.","feedback_published":true,"feedback_by":"e1","feedback_at":"2026-07-05T10:00:00","fb_strengths":"프로세스 개선 실행력","fb_improvements":"규정 정비 일정 관리","fb_goals":"하반기 규정 정비 완료","fb_interviewed_by":"e1","fb_interviewed_at":"2026-07-06T10:00:00"},{"id":"rs2","cycle_id":"2026H1","employee_id":"e5","kpi_total":88.0,"comp_total":87.1,"grand_total":87.5,"grade":"A","base_raise_rate":5,"final_salary":null,"status":"CALCULATED","feedback":"채용·교육 지표가 안정적입니다. 평가제도 개편 안착을 부탁드립니다.","feedback_published":true,"feedback_by":"e1","feedback_at":"2026-07-05T10:10:00","fb_strengths":"채용 프로세스 운영","fb_improvements":"교육 이수율 편차 관리","fb_goals":"평가제도 개편 안착","fb_interviewed_by":"e2","fb_interviewed_at":"2026-07-06T11:00:00"},{"id":"rs3","cycle_id":"2026H1","employee_id":"e7","kpi_total":84.1,"comp_total":83.5,"grand_total":83.9,"grade":"B","base_raise_rate":3,"final_salary":null,"status":"CALCULATED","feedback":"릴리스 일정 준수가 인상적입니다. 장애 대응 체계를 보강해 주세요.","feedback_published":false,"feedback_by":"e3","feedback_at":"2026-07-05T10:20:00","fb_strengths":"일정 준수·기능 개발","fb_improvements":"장애 대응 속도","fb_goals":"모니터링 자동화 구축","fb_interviewed_by":"e3","fb_interviewed_at":"2026-07-06T13:00:00"},{"id":"rs4","cycle_id":"2026H1","employee_id":"e9","kpi_total":79.6,"comp_total":77.8,"grand_total":78.5,"grade":"B","base_raise_rate":3,"final_salary":null,"status":"CALCULATED","feedback":"갱신율 성과가 좋습니다. 신규 고객 발굴 목표 달성에 집중해 주세요.","feedback_published":false,"feedback_by":"e4","feedback_at":"2026-07-05T10:30:00","fb_strengths":"기존 고객 관계 유지","fb_improvements":"신규 파이프라인 확대","fb_goals":"하반기 신규 계약 4건","fb_interviewed_by":"e4","fb_interviewed_at":"2026-07-06T14:00:00"}],"eval_email_templates":[{"key":"kpi_request","subject":"[인사평가] {{cycle}} KPI 작성 요청","body":"{{name}}님, {{cycle}} KPI를 작성하고 승인 요청해 주세요."},{"key":"eval_360_request","subject":"[인사평가] 360° 평가 참여 요청","body":"{{name}}님, 지정된 동료에 대한 360° 평가를 진행해 주세요."}]};
+function _clone(o){return JSON.parse(JSON.stringify(o));}
+function _qb(table){ let rows=_clone(DEMO_DATA[table]||[]); const qb={ select(){return qb;},insert(){return qb;},update(){return qb;},delete(){return qb;},upsert(){return qb;}, eq(c,v){rows=rows.filter(r=>r[c]===v);return qb;}, neq(c,v){rows=rows.filter(r=>r[c]!==v);return qb;}, in(c,vs){rows=rows.filter(r=>vs.indexOf(r[c])>=0);return qb;}, gte(){return qb;},lte(){return qb;},gt(){return qb;},lt(){return qb;}, is(){return qb;},not(){return qb;},ilike(){return qb;},like(){return qb;},or(){return qb;},match(){return qb;}, order(){return qb;},limit(n){rows=rows.slice(0,n);return qb;},range(){return qb;}, single(){return Promise.resolve({data:rows[0]||null,error:null});}, maybeSingle(){return Promise.resolve({data:rows[0]||null,error:null});}, then(res){res({data:rows,error:null});} }; return qb; }
+const _demoAuth={ getSession:()=>Promise.resolve({data:{session:{user:{email:'demo@demo.local'}}},error:null}), getUser:()=>Promise.resolve({data:{user:{email:'demo@demo.local'}}}), signOut:()=>Promise.resolve({error:null}), signInWithPassword:()=>Promise.resolve({data:{session:{user:{email:'demo@demo.local'}}},error:null}), onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}}) };
+const sb={ from:t=>_qb(t), auth:_demoAuth };
+
+function Icon({ path, className }){ return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={path} /></svg>; }
+function Field({ label, children }){ return <label className="block"><span className="text-xs font-medium text-slate-600 dark:text-slate-300">{label}</span><div className="mt-1">{children}</div></label>; }
+function fmtDate(d){ return d?String(d).slice(0,10):'-'; }
+
+const TRACK_LABEL={ COMMON:'공통역량', LEADER:'리더 택1', FOLLOWER:'비리더 택1', SALES:'영업', MKT:'전략마케팅', CORP:'경영지원', SWDEV:'SW개발', AIDEV:'AI개발', QA:'품질경영' };
+const JOB_TRACKS=['SALES','MKT','CORP','SWDEV','AIDEV','QA'];
+const CAT_ORDER=['업무수행','전문','태도'];
+const CYCLE_STATUS={ PREPARING:['준비중','bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'], IN_PROGRESS:['진행중','bg-emerald-100 text-emerald-700'], CLOSED:['마감','bg-amber-100 text-amber-700'], FINALIZED:['확정','bg-indigo-100 text-indigo-700'] };
+
+function useTheme(){
+  const [theme,setTheme]=useState(()=>{ try{ return localStorage.getItem('demo-theme')||'system'; }catch(e){ return 'system'; } });
+  useEffect(()=>{
+    const el=document.documentElement;
+    el.classList.toggle('dark', theme==='dark');
+    el.classList.toggle('claude', theme==='system');
+    try{ localStorage.setItem('demo-theme',theme); }catch(e){}
+  },[theme]);
+  return [theme,setTheme];
+}
+const THEME_ICON={ light:"M12 3v1M12 20v1M4.9 4.9l.7.7M18.4 18.4l.7.7M3 12h1M20 12h1M4.9 19.1l.7-.7M18.4 5.6l.7-.7M12 8a4 4 0 100 8 4 4 0 000-8z", system:"M4 5h16v10H4zM8 19h8M12 15v4", dark:"M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z" };
+function ThemeToggle(){
+  const [theme,setTheme]=useTheme();
+  const opts=[['light','라이트'],['system','시스템'],['dark','다크']];
+  return (
+    <div className="inline-flex items-center bg-slate-100 dark:bg-slate-700 rounded-lg p-0.5">
+      {opts.map(o=>{ const on=theme===o[0];
+        return <button key={o[0]} onClick={()=>setTheme(o[0])} title={o[1]} className={"px-2 py-1.5 rounded-md flex items-center "+(on?"bg-white dark:bg-slate-800 shadow text-slate-800 dark:text-slate-100":"text-slate-500 dark:text-slate-400 hover:text-slate-700")}><Icon path={THEME_ICON[o[0]]} className="w-4 h-4" /></button>;
+      })}
+    </div>
+  );
+}
+function App(){
+  const [ready,setReady]=useState(false);
+  const [session,setSession]=useState(null);
+  const [me,setMe]=useState(null);
+  const [isAdmin,setIsAdmin]=useState(false);
+  const [tab,setTab]=useState('home');
+  const [cfg,setCfg]=useState({});
+  const [comps,setComps]=useState([]);
+  const [grades,setGrades]=useState([]);
+  const [cycles,setCycles]=useState([]);
+  const [emps,setEmps]=useState([]);
+  const [err,setErr]=useState('');
+  const [busy,setBusy]=useState(false);
+  const [notice,setNotice]=useState('');
+  const [pendingN,setPendingN]=useState(0);
+  const [showComp,setShowComp]=useState(false);
+  const [viewAs,setViewAs]=useState('admin');
+
+  async function loadAll(email){
+    const [c1,c2,c3,c4,c5,c6]=await Promise.all([
+      sb.from('eval_config').select('*'),
+      sb.from('eval_competencies').select('*').order('display_order'),
+      sb.from('eval_grades').select('*').order('min_score',{ascending:false}),
+      sb.from('eval_cycles').select('*').order('created_at',{ascending:false}),
+      sb.from('employees').select('id,name,email,team,position,rank,group_id').eq('email',email),
+      sb.from('employees').select('id,name,team,position,rank,group_id,manager_id,status,email,join_date')
+    ]);
+    const anyErr=c1.error||c2.error||c3.error||c4.error||c5.error||c6.error;
+    if(anyErr){ setErr(anyErr.message); return; }
+    setCfg(Object.fromEntries((c1.data||[]).map(r=>[r.key,r.value])));
+    setComps(c2.data||[]); setGrades(c3.data||[]); setCycles(c4.data||[]); setMe((c5.data||[])[0]||null); setEmps(c6.data||[]);
+  }
+
+  useEffect(()=>{ (async()=>{
+    const { data:{ session } }=await sb.auth.getSession();
+    if(!session){ window.location.href='index.html'; return; }
+    setSession(session);
+    const { data:roles }=await sb.from('user_roles').select('role').eq('email',session.user.email).eq('app','eval');
+    setIsAdmin(!!(roles||[]).find(r=>r.role==='SUPER'||r.role==='ADMIN'));
+    await loadAll(session.user.email);
+    setReady(true);
+  })(); },[]);
+  function flash(m){ setNotice(m); setTimeout(()=>setNotice(''),2500); }
+
+  useEffect(()=>{ (async()=>{ if(!me){ setPendingN(0); return; } const inProg=cycles.find(c=>c.status==='IN_PROGRESS'); if(!inProg){ setPendingN(0); return; } const r=await sb.from('eval_kpi_status').select('id').eq('cycle_id',inProg.cycle_id).eq('approver_id',me.id).eq('status','SUBMITTED'); setPendingN((r.data||[]).length); })(); },[me&&me.id, cycles, tab]);
+
+  if(!ready) return <div className="min-h-screen flex items-center justify-center text-slate-400 dark:text-slate-500">불러오는 중…</div>;
+
+  const effIsAdmin = isAdmin && viewAs==='admin';
+  const tabs=[['home','홈'],['eval360','360도 평가'],['kpi','KPI · 면담'],['myresult','내 평가결과']];
+  if(effIsAdmin){ tabs.push(['manage','평가 관리']); }
+
+  return (
+    <div className="min-h-screen">
+      <header className="sticky top-0 z-30 bg-white/90 dark:bg-slate-900/90 backdrop-blur border-b border-slate-200 dark:border-slate-700">
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4 flex-wrap">
+          <div className="flex items-center gap-3">
+            <a href="index.html" className="w-9 h-9 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center" title="포털로">
+              <Icon path="M12 15a7 7 0 100-14 7 7 0 000 14zM8.21 13.89L7 23l5-3 5 3-1.21-9.12" className="w-5 h-5 text-white" />
+            </a>
+            <div>
+              <h1 className="font-bold text-slate-900 dark:text-slate-100">인사평가 시스템</h1>
+              <p className="text-xs text-slate-500 dark:text-slate-400">KPI + 360도 역량평가 {isAdmin?'· 관리자':'· '+((me&&me.name)||session.user.email)}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            {busy && <span className="text-xs text-indigo-600">저장 중…</span>}
+            {notice && <span className="text-xs text-emerald-600 bg-emerald-50 dark:bg-emerald-950 px-3 py-1.5 rounded-md">{notice}</span>}
+            {isAdmin && <select value={viewAs} onChange={e=>setViewAs(e.target.value)} title="보기 전환(개발용)" className="text-xs border border-slate-200 dark:border-slate-700 rounded-lg px-2 py-1.5 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300"><option value="admin">관리자 보기</option><option value="leader">팀장 보기</option><option value="staff">직원 보기</option></select>}
+            <ThemeToggle />
+            <a href="index.html" className="text-xs font-bold px-3.5 py-2 rounded-lg bg-rose-600 text-white border border-rose-700 shadow-md hover:bg-rose-700 transition">DEMO 인사시스템</a>
+            {effIsAdmin && <a href="hr.html" className="text-xs font-bold px-3.5 py-2 rounded-lg bg-slate-700 text-white border border-slate-800 shadow-md hover:bg-slate-800 transition">e-HR</a>}
+            {effIsAdmin && <a href="demo-payroll.html" target="_blank" rel="noopener noreferrer" className="text-xs font-bold px-3.5 py-2 rounded-lg bg-emerald-600 text-white border border-emerald-700 shadow-md hover:bg-emerald-700 transition">급여자동화시스템</a>}
+            <button onClick={()=>sb.auth.signOut().then(()=>window.location.href='index.html')} className="text-sm text-slate-600 dark:text-slate-300 hover:text-slate-900 px-3 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">로그아웃</button>
+          </div>
+        </div>
+        <div className="max-w-[1200px] mx-auto px-4 sm:px-6 flex gap-2 pt-1 pb-3">
+          {tabs.map(([k,label])=>{ const on=tab===k;
+            return <button key={k} onClick={()=>setTab(k)} className={"relative px-4 py-2.5 text-sm rounded-lg border transition "+(on?"bg-indigo-600 border-indigo-600 text-white font-bold shadow-md":"bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-medium hover:bg-slate-50 dark:hover:bg-slate-700/40 hover:text-slate-900")}>{label}{k==='kpi'&&pendingN>0&&<span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center">{pendingN}</span>}</button>;
+          })}
+        </div>
+      </header>
+
+      <main className="max-w-[1200px] mx-auto px-4 sm:px-6 py-6">
+        {err && <div className="mb-4 text-sm text-red-600 bg-red-50 dark:bg-red-950 border border-red-200 rounded-lg px-4 py-3">오류: {err}</div>}
+        {tab==='home' && <HomeTab me={me} isAdmin={effIsAdmin} cycles={cycles} comps={comps} cfg={cfg} emps={emps} setTab={setTab} openComp={()=>setShowComp(true)} pendingN={pendingN} />}
+        {tab==='manage' && effIsAdmin && <ManageTab cycles={cycles} emps={emps} comps={comps} cfg={cfg} grades={grades} reload={()=>loadAll(session.user.email)} setBusy={setBusy} flash={flash} setErr={setErr} email={session.user.email} />}
+        {tab==='eval360' && <Eval360Tab me={me} emps={emps} comps={comps} cfg={cfg} cycles={cycles} setBusy={setBusy} flash={flash} setErr={setErr} openComp={()=>setShowComp(true)} viewAs={viewAs} />}
+        {tab==='myresult' && <MyResultTab me={me} cycles={cycles} grades={grades} setErr={setErr} />}
+        {tab==='kpi' && <KpiHubTab me={me} emps={emps} cycles={cycles} cfg={cfg} isAdmin={effIsAdmin} setBusy={setBusy} flash={flash} setErr={setErr} comps={comps} grades={grades} pendingN={pendingN} />}
+        {showComp && <div className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center p-4 overflow-y-auto" onClick={()=>setShowComp(false)}>
+          <div className="bg-white dark:bg-slate-800 rounded-2xl max-w-4xl w-full my-8 shadow-2xl" onClick={e=>e.stopPropagation()}>
+            <div className="flex justify-between items-center px-5 py-3 border-b border-slate-100 dark:border-slate-700 sticky top-0 bg-white dark:bg-slate-800 rounded-t-2xl z-10">
+              <h3 className="font-bold text-slate-800 dark:text-slate-100">역량 모델</h3>
+              <button onClick={()=>setShowComp(false)} className="text-slate-400 hover:text-slate-600 text-2xl leading-none">×</button>
+            </div>
+            <div className="p-5"><CompModelTab comps={comps} cfg={cfg} grades={grades} /></div>
+          </div>
+        </div>}
+      </main>
+    </div>
+  );
+}
+
+function Stub({ title, desc }){
+  return (
+    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-10 text-center">
+      <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-indigo-50 dark:bg-indigo-950 flex items-center justify-center">
+        <Icon path="M12 8v4l3 3M12 3a9 9 0 100 18 9 9 0 000-18z" className="w-6 h-6 text-indigo-400" />
+      </div>
+      <div className="font-bold text-slate-800 dark:text-slate-100">{title}</div>
+      <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-md mx-auto">{desc}</p>
+      <span className="inline-block mt-3 text-xs bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 px-3 py-1 rounded-full">준비중</span>
+    </div>
+  );
+}
+
+function HomeTab({ me, isAdmin, cycles, comps, cfg, emps, setTab, openComp, pendingN }){
+  const cycle=cycles.find(c=>c.status==='IN_PROGRESS')||cycles[0];
+  const [data,setData]=useState(null);
+  const [adminStats,setAdminStats]=useState(null);
+  const empById=useMemo(()=>Object.fromEntries(emps.map(e=>[e.id,e])),[emps]);
+  const active=useMemo(()=>emps.filter(e=>e.status!=='퇴사'),[emps]);
+  const commonCnt=comps.filter(c=>c.track==='COMMON').length;
+
+  useEffect(()=>{ (async()=>{
+    if(!cycle||!me){ setData({ empty:true }); return; }
+    const cid=cycle.cycle_id;
+    const [tg,r360,kp,ks,fb,rs]=await Promise.all([
+      sb.from('eval_targets').select('*').eq('cycle_id',cid),
+      sb.from('eval_360').select('*').eq('cycle_id',cid).eq('rater_id',me.id),
+      sb.from('eval_kpi').select('id').eq('cycle_id',cid).eq('employee_id',me.id),
+      sb.from('eval_kpi_status').select('*').eq('cycle_id',cid).eq('employee_id',me.id).maybeSingle(),
+      sb.from('eval_feedback').select('period').eq('cycle_id',cid).eq('employee_id',me.id),
+      sb.from('eval_results').select('*').eq('cycle_id',cid).eq('employee_id',me.id).maybeSingle()
+    ]);
+    const targets=tg.data||[]; const targetIds=new Set(targets.filter(t=>t.eval_type!=='EXCLUDED').map(t=>t.employee_id));
+    const tasks=[];
+    if(targetIds.has(me.id)) tasks.push({ r:me, type:'self' });
+    const mgr=empById[me.manager_id]; if(mgr&&targetIds.has(mgr.id)) tasks.push({ r:mgr, type:'subordinate' });
+    targets.filter(t=>t.eval_type!=='EXCLUDED'&&Array.isArray(t.peer_rater_ids)&&t.peer_rater_ids.indexOf(me.id)>=0).forEach(t=>{ const rt=empById[t.employee_id]; if(rt&&rt.id!==me.id) tasks.push({ r:rt, type:'peer' }); });
+    active.filter(e=>e.manager_id===me.id&&targetIds.has(e.id)).forEach(e=>tasks.push({ r:e, type:'manager' }));
+    const appc=(ratee,type)=>compsForRating(ratee, type||'self', me, comps, cfg);
+    let tot=0,don=0; const my360=r360.data||[];
+    tasks.forEach(t=>{ const ac=appc(t.r, t.type); tot+=ac.length; const set=new Set(my360.filter(x=>x.ratee_id===t.r.id&&x.rater_type===t.type&&x.score!=null).map(x=>x.comp_id)); don+=ac.filter(c=>set.has(c.comp_id)).length; });
+    setData({ kpiCount:(kp.data||[]).length, kpiStatus: (ks&&ks.data)?ks.data.status:'NONE', total360:tot, done360:don, feedbackCount:(fb.data||[]).length, result:(rs&&rs.data)?rs.data:null });
+  })(); },[cycle&&cycle.cycle_id, me&&me.id]);
+
+  useEffect(()=>{ (async()=>{
+    if(!isAdmin||!cycle){ return; }
+    const cid=cycle.cycle_id;
+    const [tg,ks,r360,rs]=await Promise.all([
+      sb.from('eval_targets').select('employee_id,eval_type').eq('cycle_id',cid),
+      sb.from('eval_kpi_status').select('employee_id,status').eq('cycle_id',cid),
+      sb.from('eval_360').select('rater_id').eq('cycle_id',cid),
+      sb.from('eval_results').select('employee_id').eq('cycle_id',cid)
+    ]);
+    const tgs=(tg.data||[]).filter(t=>t.eval_type!=='EXCLUDED'); const N=tgs.length;
+    const stMap={}; (ks.data||[]).forEach(x=>stMap[x.employee_id]=x.status);
+    let approved=0,submitted=0,rejected=0;
+    tgs.forEach(t=>{ const st=stMap[t.employee_id]; if(st==='APPROVED')approved++; else if(st==='SUBMITTED')submitted++; else if(st==='REJECTED')rejected++; });
+    setAdminStats({ N, approved, submitted, rejected, notSubmitted:N-approved-submitted, raters:new Set((r360.data||[]).map(x=>x.rater_id)).size, results:(rs.data||[]).length, activeCount:active.length });
+  })(); },[isAdmin, cycle&&cycle.cycle_id]);
+
+  const tier = me ? tierRatio(me,'REGULAR',cfg) : { key:'-', ratio:[60,40] };
+  const KS_LABEL={ NONE:['미작성','bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300'], DRAFT:['작성중','bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300'], SUBMITTED:['승인 대기','bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300'], APPROVED:['승인 완료','bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300'], REJECTED:['반려','bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300'] };
+
+  const d=data&&!data.empty?data:null;
+  const kpiSt=d?d.kpiStatus:'NONE';
+  const steps=[
+    { no:1, title:'KPI 작성 · 승인', tab:'kpi', desc:'연초에 본인 성과목표(KPI)를 작성하고 승인 요청하세요. 본부장(없으면 대표이사)이 승인하면 확정됩니다.',
+      badge:(KS_LABEL[kpiSt]||KS_LABEL.NONE), done:kpiSt==='APPROVED', warn:kpiSt==='REJECTED' },
+    { no:2, title:'분기 면담', tab:'kpi', desc:'분기마다 팀장과 면담하고, 기록은 KPI · 면담 탭에서 확인합니다.',
+      badge:[ (d?d.feedbackCount:0)+'/4 분기', 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300'], done:(d?d.feedbackCount:0)>0, info:true },
+    { no:3, title:'360도 평가 참여', tab:'eval360', desc:'본인 · 동료 · 상사 · 부하에 대한 역량평가를 입력합니다.',
+      badge:[ d?(d.done360+'/'+d.total360+' 항목'):'0/0', (d&&d.total360>0&&d.done360>=d.total360)?'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300':'bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300'], done:!!(d&&d.total360>0&&d.done360>=d.total360) },
+    { no:4, title:'종합 결과 확인', tab:'myresult', desc:'평가가 마무리되면 역량 · 성과 · 종합점수와 등급을 확인합니다.',
+      badge:[ (d&&d.result)?'공개됨':'대기중', (d&&d.result)?'bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300':'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300'], done:!!(d&&d.result) },
+  ];
+
+  function finalCheck(){
+    const missing=[];
+    if(kpiSt!=='APPROVED' && kpiSt!=='SUBMITTED') missing.push({ label:'KPI 작성 · 승인 요청', tab:'kpi' });
+    if(d && d.total360>0 && d.done360<d.total360) missing.push({ label:'360도 평가 입력', tab:'eval360' });
+    if(missing.length){
+      alert('아직 완료하지 않은 항목이 있습니다:\n\n'+missing.map(m=>'• '+m.label).join('\n')+'\n\n[확인]을 누르면 첫 번째 미완료 화면으로 이동합니다.');
+      setTab(missing[0].tab);
+    } else {
+      alert('필수 항목(KPI 제출 · 360도 입력)을 모두 완료했습니다. 수고하셨습니다!');
+    }
+  }
+
+  const Stat=({label,val,color})=> <div className="bg-slate-50 dark:bg-slate-900 rounded-xl p-3"><div className="text-xs text-slate-400 dark:text-slate-500">{label}</div><div className={"font-bold text-lg mt-0.5 "+(color||'text-slate-800 dark:text-slate-100')}>{val}</div></div>;
+  const Box=({title,sub,color})=> <div className={"rounded-xl px-4 py-3 text-center border "+color}><div className="font-bold text-sm">{title}</div>{sub&&<div className="text-[11px] opacity-80 mt-0.5">{sub}</div>}</div>;
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl p-6 text-white">
+        <div className="text-lg font-bold">{me?me.name+'님, 환영합니다':'환영합니다'}</div>
+        <div className="text-sm opacity-90 mt-0.5">{me?(me.team+' · '+me.position):''}</div>
+        <div className="mt-4 text-sm">{cycle? <span>현재 <b>{cycle.name}</b> · 평가 방식: <b>KPI(성과) + 360도 다면(역량)</b></span> : <span className="opacity-90">진행 중인 평가주기가 없습니다.</span>}</div>
+      </div>
+
+      {pendingN>0 && <button onClick={()=>setTab('kpi')} className="w-full mb-4 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 rounded-xl px-4 py-3 text-left flex items-center justify-between hover:shadow-md transition">
+        <span className="text-sm font-semibold text-rose-700 dark:text-rose-300">🔔 내 승인을 기다리는 KPI가 {pendingN}건 있습니다</span>
+        <span className="text-xs text-rose-500">검토하러 가기 →</span>
+      </button>}
+      {isAdmin && adminStats && (
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5">
+          <h2 className="font-bold text-slate-800 dark:text-slate-100 mb-3">전사 진행률 <span className="text-xs font-normal text-slate-400 dark:text-slate-500">{cycle&&cycle.name}</span></h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+            <Stat label="KPI 승인완료" val={adminStats.approved+' / '+adminStats.N} color="text-emerald-600" />
+            <Stat label="승인 대기" val={adminStats.submitted} color="text-amber-600" />
+            <Stat label="미제출" val={adminStats.notSubmitted} color="text-rose-600" />
+            <Stat label="360 참여인원" val={adminStats.raters+' / '+adminStats.activeCount} color="text-indigo-600" />
+          </div>
+          <div className="text-xs text-slate-400 dark:text-slate-500 mt-3">반려 {adminStats.rejected}건 · 결과 산정 {adminStats.results}명</div>
+        </div>
+      )}
+
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5">
+        <h2 className="font-bold text-slate-800 dark:text-slate-100 mb-4">평가 개요</h2>
+        <div className="flex flex-col items-center gap-2">
+          <div className="flex items-stretch gap-3 flex-wrap justify-center">
+            <Box title="역량평가 (360도)" sub={"공통 "+(cfg.comp_common_max||80)+" + 직무 "+(cfg.comp_job_max||20)} color="bg-indigo-50 dark:bg-indigo-950 border-indigo-200 dark:border-indigo-900 text-indigo-700 dark:text-indigo-300" />
+            <div className="flex items-center text-2xl font-bold text-slate-300 dark:text-slate-600">+</div>
+            <Box title="성과평가 (KPI)" sub="가중치 × 점수" color="bg-emerald-50 dark:bg-emerald-950 border-emerald-200 dark:border-emerald-900 text-emerald-700 dark:text-emerald-300" />
+          </div>
+          <Icon path="M12 5v14M6 13l6 6 6-6" className="w-5 h-5 text-slate-300 dark:text-slate-600" />
+          <Box title={"종합 = 역량 : 성과 "+tier.ratio[0]+":"+tier.ratio[1]} sub={"직급별 비중 · 내 유형: "+tier.key} color="bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200" />
+          <Icon path="M12 5v14M6 13l6 6 6-6" className="w-5 h-5 text-slate-300 dark:text-slate-600" />
+          <Box title="등급 S · A · B · C · D" sub="핵심역량 게이트 반영 · 기준 인상률" color="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-100" />
+        </div>
+      </div>
+
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-bold text-slate-800 dark:text-slate-100">평가 진행 순서 <span className="text-xs font-normal text-slate-400 dark:text-slate-500">(카드를 누르면 해당 화면으로 이동)</span></h2>
+          {!data && <span className="text-xs text-slate-400">불러오는 중…</span>}
+        </div>
+        <div className="space-y-2">
+          {steps.map((st,i)=>(
+            <div key={st.no}>
+              <button onClick={()=>setTab(st.tab)} className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 text-left hover:shadow-md hover:border-indigo-300 dark:hover:border-indigo-700 transition flex items-center gap-4">
+                <div className={"w-9 h-9 shrink-0 rounded-full flex items-center justify-center font-bold text-sm "+(st.done?"bg-emerald-500 text-white":st.warn?"bg-rose-500 text-white":"bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-300")}>{st.done?'✓':st.no}</div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-semibold text-slate-800 dark:text-slate-100">{st.title}</span>
+                    <span className={"text-[11px] px-2 py-0.5 rounded-full "+st.badge[1]}>{st.badge[0]}</span>
+                    {st.info && <span className="text-[10px] text-slate-400 dark:text-slate-500">(팀장이 기록)</span>}
+                  </div>
+                  <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">{st.desc}</div>
+                </div>
+                <Icon path="M9 18l6-6-6-6" className="w-4 h-4 text-slate-300 dark:text-slate-600 shrink-0" />
+              </button>
+              {i<steps.length-1 && <div className="flex justify-center py-0.5"><Icon path="M12 5v14M6 13l6 6 6-6" className="w-4 h-4 text-slate-200 dark:text-slate-700" /></div>}
+            </div>
+          ))}
+        </div>
+        <button onClick={finalCheck} className="w-full mt-3 py-3 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold text-sm hover:opacity-90">내 평가 최종 확인</button>
+        <p className="text-xs text-slate-400 dark:text-slate-500 mt-2 text-center">필수 항목(KPI 제출 · 360도 입력)이 빠지면 알림과 함께 해당 화면으로 이동합니다.</p>
+      </div>
+
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5">
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="font-bold text-slate-800 dark:text-slate-100">평가 항목</h2>
+          <button onClick={openComp} className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline">역량 모델 자세히 →</button>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+          <div className="bg-indigo-50 dark:bg-indigo-950 rounded-xl p-4">
+            <div className="font-semibold text-indigo-700 dark:text-indigo-300">역량평가 (360도)</div>
+            <ul className="text-xs text-slate-600 dark:text-slate-300 mt-2 space-y-1">
+              <li>· 공통역량 {commonCnt}개 (전 직원 공통, {cfg.comp_common_max||80}점)</li>
+              <li>· 직무역량 (소속 직무 세트, {cfg.comp_job_max||20}점)</li>
+              <li>· 리더/비리더 택1</li>
+              <li>· 평가자: 본인 · 상사 · 동료 · 부하 (가중치 적용)</li>
+            </ul>
+          </div>
+          <div className="bg-emerald-50 dark:bg-emerald-950 rounded-xl p-4">
+            <div className="font-semibold text-emerald-700 dark:text-emerald-300">성과평가 (KPI)</div>
+            <ul className="text-xs text-slate-600 dark:text-slate-300 mt-2 space-y-1">
+              <li>· 연초 본인 작성 → 본부장/대표 승인</li>
+              <li>· 항목별 가중치(합계 100%) × 점수</li>
+              <li>· 분기 면담으로 진척 점검</li>
+              <li>· 하반기 수정 시 재승인</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {isAdmin && <div className="text-xs text-slate-400 dark:text-slate-500">관리자: 상단 <b>평가 관리</b>에서 평가주기 · 대상자 · 결과 산정을, <b>KPI · 면담</b>의 전체(HR)에서 통합 관리를 할 수 있습니다.</div>}
+    </div>
+  );
+}
+
+function CompCard({ c }){
+  const [open,setOpen]=useState(false);
+  return (
+    <div className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+      <button onClick={()=>setOpen(o=>!o)} className="w-full flex items-center gap-2 px-3 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-700/40 text-left">
+        <span className="text-sm font-medium text-slate-800 dark:text-slate-100 flex-1">{c.name} {c.is_core && <span className="text-rose-500" title="핵심역량">★</span>}</span>
+        <span className="text-xs font-bold text-indigo-600 bg-indigo-50 dark:bg-indigo-950 px-2 py-0.5 rounded">{c.weight}점</span>
+        <Icon path={open?"M18 15l-6-6-6 6":"M6 9l6 6 6-6"} className="w-4 h-4 text-slate-400 dark:text-slate-500" />
+      </button>
+      {open && <div className="px-3 pb-3 pt-1 border-t border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/50">
+        {c.description && <div className="text-xs text-slate-600 dark:text-slate-300 mb-1.5">{c.description}</div>}
+        {c.rubric && <pre className="text-[11px] text-slate-500 dark:text-slate-400 whitespace-pre-wrap font-sans leading-relaxed">{c.rubric}</pre>}
+      </div>}
+    </div>
+  );
+}
+
+function CompModelTab({ comps, cfg, grades }){
+  const [jobTrack,setJobTrack]=useState('SALES');
+  const common=comps.filter(c=>c.track==='COMMON');
+  const byCat=cat=>common.filter(c=>c.category===cat);
+  const leader=comps.filter(c=>c.track==='LEADER');
+  const follower=comps.filter(c=>c.track==='FOLLOWER');
+  const job=comps.filter(c=>c.track===jobTrack);
+  const commonSum=common.reduce((s,c)=>s+Number(c.weight||0),0);
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5">
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <h2 className="font-bold text-slate-800 dark:text-slate-100">평가 체계 개요</h2>
+          <div className="text-xs text-slate-500 dark:text-slate-400">역량평가 100 = 공통 {cfg.comp_common_max||80} + 직무 {cfg.comp_job_max||20} · 성과평가(KPI) 100 · 종합은 직급별 비중</div>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 text-center text-xs">
+          {[['리더','ratio_leader'],['파트장/시니어','ratio_partlead'],['일반','ratio_general'],['신규','ratio_new']].map(([lb,k])=>(
+            <div key={k} className="bg-slate-50 dark:bg-slate-900 rounded-lg p-3">
+              <div className="text-slate-400 dark:text-slate-500">{lb}</div>
+              <div className="font-bold text-slate-800 dark:text-slate-100 mt-0.5">역량:성과 {cfg[k]||'-'}</div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {grades.map(g=><span key={g.grade} className="text-xs bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full px-2.5 py-1 text-slate-600 dark:text-slate-300">{g.grade}: {g.min_score}~{g.max_score}점 · 인상 {g.raise_rate}%</span>)}
+        </div>
+      </div>
+
+      <div>
+        <div className="flex items-center gap-2 mb-2"><h3 className="font-bold text-slate-800 dark:text-slate-100">공통역량</h3><span className="text-xs text-slate-400 dark:text-slate-500">전 직원 · 합계 {commonSum}점 (택1 포함 80점)</span></div>
+        {CAT_ORDER.map(cat=> byCat(cat).length>0 && (
+          <div key={cat} className="mb-3">
+            <div className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">{cat}</div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">{byCat(cat).map(c=><CompCard key={c.comp_id} c={c} />)}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <h3 className="font-bold text-slate-800 dark:text-slate-100 mb-2">리더 택1 <span className="text-xs text-slate-400 dark:text-slate-500 font-normal">(리더급, 10점)</span></h3>
+          <div className="space-y-2">{leader.map(c=><CompCard key={c.comp_id} c={c} />)}</div>
+        </div>
+        <div>
+          <h3 className="font-bold text-slate-800 dark:text-slate-100 mb-2">비리더 택1 <span className="text-xs text-slate-400 dark:text-slate-500 font-normal">(비리더급, 10점)</span></h3>
+          <div className="space-y-2">{follower.map(c=><CompCard key={c.comp_id} c={c} />)}</div>
+        </div>
+      </div>
+
+      <div>
+        <div className="flex items-center gap-2 mb-2 flex-wrap">
+          <h3 className="font-bold text-slate-800 dark:text-slate-100">직무역량 <span className="text-xs text-slate-400 dark:text-slate-500 font-normal">(소속 직무 세트, 20점)</span></h3>
+          <div className="flex flex-wrap gap-1">
+            {JOB_TRACKS.map(t=><button key={t} onClick={()=>setJobTrack(t)} className={"text-xs px-2.5 py-1 rounded-full border "+(jobTrack===t?"bg-slate-900 text-white border-slate-900":"bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/40")}>{TRACK_LABEL[t]}</button>)}
+          </div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">{job.map(c=><CompCard key={c.comp_id} c={c} />)}</div>
+      </div>
+    </div>
+  );
+}
+
+var SETTING_POSITIONS=['대표이사','본부장','팀장','파트장','매니저','연구원'];
+function SettingsSection({ cfg, reload, setBusy, flash, setErr }){
+  const g=(k,d)=>cfg[k]!=null?cfg[k]:d;
+  const POSDEF={대표이사:'40:60',본부장:'40:60',팀장:'40:60',파트장:'50:50',매니저:'60:40',연구원:'60:40'};
+  const [f,setF]=useState(()=>{
+    const o={
+      rater_weight_self:g('rater_weight_self','10'), rater_weight_manager:g('rater_weight_manager','50'),
+      rater_weight_peer:g('rater_weight_peer','30'), rater_weight_subordinate:g('rater_weight_subordinate','10'),
+      comp_common_max:g('comp_common_max','80'), comp_job_max:g('comp_job_max','20'),
+      core_gate_enabled:g('core_gate_enabled','true'), core_gate_min:g('core_gate_min','65'),
+      partlead_assign:g('partlead_assign','false'), leadership_roles:g('leadership_roles','팀장,본부장,대표이사,파트장'),
+      adjust_band_pct:g('adjust_band_pct','5'), salary_h1_weight:g('salary_h1_weight','50'), salary_h2_weight:g('salary_h2_weight','50'),
+      ratio_simple:g('ratio_simple', g('ratio_new','100:0')),
+      newhire_defer_months:g('newhire_defer_months','3'), newhire_ramp_months:g('newhire_ramp_months','6'), ratio_newhire:g('ratio_newhire','100:0'),
+      anon_min_type:g('anon_min_type','3'), anon_min_other:g('anon_min_other','2')
+    };
+    const oldmap={대표이사:g('ratio_leader','40:60'),본부장:g('ratio_leader','40:60'),팀장:g('ratio_leader','40:60'),파트장:g('ratio_partlead','50:50'),매니저:g('ratio_general','60:40'),연구원:g('ratio_general','60:40')};
+    SETTING_POSITIONS.forEach(P=>{ const raw=g('ratio_pos_'+P, oldmap[P]||POSDEF[P]); const pr=String(raw).split(':'); o['rc_'+P]=(pr[0]!=null&&pr[0]!=='')?pr[0]:'60'; o['rk_'+P]=(pr[1]!=null&&pr[1]!=='')?pr[1]:'40'; });
+    return o;
+  });
+  const set=(k,v)=>setF(s=>Object.assign({},s,{[k]:v}));
+  const rwSum=['rater_weight_self','rater_weight_manager','rater_weight_peer','rater_weight_subordinate'].reduce((a,k)=>a+(Number(f[k])||0),0);
+  async function save(){
+    setBusy(true);
+    const rows=[];
+    Object.keys(f).forEach(k=>{ if(k.indexOf('rc_')===0||k.indexOf('rk_')===0) return; rows.push({key:k,value:String(f[k])}); });
+    SETTING_POSITIONS.forEach(P=>{ rows.push({key:'ratio_pos_'+P, value:(f['rc_'+P]||'0')+':'+(f['rk_'+P]||'0')}); });
+    const res=await sb.from('eval_config').upsert(rows,{onConflict:'key'});
+    setBusy(false);
+    if(res.error){ setErr(res.error.message); return; }
+    flash('평가 설정이 저장되었습니다'); reload();
+  }
+  const numF=(label,k)=><Field label={label}><input type="number" value={f[k]} onChange={e=>set(k,e.target.value)} className="inp" /></Field>;
+  const card="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5";
+  return (
+    <div className="space-y-4 max-w-2xl">
+      <div className={card}>
+        <div className="font-bold text-slate-800 dark:text-slate-100">평가자 유형 비중 (역량 360 가중치)</div>
+        <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">역량 점수 산정 시 평가자 유형별 가중치. 합계 <b className={rwSum===100?"text-emerald-600":"text-rose-600"}>{rwSum}%</b> (100 권장)</div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-3">{numF('본인','rater_weight_self')}{numF('상사','rater_weight_manager')}{numF('동료','rater_weight_peer')}{numF('부하','rater_weight_subordinate')}</div>
+      </div>
+      <div className={card}>
+        <div className="font-bold text-slate-800 dark:text-slate-100">직급별 역량 : 성과(KPI) 비중</div>
+        <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">직급마다 종합점수의 역량 : 성과 반영 비중을 설정합니다. (합계 100 권장)</div>
+        <div className="mt-3 space-y-2">
+          <div className="grid grid-cols-12 gap-2 text-[11px] text-slate-400 dark:text-slate-500 px-1"><div className="col-span-4">직급</div><div className="col-span-3 text-center">역량 비중(%)</div><div className="col-span-3 text-center">성과 비중(%)</div><div className="col-span-2 text-center">합계</div></div>
+          {SETTING_POSITIONS.map(P=>{ const sum=(Number(f['rc_'+P])||0)+(Number(f['rk_'+P])||0);
+            return <div key={P} className="grid grid-cols-12 gap-2 items-center">
+              <div className="col-span-4 text-sm font-medium text-slate-700 dark:text-slate-200">{P}</div>
+              <div className="col-span-3"><input type="number" value={f['rc_'+P]} onChange={e=>set('rc_'+P,e.target.value)} className="inp text-center" /></div>
+              <div className="col-span-3"><input type="number" value={f['rk_'+P]} onChange={e=>set('rk_'+P,e.target.value)} className="inp text-center" /></div>
+              <div className={"col-span-2 text-center text-sm font-bold "+(sum===100?'text-emerald-600':'text-amber-600')}>{sum}</div>
+            </div>; })}
+        </div>
+        <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700"><Field label="간이평가(신규·특례) 역량:성과 — 안 쓰면 무시"><input value={f.ratio_simple} onChange={e=>set('ratio_simple',e.target.value)} placeholder="100:0" className="inp !w-40" /></Field></div>
+      </div>
+      <div className={card}>
+        <div className="font-bold text-slate-800 dark:text-slate-100">역량 배점 · 핵심역량 게이트</div>
+        <div className="grid grid-cols-2 gap-3 mt-3">
+          {numF('공통역량 배점','comp_common_max')}{numF('직무역량 배점','comp_job_max')}{numF('게이트 기준점(미만 시 하향)','core_gate_min')}
+          <Field label="핵심역량 게이트"><select value={f.core_gate_enabled} onChange={e=>set('core_gate_enabled',e.target.value)} className="inp"><option value="true">사용 (미달 시 S/A→B)</option><option value="false">사용 안 함</option></select></Field>
+        </div>
+      </div>
+      <div className={card}>
+        <div className="font-bold text-slate-800 dark:text-slate-100">신규입사 규칙 (재직기간 기반)</div>
+        <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">입사일(e-HR) 기준 자동 적용 — 성과(KPI) 미성숙 보정.</div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-3">
+          {numF('평가 유예 기준(개월 미만)','newhire_defer_months')}
+          {numF('역량위주 상한(개월 미만)','newhire_ramp_months')}
+          <Field label="성과 미성숙 구간 역량:성과"><input value={f.ratio_newhire} onChange={e=>set('ratio_newhire',e.target.value)} placeholder="100:0" className="inp" /></Field>
+        </div>
+        <div className="text-xs text-slate-500 dark:text-slate-400 mt-2">예) 3개월 미만=유예(다음 반기 포함), 3~6개월=역량:성과 100:0, 6개월 이상=직급별 비중.</div>
+      </div>
+      <div className={card}>
+        <div className="font-bold text-slate-800 dark:text-slate-100">결과 조정 · 신연봉</div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-3">{numF('관리자 조정 허용폭(%)','adjust_band_pct')}{numF('신연봉 상반기 비중(%)','salary_h1_weight')}{numF('신연봉 하반기 비중(%)','salary_h2_weight')}</div>
+        <div className="text-xs text-slate-500 dark:text-slate-400 mt-2">결과 산정에서 역량·종합·인상률·신연봉을 이 폭(±%) 내에서 수동 조정. 신연봉은 하반기 저장 시 상·하반기 종합을 이 비중으로 합산해 산출.</div>
+      </div>
+      <div className={card}>
+        <div className="font-bold text-slate-800 dark:text-slate-100">기타</div>
+        <div className="grid grid-cols-1 gap-3 mt-3">
+          <Field label="리더 직책 (쉼표 구분 — 리더십 평가 대상 판정)"><input value={f.leadership_roles} onChange={e=>set('leadership_roles',e.target.value)} className="inp" /></Field>
+          <Field label="파트장 360 평가자 지정 허용"><select value={f.partlead_assign} onChange={e=>set('partlead_assign',e.target.value)} className="inp"><option value="false">사용 안 함</option><option value="true">사용</option></select></Field>{numF('360 익명보호 — 유형당 최소 인원','anon_min_type')}{numF('360 익명보호 — 타인 최소 인원','anon_min_other')}
+        </div>
+      </div>
+      <button onClick={save} className="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">설정 저장</button>
+    </div>
+  );
+}
+
+function ManageTab({ cycles, emps, comps, cfg, grades, reload, setBusy, flash, setErr, email }){
+  const [sub,setSub]=useState('status');
+  const [showNew,setShowNew]=useState(false);
+  const [editCycle,setEditCycle]=useState(null);
+  const pill=on=>"px-4 py-2 text-sm rounded-lg border transition "+(on?"bg-indigo-600 border-indigo-600 text-white font-bold":"bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/40");
+  return (
+    <div>
+      <div className="flex gap-2 mb-4">
+        <button onClick={()=>setSub('status')} className={pill(sub==='status')}>진행 현황</button>
+        <button onClick={()=>setSub('cycles')} className={pill(sub==='cycles')}>평가주기</button>
+        <button onClick={()=>setSub('targets')} className={pill(sub==='targets')}>대상자 지정</button>
+        <button onClick={()=>setSub('results')} className={pill(sub==='results')}>결과 산정</button>
+        {false /* 이메일 발송 보류: 도메인 DNS 인증 또는 공용계정 확정 후 true 로 바꿔 재활성화 */ && <button onClick={()=>setSub('email')} className={pill(sub==='email')}>이메일 안내</button>}
+        <button onClick={()=>setSub('settings')} className={pill(sub==='settings')}>평가 설정</button>
+      </div>
+      {sub==='status' && <StatusSection cycles={cycles} emps={emps} setErr={setErr} />}
+      {sub==='cycles' && <div>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-semibold text-slate-800 dark:text-slate-100">평가주기 <span className="text-slate-400 dark:text-slate-500 font-normal">({cycles.length})</span></h2>
+          <button onClick={()=>setShowNew(true)} className="text-sm px-3 py-1.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">+ 평가주기 생성</button>
+        </div>
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden">
+          <table className="w-full text-sm">
+            <thead className="bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 text-xs"><tr>
+              <th className="text-left px-4 py-2.5">주기 ID</th><th className="text-left px-4 py-2.5">이름</th><th className="text-left px-4 py-2.5">기간</th><th className="text-left px-4 py-2.5">상태</th><th className="px-4 py-2.5"></th>
+            </tr></thead>
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              {cycles.length===0 && <tr><td colSpan="5" className="px-4 py-8 text-center text-slate-300 dark:text-slate-600">평가주기가 없습니다. 생성해 주세요.</td></tr>}
+              {cycles.map(c=>{ const st=CYCLE_STATUS[c.status]||['?','bg-slate-100 dark:bg-slate-700'];
+                return <tr key={c.cycle_id} className="hover:bg-slate-50 dark:hover:bg-slate-700/40">
+                  <td className="px-4 py-2.5 font-mono text-xs text-slate-600 dark:text-slate-300">{c.cycle_id}</td>
+                  <td className="px-4 py-2.5 font-medium text-slate-800 dark:text-slate-100">{c.name}</td>
+                  <td className="px-4 py-2.5 text-slate-500 dark:text-slate-400">{fmtDate(c.start_date)} ~ {fmtDate(c.end_date)}</td>
+                  <td className="px-4 py-2.5"><span className={"text-xs px-2 py-0.5 rounded-full "+st[1]}>{st[0]}</span></td>
+                  <td className="px-4 py-2.5 text-right"><button onClick={()=>setEditCycle(c)} className="text-xs text-indigo-600 hover:text-indigo-800">수정</button></td>
+                </tr>;
+              })}
+            </tbody>
+          </table>
+        </div>
+        {showNew && <CycleModal reload={reload} setBusy={setBusy} flash={flash} setErr={setErr} email={email} onClose={()=>setShowNew(false)} />}
+        {editCycle && <CycleModal cycle={editCycle} reload={reload} setBusy={setBusy} flash={flash} setErr={setErr} email={email} onClose={()=>setEditCycle(null)} />}
+      </div>}
+      {sub==='targets' && <TargetsSection cycles={cycles} emps={emps} cfg={cfg} setBusy={setBusy} flash={flash} setErr={setErr} />}
+      {sub==='results' && <ResultsSection cycles={cycles} emps={emps} comps={comps} cfg={cfg} grades={grades} setBusy={setBusy} flash={flash} setErr={setErr} />}
+      {sub==='email' && <EmailPanel cycles={cycles} emps={emps} cfg={cfg} setBusy={setBusy} flash={flash} setErr={setErr} />}
+      {sub==='settings' && <SettingsSection cfg={cfg} reload={reload} setBusy={setBusy} flash={flash} setErr={setErr} />}
+    </div>
+  );
+}
+
+const TPL_ORDER=[['prepare','평가 준비'],['start','평가 시작'],['remind','평가 독려'],['closing','종료 임박'],['closed','평가 종료']];
+function EmailPanel({ cycles, emps, cfg, setBusy, flash, setErr }){
+  const inProg=cycles.find(c=>c.status==='IN_PROGRESS');
+  const [cid,setCid]=useState(inProg?inProg.cycle_id:(cycles[0]?cycles[0].cycle_id:''));
+  const [templates,setTemplates]=useState([]);
+  const [selKey,setSelKey]=useState('prepare');
+  const [scope,setScope]=useState('all');
+  const [statuses,setStatuses]=useState([]);
+  const [targets,setTargets]=useState([]);
+  const [edit,setEdit]=useState(null);
+  const [excl,setExcl]=useState(()=>new Set());
+  const [q,setQ]=useState('');
+  const cycle=cycles.find(c=>c.cycle_id===cid);
+  const active=useMemo(()=>emps.filter(e=>e.status!=='퇴사'&&e.email),[emps]);
+
+  async function loadT(){ const { data, error }=await sb.from('eval_email_templates').select('*'); if(error){ setErr(error.message); return; } setTemplates(data||[]); }
+  useEffect(()=>{ loadT(); },[]);
+  useEffect(()=>{ setExcl(new Set()); },[scope,cid]);
+  useEffect(()=>{ (async()=>{ if(!cid){ setStatuses([]); setTargets([]); return; } const [ks,tg]=await Promise.all([ sb.from('eval_kpi_status').select('employee_id,status').eq('cycle_id',cid), sb.from('eval_targets').select('employee_id,eval_type').eq('cycle_id',cid) ]); setStatuses(ks.data||[]); setTargets(tg.data||[]); })(); },[cid]);
+
+  const tpl=templates.find(t=>t.key===selKey)||{ key:selKey, subject:'', body:'' };
+  const stMap=Object.fromEntries(statuses.map(x=>[x.employee_id,x.status]));
+  const targetIds=new Set((targets||[]).filter(t=>t.eval_type!=='EXCLUDED').map(t=>t.employee_id));
+  const rcpts = scope==='kpi_missing'
+    ? active.filter(e=>targetIds.has(e.id) && stMap[e.id]!=='SUBMITTED' && stMap[e.id]!=='APPROVED')
+    : active;
+  const toggle=id=>setExcl(sset=>{ const n=new Set(sset); n.has(id)?n.delete(id):n.add(id); return n; });
+  const rcptsFinal=rcpts.filter(e=>!excl.has(e.id));
+  const rcptsView = q? rcpts.filter(e=>(e.name||'').indexOf(q)>=0||(e.email||'').indexOf(q)>=0) : rcpts;
+  const allSelected = rcpts.length>0 && rcpts.every(e=>!excl.has(e.id));
+  function clickAll(){ if(scope!=='all'){ setScope('all'); setExcl(new Set()); return; } setExcl(allSelected? new Set(rcpts.map(e=>e.id)) : new Set()); }
+  function selVisible(on){ setExcl(sset=>{ const n=new Set(sset); rcptsView.forEach(e=>{ on?n.delete(e.id):n.add(e.id); }); return n; }); }
+  function render(txt, emp){ const dl=cycle?(cycle.kpi_input_end||cycle.end_date||''):''; let x=String(txt||''); x=x.split('{name}').join(emp?emp.name:''); x=x.split('{cycle}').join(cycle?cycle.name:''); x=x.split('{deadline}').join(dl?String(dl).slice(0,10):''); return x; }
+  const sample=active[0]||{ name:'홍길동' };
+
+  async function send(){
+    if(!tpl.subject){ alert('먼저 템플릿을 저장하세요'); return; }
+    if(!rcptsFinal.length){ alert('수신자를 선택하세요'); return; }
+    if(!confirm(rcptsFinal.length+'명에게 발송할까요?\n제목: '+render(tpl.subject,sample))) return;
+    const emails=rcptsFinal.map(e=>({ to:e.email, subject:render(tpl.subject,e), html:render(tpl.body,e).split('\n').join('<br>') }));
+    setBusy(true);
+    const { data, error }=await sb.functions.invoke('send-eval-email', { body:{ emails } });
+    setBusy(false);
+    if(error){ let detail=error.message; try{ if(error.context&&error.context.json){ const b=await error.context.json(); if(b&&b.error) detail=b.error; } }catch(_){} setErr('발송 실패: '+detail+' (Supabase → Edge Functions → send-eval-email → Logs에서 상세 확인)'); return; }
+    if(data&&data.error){ setErr('발송 오류: '+data.error); return; }
+    const okN=(data&&data.sent!=null)?data.sent:rcptsFinal.length; const fl=(data&&data.failed)||[];
+    if(fl.length){ setErr('발송 '+okN+'건 성공 / '+fl.length+'건 실패: '+fl.join(', ')+' — (테스트 모드는 Resend 가입 이메일로만 발송됩니다. 도메인 인증 필요)'); }
+    else flash(okN+'건 발송 완료');
+  }
+
+  return (
+    <div>
+      <div className="flex items-center gap-2 mb-3 flex-wrap">
+        <select value={cid} onChange={e=>setCid(e.target.value)} className="inp !w-52">
+          <option value="">평가주기 선택</option>
+          {cycles.map(c=><option key={c.cycle_id} value={c.cycle_id}>{c.name}</option>)}
+        </select>
+      </div>
+      <div className="flex gap-2 mb-4 flex-wrap">
+        {TPL_ORDER.map(o=>{ const on=selKey===o[0];
+          return <button key={o[0]} onClick={()=>setSelKey(o[0])} className={"px-3 py-1.5 text-sm rounded-lg border "+(on?"bg-indigo-600 border-indigo-600 text-white font-bold":"bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/40")}>{o[1]}</button>;
+        })}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="font-semibold text-slate-800 dark:text-slate-100">템플릿 미리보기</h3>
+            <button onClick={()=>setEdit(tpl)} className="text-xs px-3 py-1.5 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-lg">템플릿 수정</button>
+          </div>
+          <div className="text-xs text-slate-400 dark:text-slate-500 mb-1">제목</div>
+          <div className="text-sm font-medium text-slate-800 dark:text-slate-100 mb-3">{render(tpl.subject,sample)||'(비어있음 — 수정하세요)'}</div>
+          <div className="text-xs text-slate-400 dark:text-slate-500 mb-1">본문</div>
+          <div className="text-sm text-slate-600 dark:text-slate-300 whitespace-pre-wrap bg-slate-50 dark:bg-slate-900 rounded-lg p-3 max-h-64 overflow-y-auto">{render(tpl.body,sample)||'(비어있음)'}</div>
+          <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-2">변수: {'{name}'} 이름 · {'{cycle}'} 평가주기 · {'{deadline}'} 마감일 (수신자별로 자동 치환)</div>
+        </div>
+
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4">
+          <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-2">수신자</h3>
+          <div className="flex gap-2 mb-3">
+            <button onClick={clickAll} className={"text-xs px-3 py-1.5 rounded-lg border "+(scope==='all'?"bg-indigo-600 border-indigo-600 text-white":"bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300")}>전체 재직자{scope==='all'?(allSelected?' ✓':' ○'):''}</button>
+            <button onClick={()=>setScope('kpi_missing')} className={"text-xs px-3 py-1.5 rounded-lg border "+(scope==='kpi_missing'?"bg-indigo-600 border-indigo-600 text-white":"bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300")}>KPI 미제출자</button>
+          </div>
+          <div className="flex items-center justify-between mb-2">
+            <div className="text-sm text-slate-600 dark:text-slate-300">선택 <b className="text-indigo-600 dark:text-indigo-400">{rcptsFinal.length}</b> / {rcpts.length}명</div>
+            <div className="flex gap-1"><button onClick={()=>selVisible(true)} className="text-[11px] px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">전체선택</button><button onClick={()=>selVisible(false)} className="text-[11px] px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300">전체해제</button></div>
+          </div>
+          <input value={q} onChange={e=>setQ(e.target.value)} placeholder="🔍 이름/이메일 검색" className="w-full mb-2 text-sm border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 outline-none focus:border-indigo-400" />
+          <div className="max-h-48 overflow-y-auto border border-slate-100 dark:border-slate-700 rounded-lg divide-y divide-slate-50 dark:divide-slate-800">
+            {rcptsView.map(e=>{ const on=!excl.has(e.id); return <label key={e.id} className="flex items-center gap-2 px-3 py-1.5 text-xs cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/40"><input type="checkbox" checked={on} onChange={()=>toggle(e.id)} /><span className="text-slate-700 dark:text-slate-200">{e.name}</span><span className="text-slate-400 dark:text-slate-500 ml-auto">{e.email}</span></label>; })}
+            {rcptsView.length===0 && <div className="px-3 py-4 text-xs text-slate-400 dark:text-slate-500 text-center">{rcpts.length===0?'대상이 없습니다.':'검색 결과가 없습니다.'}</div>}
+          </div>
+          <button onClick={send} disabled={!cid||!rcptsFinal.length} className="w-full mt-4 py-2.5 rounded-lg bg-emerald-600 text-white font-bold text-sm hover:bg-emerald-700 disabled:opacity-40">선택한 {rcptsFinal.length}명에게 발송</button>
+          <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2">실제 발송은 Resend 발송기능(Edge Function)이 배포된 후 작동합니다.</p>
+        </div>
+      </div>
+      {edit && <EmailTemplateModal tpl={edit} reload={loadT} setBusy={setBusy} flash={flash} setErr={setErr} onClose={()=>setEdit(null)} />}
+    </div>
+  );
+}
+
+function EmailTemplateModal({ tpl, reload, setBusy, flash, setErr, onClose }){
+  const nameMap={ prepare:'평가 준비 안내', start:'평가 시작 안내', remind:'평가 독려', closing:'종료 임박 안내', closed:'평가 종료 안내' };
+  const [subject,setSubject]=useState(tpl.subject||'');
+  const [body,setBody]=useState(tpl.body||'');
+  async function save(){
+    setBusy(true);
+    const res=await sb.from('eval_email_templates').upsert({ key:tpl.key, subject, body },{ onConflict:'key' });
+    setBusy(false);
+    if(res.error){ setErr(res.error.message); return; }
+    flash('템플릿이 저장되었습니다'); await reload(); onClose();
+  }
+  return (
+    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
+      <div className="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-lg p-5 max-h-[92vh] overflow-y-auto">
+        <h3 className="font-bold text-slate-800 dark:text-slate-100 mb-4">템플릿 수정 · {nameMap[tpl.key]||tpl.key}</h3>
+        <div className="space-y-3">
+          <Field label="제목"><input value={subject} onChange={e=>setSubject(e.target.value)} className="inp" /></Field>
+          <Field label="본문"><textarea value={body} onChange={e=>setBody(e.target.value)} rows="10" className="inp" /></Field>
+          <div className="text-[11px] text-slate-400 dark:text-slate-500">사용 가능 변수: {'{name}'} {'{cycle}'} {'{deadline}'}</div>
+        </div>
+        <div className="flex justify-end gap-2 mt-5">
+          <button onClick={onClose} className="px-4 py-2 text-sm text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">취소</button>
+          <button onClick={save} className="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">저장</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TargetsSection({ cycles, emps, cfg, setBusy, flash, setErr }){
+  const [cid,setCid]=useState(cycles[0]?cycles[0].cycle_id:'');
+  const [targets,setTargets]=useState([]);
+  const [loading,setLoading]=useState(false);
+  const [peerT,setPeerT]=useState(null);
+  const empById=useMemo(()=>Object.fromEntries(emps.map(e=>[e.id,e])),[emps]);
+  const active=useMemo(()=>emps.filter(e=>e.status!=='퇴사'),[emps]);
+
+  async function load(){
+    if(!cid){ setTargets([]); return; }
+    setLoading(true);
+    const { data, error }=await sb.from('eval_targets').select('*').eq('cycle_id',cid);
+    setLoading(false);
+    if(error){ setErr(error.message); return; }
+    setTargets(data||[]);
+  }
+  useEffect(()=>{ load(); },[cid]);
+
+  async function generate(){
+    if(!cid){ alert('평가주기를 선택하세요'); return; }
+    const have=new Set(targets.map(t=>t.employee_id));
+    const add=active.filter(e=>!have.has(e.id)).map(e=>({ cycle_id:cid, employee_id:e.id, manager_id:e.manager_id||null, eval_type:'REGULAR' }));
+    if(!add.length){ alert('추가할 신규 대상자가 없습니다(이미 모두 생성됨).'); return; }
+    setBusy(true);
+    const res=await sb.from('eval_targets').upsert(add,{ onConflict:'cycle_id,employee_id' });
+    setBusy(false);
+    if(res.error){ setErr(res.error.message); return; }
+    flash(add.length+'명 대상자 생성'); load();
+  }
+  async function setType(t,val){ setBusy(true); const res=await sb.from('eval_targets').update({ eval_type:val }).eq('id',t.id); setBusy(false); if(res.error){ setErr(res.error.message); return; } load(); }
+  async function remove(t){ if(!confirm('이 대상자를 제외(삭제)할까요?')) return; setBusy(true); const res=await sb.from('eval_targets').delete().eq('id',t.id); setBusy(false); if(res.error){ setErr(res.error.message); return; } load(); }
+
+  function raters(ratee){
+    const mgr=ratee.manager_id?1:0;
+    const peers=active.filter(e=>e.group_id===ratee.group_id && e.id!==ratee.id).length;
+    const subs=active.filter(e=>e.manager_id===ratee.id).length;
+    return { mgr, peers, subs, total:1+mgr+peers+subs };
+  }
+  const rows=targets.map(t=>({ t, e:empById[t.employee_id] })).filter(r=>r.e).sort((a,b)=>(a.e.team||'').localeCompare(b.e.team||'')||(a.e.name||'').localeCompare(b.e.name||''));
+
+  return (
+    <div>
+      <div className="flex items-center gap-2 mb-3 flex-wrap">
+        <select value={cid} onChange={e=>setCid(e.target.value)} className="inp !w-56">
+          <option value="">평가주기 선택</option>
+          {cycles.map(c=><option key={c.cycle_id} value={c.cycle_id}>{c.name}</option>)}
+        </select>
+        <button onClick={generate} disabled={!cid} className="text-sm px-3 py-1.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-40">재직자 대상자 자동생성</button>
+        {cid && <span className="text-xs text-slate-400 dark:text-slate-500">대상 {rows.length}명</span>}
+      </div>
+      {!cid ? <div className="text-slate-400 dark:text-slate-500 text-sm py-6">평가주기를 선택하세요.</div> :
+       loading ? <div className="text-slate-400 dark:text-slate-500 text-sm py-6">불러오는 중…</div> :
+       rows.length===0 ? <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 text-center text-slate-400 dark:text-slate-500">대상자가 없습니다. "재직자 대상자 자동생성"을 눌러 추가하세요.</div> :
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden">
+        <table className="w-full text-sm">
+          <thead className="bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 text-xs"><tr>
+            <th className="text-left px-4 py-2.5">이름</th><th className="text-left px-4 py-2.5">부서</th><th className="text-left px-4 py-2.5">직속상사</th><th className="text-left px-4 py-2.5">평가자 구성</th><th className="px-4 py-2.5"></th><th className="text-left px-4 py-2.5">평가유형</th><th className="px-4 py-2.5"></th>
+          </tr></thead>
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+            {rows.map(({t,e})=>{ const mgr=empById[e.manager_id]; const subs=active.filter(x=>x.manager_id===e.id).length; const peers=(t.peer_rater_ids||[]).length;
+              return <tr key={t.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/40">
+                <td className="px-4 py-2.5 font-medium text-slate-800 dark:text-slate-100">{e.name} <span className="text-xs text-slate-400 dark:text-slate-500">{e.position}</span></td>
+                <td className="px-4 py-2.5 text-slate-600 dark:text-slate-300">{e.team}</td>
+                <td className="px-4 py-2.5 text-slate-500 dark:text-slate-400">{mgr?mgr.name:'-'}</td>
+                <td className="px-4 py-2.5 text-slate-500 dark:text-slate-400 text-xs">본인 · 상사 {mgr?1:0} · 부하 {subs} · <span className={peers?"text-indigo-600 font-semibold":"text-amber-600"}>동료 {peers}</span></td>
+                <td className="px-4 py-2.5"><button onClick={()=>setPeerT(t)} className="text-xs px-2 py-1 rounded border border-indigo-200 text-indigo-600 hover:bg-indigo-50 whitespace-nowrap">동료 지정</button></td>
+                <td className="px-4 py-2.5">
+                  <select value={t.eval_type} onChange={ev=>setType(t,ev.target.value)} className="text-xs border border-slate-200 dark:border-slate-700 rounded px-2 py-1 outline-none">
+                    <option value="REGULAR">정규</option><option value="SIMPLE">간이</option><option value="EXCLUDED">제외</option>
+                  </select>
+                </td>
+                <td className="px-4 py-2.5 text-right"><button onClick={()=>remove(t)} className="text-xs text-red-500 hover:text-red-700">삭제</button></td>
+              </tr>;
+            })}
+          </tbody>
+        </table>
+      </div>}
+      <p className="text-xs text-slate-400 dark:text-slate-500 mt-3">본인 · 직속상사 · 부하(직속 하급자)는 조직도 기준 자동입니다. <b>동료 평가자</b>는 업무 유관성을 고려해 <b>[동료 지정]</b>으로 직접 선택·수정하세요. 실제 점수 입력은 <b>360도 평가</b> 화면에서 이뤄집니다.</p>
+      {peerT && <PeerModal target={peerT} ratee={empById[peerT.employee_id]} emps={emps} setBusy={setBusy} setErr={setErr} onSave={()=>{ setPeerT(null); load(); }} onClose={()=>setPeerT(null)} />}
+    </div>
+  );
+}
+
+function PeerModal({ target, ratee, emps, setBusy, setErr, onSave, onClose }){
+  const active=emps.filter(e=>e.status!=='퇴사' && e.id!==(ratee&&ratee.id));
+  const [sel,setSel]=useState(()=>new Set((target.peer_rater_ids)||[]));
+  const [q,setQ]=useState('');
+  const toggle=id=>setSel(s=>{ const n=new Set(s); n.has(id)?n.delete(id):n.add(id); return n; });
+  const list=active.filter(e=>!q||(e.name||'').indexOf(q)>=0||(e.team||'').indexOf(q)>=0).sort((a,b)=>(a.team||'').localeCompare(b.team||'')||(a.name||'').localeCompare(b.name||''));
+  async function save(){ setBusy(true); const res=await sb.from('eval_targets').update({ peer_rater_ids:Array.from(sel) }).eq('id',target.id); setBusy(false); if(res.error){ setErr(res.error.message); return; } onSave(); }
+  return (
+    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-md p-5 max-h-[90vh] flex flex-col" onClick={ev=>ev.stopPropagation()}>
+        <h3 className="font-bold text-slate-800 dark:text-slate-100">동료 평가자 지정</h3>
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1"><b>{ratee&&ratee.name}</b> 님을 평가할 <b>업무 유관 동료</b>를 선택하세요. (선택 {sel.size}명)</p>
+        <input value={q} onChange={e=>setQ(e.target.value)} placeholder="이름/팀 검색" className="inp mt-3" />
+        <div className="flex-1 overflow-y-auto mt-2 border border-slate-100 dark:border-slate-700 rounded-lg divide-y divide-slate-50 dark:divide-slate-800 min-h-[120px]">
+          {list.map(e=>(
+            <label key={e.id} className="flex items-center gap-2 px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-700/40 cursor-pointer text-sm">
+              <input type="checkbox" checked={sel.has(e.id)} onChange={()=>toggle(e.id)} />
+              <span className="font-medium text-slate-800 dark:text-slate-100">{e.name}</span>
+              <span className="text-xs text-slate-400 dark:text-slate-500 ml-auto">{e.team} · {e.position}</span>
+            </label>
+          ))}
+        </div>
+        <div className="flex justify-end gap-2 mt-4">
+          <button onClick={onClose} className="px-4 py-2 text-sm text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">취소</button>
+          <button onClick={save} className="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">저장</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CycleModal({ cycle, reload, setBusy, flash, setErr, email, onClose }){
+  const isNew=!cycle;
+  const y=new Date().getFullYear();
+  const [f,setF]=useState(cycle ? { cycle_id:cycle.cycle_id, name:cycle.name||'', period:cycle.period||'', start_date:cycle.start_date||'', end_date:cycle.end_date||'', status:cycle.status||'PREPARING', description:cycle.description||'', kpi_input_open: cycle.kpi_input_open!==false, kpi_input_start: cycle.kpi_input_start||'', kpi_input_end: cycle.kpi_input_end||'' } : { cycle_id:y+'H2', name:y+'년 하반기 평가', period:y+'H2', start_date:'', end_date:'', status:'PREPARING', description:'', kpi_input_open:true, kpi_input_start:'', kpi_input_end:'' });
+  const set=(k,v)=>setF(s=>({...s,[k]:v}));
+  async function save(){
+    if(!f.cycle_id.trim()||!f.name.trim()){ alert('주기 ID와 이름은 필수입니다'); return; }
+    setBusy(true);
+    const payload={ name:f.name, period:f.period, start_date:f.start_date||null, end_date:f.end_date||null, status:f.status, description:f.description, kpi_input_open:f.kpi_input_open, kpi_input_start:f.kpi_input_start||null, kpi_input_end:f.kpi_input_end||null };
+    let res;
+    if(isNew){ res=await sb.from('eval_cycles').insert({ cycle_id:f.cycle_id, ...payload, created_by:email }); }
+    else { res=await sb.from('eval_cycles').update(payload).eq('cycle_id',cycle.cycle_id); }
+    setBusy(false);
+    if(res.error){ setErr(res.error.message); return; }
+    flash(isNew?'평가주기가 생성되었습니다':'평가주기가 수정되었습니다'); await reload(); onClose();
+  }
+  async function del(){
+    if(!confirm('이 평가주기를 삭제하면 연결된 대상자·KPI·360도·결과가 모두 함께 삭제됩니다. 계속할까요?')) return;
+    setBusy(true); const res=await sb.from('eval_cycles').delete().eq('cycle_id',cycle.cycle_id); setBusy(false);
+    if(res.error){ setErr(res.error.message); return; }
+    flash('평가주기가 삭제되었습니다'); await reload(); onClose();
+  }
+  return (
+    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-md p-5" onClick={ev=>ev.stopPropagation()}>
+        <h3 className="font-bold text-slate-800 dark:text-slate-100 mb-4">{isNew?'평가주기 생성':'평가주기 수정'}</h3>
+        <div className="space-y-3">
+          <Field label="주기 ID (고유, 수정 불가)"><input value={f.cycle_id} disabled={!isNew} onChange={e=>set('cycle_id',e.target.value)} className={"inp "+(!isNew?'bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500':'')} placeholder="예: 2026H2" /></Field>
+          <Field label="이름"><input value={f.name} onChange={e=>set('name',e.target.value)} className="inp" /></Field>
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="시작일"><input type="date" value={f.start_date?String(f.start_date).slice(0,10):''} onChange={e=>set('start_date',e.target.value)} className="inp" /></Field>
+            <Field label="종료일"><input type="date" value={f.end_date?String(f.end_date).slice(0,10):''} onChange={e=>set('end_date',e.target.value)} className="inp" /></Field>
+          </div>
+          <Field label="상태">
+            <select value={f.status} onChange={e=>set('status',e.target.value)} className="inp">
+              {Object.keys(CYCLE_STATUS).map(k=><option key={k} value={k}>{CYCLE_STATUS[k][0]}</option>)}
+            </select>
+          </Field>
+          <Field label="설명"><input value={f.description} onChange={e=>set('description',e.target.value)} className="inp" /></Field>
+          <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-900 rounded-lg p-2.5"><input type="checkbox" checked={f.kpi_input_open} onChange={e=>set('kpi_input_open',e.target.checked)} /> KPI 입력기간 열기 (직원이 KPI 작성·수정 가능)</label>
+          <div className="grid grid-cols-2 gap-3"><Field label="KPI 입력 시작일"><input type="date" value={f.kpi_input_start?String(f.kpi_input_start).slice(0,10):''} onChange={e=>set('kpi_input_start',e.target.value)} className="inp" /></Field><Field label="KPI 입력 종료일"><input type="date" value={f.kpi_input_end?String(f.kpi_input_end).slice(0,10):''} onChange={e=>set('kpi_input_end',e.target.value)} className="inp" /></Field></div>
+        </div>
+        <div className="flex justify-between items-center mt-5">
+          {!isNew ? <button onClick={del} className="text-sm text-red-600 hover:text-red-700">삭제</button> : <span />}
+          <div className="flex gap-2">
+            <button onClick={onClose} className="px-4 py-2 text-sm text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">취소</button>
+            <button onClick={save} className="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">{isNew?'생성':'저장'}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function descendantsOf(id, emps){
+  const byMgr={}; emps.forEach(e=>{ if(e.manager_id){ (byMgr[e.manager_id]=byMgr[e.manager_id]||[]).push(e); } });
+  const out=[], stack=(byMgr[id]||[]).slice(), seen={};
+  while(stack.length){ const e=stack.pop(); if(seen[e.id]) continue; seen[e.id]=1; out.push(e); (byMgr[e.id]||[]).forEach(c=>stack.push(c)); }
+  return out;
+}
+function canDesignate(p,cfg){
+  if(!p) return false;
+  const pos=String(p.position||'')+' '+String(p.rank||'');
+  if(pos.indexOf('팀장')>=0||pos.indexOf('본부장')>=0||pos.indexOf('대표')>=0) return true;
+  if(pos.indexOf('파트장')>=0 && String(cfg&&cfg.partlead_assign)==='true') return true;
+  return false;
+}
+function compsForRating(ratee, raterType, rater, comps, cfg){
+  const all=comps.filter(c=>c.active!==false);
+  const tr=getEvalTrack(ratee); const rateeLeader=isLeaderRole(ratee,cfg);
+  const sameTeam=!!(rater&&ratee&&rater.team&&rater.team===ratee.team);
+  const COMMON=c=>c.track==='COMMON', JOB=c=>c.track===tr, LEADER=c=>c.track==='LEADER', FOLLOWER=c=>c.track==='FOLLOWER';
+  let pick;
+  if(raterType==='self'||raterType==='manager') pick=c=>COMMON(c)||JOB(c)||(rateeLeader?LEADER(c):FOLLOWER(c));
+  else if(raterType==='subordinate') pick=c=>COMMON(c)||JOB(c)||LEADER(c);
+  else if(raterType==='peer'){ if(rateeLeader) pick=c=>COMMON(c)||LEADER(c); else if(sameTeam) pick=c=>COMMON(c)||JOB(c); else pick=c=>COMMON(c); }
+  else pick=c=>COMMON(c);
+  return all.filter(pick).slice().sort((a,b)=>(a.display_order||0)-(b.display_order||0));
+}
+function getEvalTrack(p){
+  if(!p) return '';
+  if(p.eval_track) return String(p.eval_track);
+  const g=String(p.group_id||'');
+  if(g==='g_app') return 'SWDEV';
+  if(g==='g_ai') return 'AIDEV';
+  const map={ 'CEO':'CORP','경영지원':'CORP','연구개발':'AIDEV','품질경영':'QA','사업본부':'SALES','전략마케팅':'MKT','국내영업':'SALES','해외영업':'SALES' };
+  return map[p.team]||'CORP';
+}
+function isLeaderRole(p,cfg){
+  if(!p) return false;
+  const roles=String((cfg&&cfg.leadership_roles)||'').split(',').map(x=>x.trim()).filter(Boolean);
+  const pos=String(p.position||'')+' '+String(p.rank||'');
+  return roles.some(r=>r&&pos.indexOf(r)>=0);
+}
+const RATER_LABEL={ self:'본인', manager:'부하 평가(내가 상사)', subordinate:'상사 평가(내가 부하)', peer:'동료' };
+
+function Eval360Tab({ me, emps, comps, cfg, cycles, setBusy, flash, setErr, openComp, viewAs }){
+  const cycle=cycles.find(c=>c.status==='IN_PROGRESS');
+  const [targets,setTargets]=useState([]);
+  const [my360,setMy360]=useState([]);
+  const [sel,setSel]=useState(null);
+  const [scores,setScores]=useState({});
+  const [excl,setExcl]=useState([]);
+  const [peerT,setPeerT]=useState(null);
+  const empById=useMemo(()=>Object.fromEntries(emps.map(e=>[e.id,e])),[emps]);
+  const active=useMemo(()=>emps.filter(e=>e.status!=='퇴사'),[emps]);
+
+  async function reload360(){
+    if(!cycle||!me) return;
+    const r=await sb.from('eval_360').select('*').eq('cycle_id',cycle.cycle_id).eq('rater_id',me.id);
+    if(!r.error) setMy360(r.data||[]);
+  }
+  useEffect(()=>{ (async()=>{
+    if(!cycle||!me) return;
+    const [t,r]=await Promise.all([
+      sb.from('eval_targets').select('*').eq('cycle_id',cycle.cycle_id),
+      sb.from('eval_360').select('*').eq('cycle_id',cycle.cycle_id).eq('rater_id',me.id)
+    ]);
+    if(t.error||r.error){ setErr((t.error||r.error).message); return; }
+    setTargets(t.data||[]); setMy360(r.data||[]);
+  })(); },[cycle&&cycle.cycle_id, me&&me.id]);
+  useEffect(()=>{ (async()=>{ if(!cycle){ setExcl([]); return; } const r=await sb.from('eval_360_exclusions').select('*').eq('cycle_id',cycle.cycle_id); if(!r.error) setExcl(r.data||[]); })(); },[cycle&&cycle.cycle_id]);
+  async function reloadExcl(){ if(!cycle) return; const r=await sb.from('eval_360_exclusions').select('*').eq('cycle_id',cycle.cycle_id); if(!r.error) setExcl(r.data||[]); }
+  async function reloadTargets(){ if(!cycle) return; const r=await sb.from('eval_targets').select('*').eq('cycle_id',cycle.cycle_id); if(!r.error) setTargets(r.data||[]); }
+  async function reqExclude(raterId){ const reason=prompt('제외 요청 사유를 입력하세요 (예: 업무 협업 빈도 낮음)'); if(reason===null) return; setBusy(true); const r=await sb.from('eval_360_exclusions').insert({cycle_id:cycle.cycle_id, ratee_id:me.id, rater_id:raterId, reason:reason||null, status:'PENDING', requested_by:me.id}); setBusy(false); if(r.error){ setErr(r.error.message); return; } flash('제외 요청을 보냈습니다. 지정 리더 승인 후 반영됩니다.'); reloadExcl(); }
+  async function decideExcl(x, approve){ setBusy(true); if(approve){ const t=targets.find(tt=>tt.employee_id===x.ratee_id); if(t){ const arr=(t.peer_rater_ids||[]).filter(id=>String(id)!==String(x.rater_id)); await sb.from('eval_targets').update({peer_rater_ids:arr}).eq('id',t.id); } } const r=await sb.from('eval_360_exclusions').update({status:approve?'APPROVED':'REJECTED', decided_by:me.id, decided_at:new Date().toISOString()}).eq('id',x.id); setBusy(false); if(r.error){ setErr(r.error.message); return; } flash(approve?'제외 승인 완료':'제외 반려'); reloadExcl(); reloadTargets(); }
+
+  function appComps(ratee, type){ return compsForRating(ratee, type||'self', me, comps, cfg); }
+  function doneCount(task){ const ac=appComps(task.ratee, task.type); const set=new Set(my360.filter(r=>r.ratee_id===task.ratee.id&&r.rater_type===task.type&&r.score!=null).map(r=>r.comp_id)); return ac.filter(c=>set.has(c.comp_id)).length; }
+  function open(task){ setSel(task); const ex=my360.filter(r=>r.ratee_id===task.ratee.id&&r.rater_type===task.type); const sc={}; ex.forEach(r=>{ sc[r.comp_id]=r.score; }); setScores(sc); }
+  async function save(){
+    const ac=appComps(sel.ratee, sel.type);
+    const rows=ac.map(c=>({ cycle_id:cycle.cycle_id, ratee_id:sel.ratee.id, rater_id:me.id, rater_type:sel.type, comp_id:c.comp_id, score:(scores[c.comp_id]===''||scores[c.comp_id]==null)?null:Number(scores[c.comp_id]) }));
+    setBusy(true);
+    const res=await sb.from('eval_360').upsert(rows,{ onConflict:'cycle_id,ratee_id,rater_id,comp_id' });
+    setBusy(false);
+    if(res.error){ setErr(res.error.message); return; }
+    await reload360(); flash('평가가 저장되었습니다'); setSel(null);
+  }
+
+  if(!cycle) return <Stub title="360도 평가" desc="현재 진행중(IN_PROGRESS)인 평가주기가 없습니다. 관리자가 평가주기를 '진행중'으로 바꾸면 참여할 수 있습니다." />;
+  if(!me) return <Stub title="360도 평가" desc="로그인 계정이 직원 정보와 연결되지 않았습니다. 관리자에게 이메일 등록을 문의하세요." />;
+
+  const targetIds=new Set(targets.filter(t=>t.eval_type!=='EXCLUDED').map(t=>t.employee_id));
+  const tasks=[];
+  if(targetIds.has(me.id)) tasks.push({ratee:me,type:'self'});
+  const mgr=empById[me.manager_id];
+  if(mgr && targetIds.has(mgr.id)) tasks.push({ratee:mgr,type:'subordinate'});
+  targets.filter(t=>t.eval_type!=='EXCLUDED' && Array.isArray(t.peer_rater_ids) && t.peer_rater_ids.indexOf(me.id)>=0).forEach(t=>{ const rt=empById[t.employee_id]; if(rt && rt.id!==me.id) tasks.push({ratee:rt,type:'peer'}); });
+  active.filter(e=>e.manager_id===me.id && targetIds.has(e.id)).forEach(e=>tasks.push({ratee:e,type:'manager'}));
+
+  if(sel){
+    const ac=appComps(sel.ratee, sel.type);
+    const done=ac.filter(c=>scores[c.comp_id]!=null && scores[c.comp_id]!=='').length;
+    return (
+      <div className="max-w-5xl mx-auto space-y-4">
+        <button onClick={()=>setSel(null)} className="text-sm text-slate-500 dark:text-slate-400 hover:text-slate-800">← 평가 대상 목록</button>
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 flex items-center justify-between gap-3">
+          <div>
+            <div className="font-bold text-slate-800 dark:text-slate-100">{sel.ratee.name} <span className="text-xs font-normal text-slate-400 dark:text-slate-500">{sel.ratee.team} · {sel.ratee.position}</span></div>
+            <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{RATER_LABEL[sel.type]} · 역량 {ac.length}개 · 각 0~100점</div>
+          </div>
+          <div className="flex items-center gap-2"><button onClick={openComp} className="text-xs font-semibold text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 px-3 py-1.5 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-950 whitespace-nowrap">📖 역량 모델</button><div className="text-xs font-semibold text-indigo-600 bg-indigo-50 dark:bg-indigo-950 px-3 py-1.5 rounded-lg whitespace-nowrap">입력 {done}/{ac.length}</div></div>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+          {ac.map(c=>{ const v=scores[c.comp_id]; const num=(v==null||v==='')?'':v;
+            return (
+              <div key={c.comp_id} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3.5">
+                <div className="flex items-baseline gap-1.5">
+                  <div className="text-sm font-semibold text-slate-800 dark:text-slate-100">{c.name}</div>
+                  {c.is_core && <span className="text-rose-500 text-xs">★핵심</span>}
+                </div>
+                <div className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">{TRACK_LABEL[c.track]||c.track} · 배점 {c.weight}점</div>
+                {c.description && <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1.5 leading-snug">{c.description}</div>}
+                <div className="flex items-center gap-3 mt-3">
+                  <input type="range" min="0" max="100" step="5" value={num===''?0:Number(num)} onChange={e=>setScores(s=>({...s,[c.comp_id]:e.target.value}))} className="flex-1 accent-indigo-600" />
+                  <input type="number" min="0" max="100" value={num} onChange={e=>setScores(s=>({...s,[c.comp_id]:e.target.value}))} className="w-16 text-right border border-slate-300 dark:border-slate-600 rounded px-2 py-1 text-sm outline-none" placeholder="0" />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div className="flex justify-end gap-2 sticky bottom-3">
+          <button onClick={()=>setSel(null)} className="px-4 py-2 text-sm text-slate-600 dark:text-slate-300 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700">취소</button>
+          <button onClick={save} className="px-5 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 shadow-md">저장</button>
+        </div>
+      </div>
+    );
+  }
+
+  const subs=descendantsOf(me.id, emps).filter(e=>e.status!=='퇴사');
+  const subIds=new Set(subs.map(e=>e.id));
+  const subTargets=subs.map(sx=>({s:sx, t:targets.find(t=>t.employee_id===sx.id)})).filter(x=>x.t && x.t.eval_type!=='EXCLUDED');
+  const myTarget=targets.find(t=>t.employee_id===me.id);
+  const myPeers=((myTarget&&myTarget.peer_rater_ids)||[]).map(id=>empById[id]).filter(Boolean);
+  const myPendingApprovals=excl.filter(x=>x.status==='PENDING' && subIds.has(x.ratee_id));
+  const canDes = viewAs==='staff'?false:(viewAs==='leader'?true:canDesignate(me,cfg));
+  return (
+    <div>
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 mb-4">
+        <div className="font-bold text-slate-800 dark:text-slate-100 mb-1">나를 평가할 동료 (협의)</div>
+        <div className="text-xs text-slate-500 dark:text-slate-400 mb-3">업무 연관성이 높다고 판단되어 지정된 동료입니다. 협업이 적어 부적절하면 <b>제외 요청</b>할 수 있고, 지정 리더 승인 시 제외됩니다.</div>
+        {myPeers.length===0 ? <div className="text-sm text-slate-400 dark:text-slate-500">아직 지정된 동료 평가자가 없습니다.</div> :
+         <div className="flex flex-wrap gap-2">{myPeers.map(pp=>{ const ex=excl.find(x=>String(x.rater_id)===String(pp.id)&&x.status!=='REJECTED');
+           return <span key={pp.id} className="inline-flex items-center gap-2 text-sm border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5">
+             <span className="text-slate-700 dark:text-slate-200">{pp.name} <span className="text-xs text-slate-400 dark:text-slate-500">{pp.team}</span></span>
+             {ex? <span className={"text-[11px] px-1.5 py-0.5 rounded "+(ex.status==='APPROVED'?'bg-emerald-100 text-emerald-700':'bg-amber-100 text-amber-700')}>{ex.status==='APPROVED'?'제외됨':'요청중'}</span>
+                : <button onClick={()=>reqExclude(pp.id)} className="text-[11px] text-rose-600 hover:underline">제외요청</button>}
+           </span>; })}</div>}
+      </div>
+      {canDes && <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 mb-4">
+        <div className="font-bold text-slate-800 dark:text-slate-100 mb-1">우리 조직 360 평가자 지정 <span className="text-xs font-normal text-slate-400 dark:text-slate-500">(리더)</span></div>
+        <div className="text-xs text-slate-500 dark:text-slate-400 mb-3">팀원별로 <b>업무 연관성이 높다고 판단되는 인원</b>을 동료 평가자로 지정하세요. (예: 분기 5회 이상 업무 협업 기준)</div>
+        {subTargets.length===0 ? <div className="text-sm text-slate-400 dark:text-slate-500">지정할 팀원이 없습니다.</div> :
+         <div className="space-y-2">{subTargets.map(({s:sx,t})=>{ const cnt=(t.peer_rater_ids||[]).length;
+           return <div key={sx.id} className="flex items-center justify-between border border-slate-100 dark:border-slate-700 rounded-lg px-3 py-2">
+             <div className="text-sm"><span className="font-medium text-slate-800 dark:text-slate-100">{sx.name}</span> <span className="text-xs text-slate-400 dark:text-slate-500">{sx.team} · {sx.position}</span></div>
+             <div className="flex items-center gap-2"><span className="text-xs text-slate-500 dark:text-slate-400">동료 {cnt}명</span><button onClick={()=>setPeerT(t)} className="text-xs px-2 py-1 rounded border border-indigo-200 dark:border-indigo-800 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-50 dark:hover:bg-indigo-950">평가자 지정</button></div>
+           </div>; })}</div>}
+        {myPendingApprovals.length>0 && <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-700">
+          <div className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-2">제외 요청 승인 대기 ({myPendingApprovals.length})</div>
+          <div className="space-y-2">{myPendingApprovals.map(x=>{ const ratee=empById[x.ratee_id], rater=empById[x.rater_id];
+            return <div key={x.id} className="flex items-center justify-between bg-amber-50 dark:bg-amber-950/40 rounded-lg px-3 py-2 text-sm gap-2">
+              <div className="text-slate-700 dark:text-slate-200"><b>{ratee?ratee.name:x.ratee_id}</b> → 평가자 <b>{rater?rater.name:x.rater_id}</b> 제외요청 <span className="text-xs text-slate-500 dark:text-slate-400">· {x.reason||'사유없음'}</span></div>
+              <div className="flex gap-1 shrink-0"><button onClick={()=>decideExcl(x,true)} className="text-xs px-2 py-1 rounded bg-emerald-600 text-white">승인</button><button onClick={()=>decideExcl(x,false)} className="text-xs px-2 py-1 rounded border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300">반려</button></div>
+            </div>; })}</div>
+        </div>}
+      </div>}
+      <div className="bg-indigo-50 dark:bg-indigo-950 border border-indigo-100 rounded-xl p-3 mb-4 text-sm text-indigo-800">진행중 평가: <b>{cycle.name}</b> · 내가 평가할 대상 <b>{tasks.length}</b>명</div>
+      {tasks.length===0 ? <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 text-center text-slate-400 dark:text-slate-500">평가할 대상이 없습니다. (대상자 지정/평가주기 진행중 여부를 확인하세요)</div> :
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {tasks.map((task,i)=>{ const ac=appComps(task.ratee, task.type); const done=doneCount(task); const complete=ac.length>0&&done>=ac.length;
+          return <button key={i} onClick={()=>open(task)} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-4 text-left hover:shadow-md transition flex items-center justify-between">
+            <div>
+              <div className="font-semibold text-slate-800 dark:text-slate-100">{task.ratee.name} <span className="text-xs font-normal text-slate-400 dark:text-slate-500">{task.ratee.position}</span></div>
+              <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{RATER_LABEL[task.type]} · 역량 {ac.length}개</div>
+            </div>
+            <span className={"text-xs px-2 py-1 rounded-full "+(complete?"bg-emerald-100 text-emerald-700":"bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400")}>{complete?'완료':done+'/'+ac.length}</span>
+          </button>;
+        })}
+      </div>}
+      {peerT && <PeerModal target={peerT} ratee={empById[peerT.employee_id]} emps={emps} setBusy={setBusy} setErr={setErr} onSave={()=>{ setPeerT(null); reloadTargets(); }} onClose={()=>setPeerT(null)} />}
+    </div>
+  );
+}
+
+function resolveApprover(emp, empById){
+  if(!emp) return null;
+  let cur=empById[emp.manager_id]; const seen={};
+  while(cur && !seen[cur.id]){
+    seen[cur.id]=1;
+    const t=(cur.position||'')+' '+(cur.rank||'');
+    if(t.indexOf('본부장')>=0) return cur;
+    if(t.indexOf('대표이사')>=0) return cur;
+    cur=empById[cur.manager_id];
+  }
+  const list=Object.keys(empById).map(k=>empById[k]);
+  return list.find(e=>((e.position||'')+(e.rank||'')).indexOf('대표이사')>=0)||null;
+}
+const KPI_STATUS={
+  DRAFT:['작성중','bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'],
+  SUBMITTED:['승인 대기','bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300'],
+  APPROVED:['승인됨','bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300'],
+  REJECTED:['반려','bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300']
+};
+
+function ApprovalsPanel({ me, cid, empById, setBusy, flash, setErr }){
+  const [rows,setRows]=useState([]);
+  const [sel,setSel]=useState(null);
+  async function load(){
+    if(!cid){ setRows([]); return; }
+    const { data, error }=await sb.from('eval_kpi_status').select('*').eq('cycle_id',cid).eq('approver_id',me.id).eq('status','SUBMITTED');
+    if(error){ setErr(error.message); return; }
+    setRows(data||[]);
+  }
+  useEffect(()=>{ load(); },[cid, me&&me.id]);
+  if(!cid) return <div className="text-slate-400 dark:text-slate-500 text-sm py-6">평가주기를 선택하세요.</div>;
+  return (
+    <div>
+      <h3 className="font-semibold text-slate-800 dark:text-slate-100 mb-2">내 승인 대기 <span className="text-slate-400 dark:text-slate-500 font-normal">({rows.length})</span></h3>
+      {rows.length===0 ? <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-8 text-center text-slate-400 dark:text-slate-500">승인 대기 중인 KPI가 없습니다.</div> :
+      <div className="space-y-2">
+        {rows.map(r=>{ const e=empById[r.employee_id];
+          return <div key={r.id} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 flex items-center justify-between">
+            <div>
+              <div className="font-medium text-slate-800 dark:text-slate-100">{e?e.name:r.employee_id} <span className="text-xs text-slate-400 dark:text-slate-500">{e?(e.team+' · '+e.position):''}</span></div>
+              <div className="text-xs text-slate-400 dark:text-slate-500">요청일 {r.submitted_at?String(r.submitted_at).slice(0,10):''}</div>
+            </div>
+            <button onClick={()=>setSel(r)} className="text-sm px-3 py-1.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">검토</button>
+          </div>;
+        })}
+      </div>}
+      {sel && <ApprovalModal row={sel} emp={empById[sel.employee_id]} me={me} cid={cid} reload={()=>{ setSel(null); load(); }} setBusy={setBusy} flash={flash} setErr={setErr} onClose={()=>setSel(null)} />}
+    </div>
+  );
+}
+
+function ApprovalModal({ row, emp, me, cid, reload, setBusy, flash, setErr, onClose }){
+  const [kpis,setKpis]=useState([]);
+  const [reason,setReason]=useState('');
+  useEffect(()=>{ (async()=>{ const { data }=await sb.from('eval_kpi').select('*').eq('cycle_id',cid).eq('employee_id',row.employee_id).order('id'); setKpis(data||[]); })(); },[]);
+  const weightSum=kpis.reduce((s,k)=>s+Number(k.weight||0),0);
+  async function approve(){ setBusy(true); const res=await sb.from('eval_kpi_status').update({ status:'APPROVED', approved_at:new Date().toISOString(), reject_reason:null, updated_at:new Date().toISOString() }).eq('id',row.id); setBusy(false); if(res.error){ setErr(res.error.message); return; } flash((emp?emp.name:'')+' KPI 승인됨'); reload(); }
+  async function reject(){ if(!reason.trim()){ alert('반려 사유를 입력하세요'); return; } setBusy(true); const res=await sb.from('eval_kpi_status').update({ status:'REJECTED', reject_reason:reason, updated_at:new Date().toISOString() }).eq('id',row.id); setBusy(false); if(res.error){ setErr(res.error.message); return; } flash('반려되었습니다'); reload(); }
+  return (
+    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-2xl p-5 max-h-[92vh] overflow-y-auto" onClick={ev=>ev.stopPropagation()}>
+        <h3 className="font-bold text-slate-800 dark:text-slate-100">{emp?emp.name:''} KPI 검토 <span className="text-xs font-normal text-slate-400 dark:text-slate-500">{emp?(emp.team+' · '+emp.position):''}</span></h3>
+        <div className="text-xs text-slate-400 dark:text-slate-500 mt-1 mb-3">가중치 합계 <b className={weightSum!==100?'text-amber-600':'text-emerald-600'}>{weightSum}%</b> · KPI {kpis.length}개</div>
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+          <table className="w-full text-sm">
+            <thead className="bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 text-xs"><tr><th className="text-left px-3 py-2">KPI</th><th className="text-left px-3 py-2">지표</th><th className="text-right px-3 py-2">가중치</th><th className="text-right px-3 py-2">목표</th></tr></thead>
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              {kpis.length===0 && <tr><td colSpan="4" className="px-3 py-6 text-center text-slate-300 dark:text-slate-600">등록된 KPI가 없습니다.</td></tr>}
+              {kpis.map(k=>(<tr key={k.id}><td className="px-3 py-2 font-medium text-slate-800 dark:text-slate-100">{k.kpi_name}</td><td className="px-3 py-2 text-slate-500 dark:text-slate-400 text-xs">{k.metric||'-'}</td><td className="px-3 py-2 text-right text-slate-600 dark:text-slate-300">{k.weight||0}%</td><td className="px-3 py-2 text-right text-slate-500 dark:text-slate-400">{k.target_value==null?'-':k.target_value}</td></tr>))}
+            </tbody>
+          </table>
+        </div>
+        <div className="mt-4">
+          <Field label="반려 사유 (반려 시 입력)"><input value={reason} onChange={e=>setReason(e.target.value)} className="inp" placeholder="반려하는 경우에만 사유를 적어주세요" /></Field>
+        </div>
+        <div className="flex justify-end gap-2 mt-5">
+          <button onClick={onClose} className="px-4 py-2 text-sm text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">닫기</button>
+          <button onClick={reject} className="px-4 py-2 text-sm bg-rose-600 text-white rounded-lg hover:bg-rose-700">반려</button>
+          <button onClick={approve} className="px-4 py-2 text-sm bg-emerald-600 text-white rounded-lg hover:bg-emerald-700">승인</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function esc(v){ return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function jobGroupOf(p){ var t=getEvalTrack(p); if(t==='SALES'||t==='MKT') return '영업'; if(t==='SWDEV'||t==='AIDEV') return '개발'; return '지원'; }
+function fbApplicable(ratee, comps, cfg){ var tr=getEvalTrack(ratee), lead=isLeaderRole(ratee,cfg); return comps.filter(function(c){ return c.active!==false && (c.track==='COMMON'||c.track===tr||(c.track==='LEADER'&&lead)||(c.track==='FOLLOWER'&&!lead)); }).slice().sort(function(a,b){return (a.display_order||0)-(b.display_order||0);}); }
+function fbAvg(a){ return a.length? a.reduce(function(s,x){return s+x;},0)/a.length : null; }
+function fbR1(v){ return v==null?null:Math.round(v*10)/10; }
+function buildRadarSvg(axes){
+  var cx=170,cy=150,R=100,N=axes.length,rings=[.25,.5,.75,1];
+  function pt(i,f){ var a=-Math.PI/2+i*2*Math.PI/N; return [cx+Math.cos(a)*R*f, cy+Math.sin(a)*R*f]; }
+  var h='';
+  rings.forEach(function(rf){ h+='<polygon points="'+axes.map(function(_,i){return pt(i,rf).join(',');}).join(' ')+'" fill="none" stroke="#e6e8ee"/>'; });
+  axes.forEach(function(_,i){ var e=pt(i,1); h+='<line x1="'+cx+'" y1="'+cy+'" x2="'+e[0]+'" y2="'+e[1]+'" stroke="#e6e8ee"/>'; });
+  function ln(key,color,dash,fill){ if(!axes.every(function(a){return a[key]!=null;})) return ''; var p=axes.map(function(a,i){return pt(i,(a[key]||0)/100).join(',');}).join(' '); return '<polygon points="'+p+'" fill="'+(fill?color+'22':'none')+'" stroke="'+color+'" stroke-width="2"'+(dash?' stroke-dasharray="4 3"':'')+'/>'; }
+  h+=ln('job','#f59e0b',true,false)+ln('team','#94a3b8',true,false)+ln('peer','#10b981',false,false)+ln('self','#6366f1',false,true);
+  axes.forEach(function(a,i){ var e=pt(i,1.2); var anc=(e[0]<cx-5)?'end':(e[0]>cx+5)?'start':'middle'; h+='<text x="'+e[0]+'" y="'+(e[1]+3)+'" font-size="9" fill="#7a8194" text-anchor="'+anc+'">'+esc(a.nm)+'</text>'; });
+  return '<svg viewBox="0 0 340 300" width="100%">'+h+'</svg>';
+}
+function computeFeedback(ratee, comps, cfg, empById, rows360, kpis){
+  var minOther=Number(cfg.anon_min_other||2);
+  var app=fbApplicable(ratee, comps, cfg);
+  var all=Object.keys(empById).map(function(k){return empById[k];}).filter(Boolean);
+  var teamSet=new Set(all.filter(function(e){return e.team===ratee.team && e.status!=='퇴사';}).map(function(e){return e.id;}));
+  var jg=jobGroupOf(ratee);
+  var jobSet=new Set(all.filter(function(e){return e.status!=='퇴사' && jobGroupOf(e)===jg;}).map(function(e){return e.id;}));
+  function sc(rid,cid,types){ return rows360.filter(function(r){ return r.ratee_id===rid && r.comp_id===cid && r.score!=null && (!types||types.indexOf(r.rater_type)>=0); }).map(function(r){return Number(r.score);}); }
+  function grp(idSet,cid){ var v=rows360.filter(function(r){ return idSet.has(r.ratee_id) && r.comp_id===cid && r.score!=null && r.rater_type!=='self'; }).map(function(r){return Number(r.score);}); return fbAvg(v); }
+  var items=app.map(function(c){
+    var self=fbAvg(sc(ratee.id,c.comp_id,['self']));
+    var others=sc(ratee.id,c.comp_id,['manager','peer','subordinate']);
+    var peer=(others.length>=minOther)?fbAvg(others):null;
+    return { nm:c.name, def:String(c.description||c.rubric||'').split('\n')[0], self:fbR1(self), peer:fbR1(peer), team:fbR1(grp(teamSet,c.comp_id)), job:fbR1(grp(jobSet,c.comp_id)), masked:(others.length<minOther) };
+  });
+  return { items:items, jobGroup:jg };
+}
+function buildFeedbackHtml(person, cycleName, data, res, kpis){
+  function f1(v){ return v==null?'-':(Math.round(v*10)/10); }
+  var comp=res&&res.comp_total!=null?Number(res.comp_total).toFixed(1):'-';
+  var kpi=res&&res.kpi_total!=null?Number(res.kpi_total).toFixed(1):'-';
+  var grand=res&&res.grand_total!=null?Number(res.grand_total).toFixed(1):'-';
+  var grade=res&&res.grade?res.grade:'-';
+  var raise=res&&res.base_raise_rate!=null?res.base_raise_rate+'%':'-';
+  var radar=buildRadarSvg(data.items);
+  var items=data.items.map(function(a){ var val=a.peer!=null?a.peer:(a.self!=null?a.self:0);
+    return '<div style="padding:7px 0;border-bottom:1px dashed #e6e8ee"><div style="display:flex;justify-content:space-between"><span style="font-size:12px;font-weight:700">'+esc(a.nm)+'</span><span style="font-size:12px;font-weight:800;color:#4f46e5">'+(a.masked?'비공개':f1(a.peer))+'</span></div><div style="font-size:11px;color:#7a8194;margin:2px 0 5px">'+esc(a.def||'')+'</div><div style="height:6px;background:#f6f7fa;border-radius:4px"><span style="display:block;height:100%;width:'+(val||0)+'%;background:#4f46e5;border-radius:4px"></span></div></div>'; }).join('');
+  var krows=(kpis||[]).map(function(k){ return '<tr><td style="text-align:left;padding:6px 8px;border-bottom:1px solid #eef1f6">'+esc(k.kpi_name||'')+'</td><td style="text-align:right;padding:6px 8px;border-bottom:1px solid #eef1f6">'+(k.weight||0)+'%</td><td style="text-align:right;padding:6px 8px;border-bottom:1px solid #eef1f6">'+esc(String(k.target_value==null?'-':k.target_value))+'</td><td style="text-align:right;padding:6px 8px;border-bottom:1px solid #eef1f6">'+esc(String(k.actual_value==null?'-':k.actual_value))+'</td><td style="text-align:right;padding:6px 8px;border-bottom:1px solid #eef1f6">'+(k.achievement_rate!=null?k.achievement_rate+'%':'-')+'</td><td style="text-align:right;padding:6px 8px;border-bottom:1px solid #eef1f6">'+(k.final_score==null?'-':k.final_score)+'</td></tr>'; }).join('');
+  if(!krows) krows='<tr><td colspan="6" style="text-align:center;padding:10px;color:#9aa3b5">등록된 KPI가 없습니다</td></tr>';
+  return ''+
+  '<div style="font-family:Pretendard,\'맑은 고딕\',sans-serif;color:#1f2430;max-width:900px;margin:0 auto;border:1px solid #e6e8ee;border-radius:12px;overflow:hidden">'+
+    '<div style="display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px 20px;background:#111827;color:#fff">'+
+      '<div><div style="font-size:16px;font-weight:800">인사평가 면담 피드백지</div><div style="font-size:12px;opacity:.85;margin-top:2px">'+esc(cycleName||'')+' · '+esc(person.name||'')+' · '+esc(person.team||'')+' · '+esc(person.position||'')+'</div></div>'+
+      '<div style="text-align:center;background:rgba(255,255,255,.12);border-radius:12px;padding:6px 16px"><div style="font-size:28px;font-weight:900;line-height:1">'+esc(grade)+'</div><div style="font-size:10px;opacity:.85">종합 등급</div></div>'+
+    '</div>'+
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:#e6e8ee">'+
+      '<div style="background:#fff;padding:11px;text-align:center"><div style="font-size:11px;color:#7a8194">역량평가(360)</div><div style="font-size:19px;font-weight:800;color:#6366f1">'+comp+'</div></div>'+
+      '<div style="background:#fff;padding:11px;text-align:center"><div style="font-size:11px;color:#7a8194">성과(KPI)</div><div style="font-size:19px;font-weight:800;color:#10b981">'+kpi+'</div></div>'+
+      '<div style="background:#fff;padding:11px;text-align:center"><div style="font-size:11px;color:#7a8194">종합점수</div><div style="font-size:19px;font-weight:800">'+grand+'</div></div>'+
+      '<div style="background:#fff;padding:11px;text-align:center"><div style="font-size:11px;color:#7a8194">기준 인상률</div><div style="font-size:19px;font-weight:800">'+raise+'</div></div>'+
+    '</div>'+
+    '<div style="display:grid;grid-template-columns:360px 1fr">'+
+      '<div style="padding:16px;border-right:1px solid #e6e8ee">'+
+        '<div style="font-size:12px;font-weight:700;color:#7a8194;margin-bottom:6px">역량 방사형 (100점)</div>'+radar+
+        '<div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;font-size:10.5px;color:#7a8194;margin-top:4px">'+
+          '<span><span style="display:inline-block;width:10px;height:3px;background:#6366f1;margin-right:4px"></span>본인</span>'+
+          '<span><span style="display:inline-block;width:10px;height:3px;background:#10b981;margin-right:4px"></span>타인 평균</span>'+
+          '<span><span style="display:inline-block;width:10px;height:3px;background:#94a3b8;margin-right:4px"></span>팀 평균</span>'+
+          '<span><span style="display:inline-block;width:10px;height:3px;background:#f59e0b;margin-right:4px"></span>직무 평균('+esc(data.jobGroup)+')</span>'+
+        '</div>'+
+      '</div>'+
+      '<div style="padding:16px"><div style="font-size:12px;font-weight:700;color:#7a8194;margin-bottom:6px">항목별 정의 · 점수(타인 평균)</div>'+items+'</div>'+
+    '</div>'+
+    '<div style="margin:10px 16px;padding:9px 12px;background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;font-size:11px;color:#9a3412">🔒 익명성 보호: 타인 평가자가 기준 인원 미만이면 개별 항목은 “비공개”로 표시되고, 개인이 특정되지 않는 팀·직무 평균만 비교선으로 제공합니다.</div>'+
+    '<div style="padding:14px 20px;border-top:1px solid #e6e8ee">'+
+      '<div style="font-size:13px;font-weight:800;margin-bottom:8px">성과 평가 (KPI)</div>'+
+      '<table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr>'+
+        '<th style="text-align:left;padding:6px 8px;background:#f6f7fa;color:#7a8194;border-bottom:1px solid #e6e8ee">KPI 항목</th>'+
+        '<th style="text-align:right;padding:6px 8px;background:#f6f7fa;color:#7a8194;border-bottom:1px solid #e6e8ee">가중치</th>'+
+        '<th style="text-align:right;padding:6px 8px;background:#f6f7fa;color:#7a8194;border-bottom:1px solid #e6e8ee">목표</th>'+
+        '<th style="text-align:right;padding:6px 8px;background:#f6f7fa;color:#7a8194;border-bottom:1px solid #e6e8ee">실적</th>'+
+        '<th style="text-align:right;padding:6px 8px;background:#f6f7fa;color:#7a8194;border-bottom:1px solid #e6e8ee">달성률</th>'+
+        '<th style="text-align:right;padding:6px 8px;background:#f6f7fa;color:#7a8194;border-bottom:1px solid #e6e8ee">점수</th>'+
+      '</tr></thead><tbody>'+krows+'</tbody></table>'+
+    '</div>'+
+    '<div style="padding:14px 20px;border-top:1px solid #e6e8ee;background:#f6f7fa">'+
+      '<div style="font-size:12px;font-weight:700;color:#7a8194;margin-bottom:8px">면담 기록</div>'+
+      '<div style="display:grid;grid-template-columns:72px 1fr;gap:8px;margin-bottom:8px"><div style="font-size:11px;color:#7a8194">강점</div><div style="font-size:12px;white-space:pre-wrap;border-bottom:1px solid #cfd3dc;min-height:20px">'+esc((res&&res.fb_strengths)||'')+'</div></div>'+
+      '<div style="display:grid;grid-template-columns:72px 1fr;gap:8px;margin-bottom:8px"><div style="font-size:11px;color:#7a8194">개선점</div><div style="font-size:12px;white-space:pre-wrap;border-bottom:1px solid #cfd3dc;min-height:20px">'+esc((res&&res.fb_improvements)||'')+'</div></div>'+
+      '<div style="display:grid;grid-template-columns:72px 1fr;gap:8px;margin-bottom:8px"><div style="font-size:11px;color:#7a8194">합의·목표</div><div style="font-size:12px;white-space:pre-wrap;border-bottom:1px solid #cfd3dc;min-height:20px">'+esc((res&&res.fb_goals)||'')+'</div></div>'+
+    '</div>'+
+  '</div>';
+}
+function FeedbackSheetModal({ person, cid, comps, cfg, grades, empById, cycleName, onClose, setErr, me, flash, setBusy }){
+  const [html,setHtml]=useState('<div style="padding:40px;text-align:center;color:#9aa3b5">불러오는 중…</div>');
+  const [iv,setIv]=useState({s:'',i:'',g:''});
+  const [dirty,setDirty]=useState(false);
+  async function loadSheet(){
+    const [r3,kp,rs]=await Promise.all([
+      sb.from('eval_360').select('ratee_id,comp_id,rater_type,score').eq('cycle_id',cid),
+      sb.from('eval_kpi').select('*').eq('cycle_id',cid).eq('employee_id',person.id).order('id'),
+      sb.from('eval_results').select('*').eq('cycle_id',cid).eq('employee_id',person.id).maybeSingle()
+    ]);
+    if(r3.error){ setErr(r3.error.message); setHtml('<div style="padding:30px;text-align:center;color:#dc2626">불러오기 오류: '+esc(r3.error.message)+'</div>'); return; }
+    const res=(rs&&rs.data)||null;
+    setIv({ s:(res&&res.fb_strengths)||'', i:(res&&res.fb_improvements)||'', g:(res&&res.fb_goals)||'' });
+    try{
+      const data=computeFeedback(person, comps, cfg, empById, r3.data||[], kp.data||[]);
+      setHtml(buildFeedbackHtml(person, cycleName, data, res, kp.data||[]));
+    }catch(ex){ console.error('[피드백지]',ex); setHtml('<div style="padding:30px;text-align:center;color:#dc2626">피드백지 생성 오류: '+esc(ex&&ex.message||ex)+'</div>'); }
+  }
+  useEffect(()=>{ loadSheet(); },[person&&person.id, cid]);
+  async function saveIv(){
+    setBusy&&setBusy(true);
+    const r=await sb.from('eval_results').upsert({ cycle_id:cid, employee_id:person.id, fb_strengths:iv.s, fb_improvements:iv.i, fb_goals:iv.g, fb_interviewed_by:me?me.id:null, fb_interviewed_at:new Date().toISOString() },{onConflict:'cycle_id,employee_id'});
+    setBusy&&setBusy(false);
+    if(r.error){ setErr(r.error.message); return; }
+    setDirty(false); flash&&flash('면담 기록 저장됨'); loadSheet();
+  }
+  function printIt(){ var el=document.getElementById('fbsheet'); if(!el) return; var w=window.open('','_blank'); if(!w) return; w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>면담 피드백지</title><style>@page{size:A4;margin:12mm;}body{margin:0;font-family:Pretendard,"맑은 고딕",sans-serif;}</style></head><body>'+el.innerHTML+'</body></html>'); w.document.close(); w.focus(); setTimeout(function(){ w.print(); },400); }
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center p-4 overflow-y-auto">
+      <div className="bg-white rounded-2xl max-w-4xl w-full my-6 shadow-2xl">
+        <div className="flex justify-between items-center px-4 py-2.5 border-b border-slate-100 sticky top-0 bg-white rounded-t-2xl">
+          <h3 className="font-bold text-slate-800">면담 피드백지</h3>
+          <div className="flex gap-2"><button onClick={printIt} className="text-xs px-3 py-1.5 bg-indigo-600 text-white rounded-lg font-semibold">🖨 인쇄</button><button onClick={onClose} className="text-xs px-3 py-1.5 border border-slate-300 text-slate-600 rounded-lg">닫기</button></div>
+        </div>
+        <div id="fbsheet" className="p-4" dangerouslySetInnerHTML={{ __html: html }} />
+        <div className="px-4 pb-4">
+          <div className="border border-indigo-200 rounded-xl p-4 bg-indigo-50/40">
+            <div className="text-sm font-bold text-slate-800 mb-2">✍️ 면담 기록 입력 (면담하면서 바로 작성 · 저장 시 HR/경영진 열람 가능)</div>
+            <div className="space-y-2">
+              <div><div className="text-xs text-slate-500 mb-1">강점</div><textarea value={iv.s} onChange={e=>{setIv(v=>({...v,s:e.target.value})); setDirty(true);}} rows="2" className="w-full text-sm border border-slate-200 rounded-lg p-2 outline-none focus:border-indigo-400" /></div>
+              <div><div className="text-xs text-slate-500 mb-1">개선점</div><textarea value={iv.i} onChange={e=>{setIv(v=>({...v,i:e.target.value})); setDirty(true);}} rows="2" className="w-full text-sm border border-slate-200 rounded-lg p-2 outline-none focus:border-indigo-400" /></div>
+              <div><div className="text-xs text-slate-500 mb-1">합의·목표</div><textarea value={iv.g} onChange={e=>{setIv(v=>({...v,g:e.target.value})); setDirty(true);}} rows="2" className="w-full text-sm border border-slate-200 rounded-lg p-2 outline-none focus:border-indigo-400" /></div>
+            </div>
+            <div className="flex justify-end mt-2"><button onClick={saveIv} disabled={!dirty} className="text-sm px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold disabled:opacity-40">면담 기록 저장</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function KpiHubTab({ me, emps, cycles, cfg, isAdmin, setBusy, flash, setErr, comps, grades, pendingN }){
+  const inProg=cycles.find(c=>c.status==='IN_PROGRESS');
+  const [cid,setCid]=useState(inProg?inProg.cycle_id:(cycles[0]?cycles[0].cycle_id:''));
+  const [view,setView]=useState('mine');
+  const [teamSel,setTeamSel]=useState('');
+  const [allSel,setAllSel]=useState('');
+  const empById=useMemo(()=>Object.fromEntries(emps.map(e=>[e.id,e])),[emps]);
+  const active=useMemo(()=>emps.filter(e=>e.status!=='퇴사').slice().sort((a,b)=>(a.team||'').localeCompare(b.team||'')||(a.name||'').localeCompare(b.name||'')),[emps]);
+  const reports=useMemo(()=>emps.filter(e=>e.status!=='퇴사' && me && e.manager_id===me.id),[emps,me]);
+  const isManager=reports.length>0;
+  const isApprover=!!(me && (/본부장|대표이사/.test((me.position||'')+' '+(me.rank||'')) || isAdmin));
+  const cycle=cycles.find(c=>c.cycle_id===cid);
+  const today=new Date().toISOString().slice(0,10);
+  const withinDates = cycle ? ((!cycle.kpi_input_start || today>=String(cycle.kpi_input_start).slice(0,10)) && (!cycle.kpi_input_end || today<=String(cycle.kpi_input_end).slice(0,10))) : false;
+  const inputOpen = !!(cycle && cycle.kpi_input_open!==false && withinDates);
+  const closedReason = !cycle ? '' : (cycle.kpi_input_open===false ? 'KPI 입력기간이 닫혀 있습니다(인사부에서 엽니다).' : (!withinDates ? ('KPI 입력 가능 기간이 아닙니다. 기간: '+(cycle.kpi_input_start||'-')+' ~ '+(cycle.kpi_input_end||'-')) : ''));
+  const pill=on=>"px-4 py-2 text-sm rounded-lg border transition "+(on?"bg-indigo-600 border-indigo-600 text-white font-bold":"bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/40");
+
+  if(!me) return <Stub title="KPI · 면담" desc="로그인 계정이 직원 정보와 연결되지 않았습니다. 관리자에게 이메일 등록을 문의하세요." />;
+
+  return (
+    <div>
+      <div className="flex gap-2 mb-4 flex-wrap items-center">
+        <button onClick={()=>setView('mine')} className={pill(view==='mine')}>내 KPI · 면담</button>
+        {isManager && <button onClick={()=>setView('team')} className={pill(view==='team')}>팀원 ({reports.length})</button>}
+        {isApprover && <button onClick={()=>setView('approve')} className={pill(view==='approve')+" relative"}>승인 대기{pendingN>0&&<span className="ml-1.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold">{pendingN}</span>}</button>}
+        {isAdmin && <button onClick={()=>setView('all')} className={pill(view==='all')}>전체(HR)</button>}
+        <span className="flex-1" />
+        <select value={cid} onChange={e=>setCid(e.target.value)} className="inp !w-52">
+          <option value="">평가주기 선택</option>
+          {cycles.map(c=><option key={c.cycle_id} value={c.cycle_id}>{c.name}</option>)}
+        </select>
+      </div>
+      {!cid ? <div className="text-slate-400 dark:text-slate-500 text-sm py-6">평가주기를 선택하세요.</div> : (
+        <div>
+          {view==='mine' && (
+            <div>
+              {closedReason && <div className="text-xs text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-900 rounded-lg px-3 py-2 mb-3">{closedReason} (조회만 가능)</div>}
+              {inputOpen && cycle.kpi_input_end && <div className="text-xs text-slate-400 dark:text-slate-500 mb-2">KPI 입력 마감: {String(cycle.kpi_input_end).slice(0,10)}</div>}
+              <PersonPanel person={me} cid={cid} kpiEditable={inputOpen} feedbackEditable={false} me={me} empById={empById} cfg={cfg} setBusy={setBusy} flash={flash} setErr={setErr} comps={comps} grades={grades} cycleName={cycle?cycle.name:''} />
+            </div>
+          )}
+          {view==='team' && (
+            <div>
+              <div className="flex gap-2 flex-wrap mb-3">
+                {reports.map(r=><button key={r.id} onClick={()=>setTeamSel(r.id)} className={"text-sm px-3 py-1.5 rounded-lg border "+(teamSel===r.id?"bg-slate-900 text-white border-slate-900":"bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/40")}>{r.name} <span className="text-xs opacity-70">{r.position}</span></button>)}
+              </div>
+              {!teamSel ? <div className="text-slate-400 dark:text-slate-500 text-sm py-6">면담·피드백할 팀원을 선택하세요.</div> :
+                <PersonPanel person={empById[teamSel]} cid={cid} kpiEditable={false} feedbackEditable={true} me={me} empById={empById} cfg={cfg} setBusy={setBusy} flash={flash} setErr={setErr} comps={comps} grades={grades} cycleName={cycle?cycle.name:''} />}
+            </div>
+          )}
+          {view==='approve' && <ApprovalsPanel me={me} cid={cid} empById={empById} setBusy={setBusy} flash={flash} setErr={setErr} />}
+          {view==='all' && (
+            <div>
+              <select value={allSel} onChange={e=>setAllSel(e.target.value)} className="inp !w-64 mb-3">
+                <option value="">직원 선택 (전체 통합)</option>
+                {active.map(e=><option key={e.id} value={e.id}>{e.name} ({e.team}/{e.position})</option>)}
+              </select>
+              {!allSel ? <div className="text-slate-400 dark:text-slate-500 text-sm py-6">직원을 선택하면 KPI·면담을 통합 관리할 수 있습니다.</div> :
+                <PersonPanel person={empById[allSel]} cid={cid} kpiEditable={true} feedbackEditable={true} me={me} empById={empById} cfg={cfg} setBusy={setBusy} flash={flash} setErr={setErr} comps={comps} grades={grades} cycleName={cycle?cycle.name:''} />}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ResultFeedback({ result, cid, employeeId, me, setBusy, flash, setErr, reload }){
+  const [txt,setTxt]=useState(result&&result.feedback?result.feedback:'');
+  useEffect(()=>{ setTxt(result&&result.feedback?result.feedback:''); },[result&&result.id, result&&result.feedback]);
+  const pub=!!(result&&result.feedback_published);
+  async function save(publish){
+    setBusy(true);
+    const payload={ cycle_id:cid, employee_id:employeeId, feedback:txt, feedback_by:me.id, feedback_at:new Date().toISOString() };
+    if(publish!=null) payload.feedback_published=publish;
+    const res=await sb.from('eval_results').upsert(payload,{onConflict:'cycle_id,employee_id'});
+    setBusy(false); if(res.error){ setErr(res.error.message); return; }
+    flash(publish===true?'총평 저장 + 공개':(publish===false?'비공개로 전환':'총평 저장')); if(reload) reload();
+  }
+  return (
+    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4">
+      <div className="flex items-center justify-between mb-2">
+        <h3 className="font-semibold text-slate-800 dark:text-slate-100">평가 총평 (결과 피드백)</h3>
+        {result ? (pub? <span className="text-xs px-2 py-0.5 rounded bg-emerald-100 text-emerald-700">공개됨</span> : <span className="text-xs px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300">비공개</span>) : <span className="text-xs text-slate-400 dark:text-slate-500">결과 산정 전 — 총평 미리 작성 가능</span>}
+      </div>
+      {result && (result.grade||result.grand_total!=null) && <div className="text-xs text-slate-500 dark:text-slate-400 mb-2">등급 <b className="text-slate-700 dark:text-slate-200">{result.grade||'-'}</b> · 종합 <b className="text-slate-700 dark:text-slate-200">{result.grand_total!=null?Number(result.grand_total).toFixed(1):'-'}</b></div>}
+      <textarea value={txt} onChange={e=>setTxt(e.target.value)} rows="4" placeholder="이번 평가에 대한 종합 피드백 (강점·개선점·향후 기대)" className="w-full text-sm border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 outline-none focus:border-indigo-400 resize-y" />
+      <div className="flex justify-end gap-2 mt-2">
+        <button onClick={()=>save(null)} className="text-xs px-3 py-1.5 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-lg">저장</button>
+        {pub? <button onClick={()=>save(false)} className="text-xs px-3 py-1.5 border border-amber-300 text-amber-700 dark:text-amber-300 rounded-lg">비공개로</button>
+            : <button onClick={()=>save(true)} className="text-xs px-3 py-1.5 bg-indigo-600 text-white rounded-lg">저장 + 공개</button>}
+      </div>
+      <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1.5">공개하면 직원이 "내 평가결과"에서 총평을 볼 수 있습니다.</p>
+    </div>
+  );
+}
+function FeedbackCard({ pr, fb, editable, empById, onSave }){
+  const [txt,setTxt]=useState(fb?(fb.content||''):'');
+  const [editing,setEditing]=useState(false);
+  useEffect(()=>{ setTxt(fb?(fb.content||''):''); setEditing(false); },[fb&&fb.id, fb&&fb.content]);
+  const author=fb&&fb.author_id&&empById[fb.author_id]?empById[fb.author_id].name:'';
+  return (
+    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3">
+      <div className="flex items-center justify-between mb-1.5">
+        <span className="text-xs font-bold text-slate-700 dark:text-slate-200">{pr} 면담</span>
+        {fb&&fb.updated_at && <span className="text-[10px] text-slate-400 dark:text-slate-500">{author?author+' · ':''}{String(fb.updated_at).slice(0,10)}</span>}
+      </div>
+      {editable ?
+        <div>
+          <textarea value={txt} onChange={e=>{ setTxt(e.target.value); setEditing(true); }} rows="3" placeholder="면담 내용을 입력하세요" className="w-full text-sm border border-slate-200 dark:border-slate-700 rounded-lg p-2 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 outline-none focus:border-indigo-400 resize-y" />
+          {editing && <div className="flex justify-end gap-2 mt-1.5"><button onClick={()=>{ setTxt(fb?(fb.content||''):''); setEditing(false); }} className="text-xs text-slate-500 dark:text-slate-400">취소</button><button onClick={()=>{ onSave(pr, txt); setEditing(false); }} className="text-xs px-2.5 py-1 bg-indigo-600 text-white rounded">저장</button></div>}
+        </div>
+        : <div className="text-sm text-slate-600 dark:text-slate-300 whitespace-pre-wrap">{fb&&fb.content?fb.content:<span className="text-slate-300 dark:text-slate-600">기록 없음</span>}</div>}
+    </div>
+  );
+}
+function PersonPanel({ person, cid, kpiEditable, feedbackEditable, me, empById, cfg, setBusy, flash, setErr, comps, grades, cycleName }){
+  const [kpis,setKpis]=useState([]);
+  const [fbs,setFbs]=useState([]);
+  const [status,setStatus]=useState(null);
+  const [result,setResult]=useState(null);
+  const [showFb,setShowFb]=useState(false);
+  const [editKpi,setEditKpi]=useState(null);
+  const [editFb,setEditFb]=useState(null);
+  async function load(){
+    if(!cid||!person){ setKpis([]); setFbs([]); setStatus(null); return; }
+    const [k,f,stt,rr]=await Promise.all([
+      sb.from('eval_kpi').select('*').eq('cycle_id',cid).eq('employee_id',person.id).order('id'),
+      sb.from('eval_feedback').select('*').eq('cycle_id',cid).eq('employee_id',person.id),
+      sb.from('eval_kpi_status').select('*').eq('cycle_id',cid).eq('employee_id',person.id).maybeSingle(),
+      sb.from('eval_results').select('*').eq('cycle_id',cid).eq('employee_id',person.id).maybeSingle()
+    ]);
+    if(k.error){ setErr(k.error.message); return; }
+    if(f.error){ setErr(f.error.message); return; }
+    setKpis(k.data||[]); setFbs(f.data||[]); setStatus(stt&&stt.data?stt.data:null); setResult(rr&&rr.data?rr.data:null);
+  }
+  useEffect(()=>{ load(); },[cid, person&&person.id]);
+  async function saveFb(period, content){ setBusy(true); const res=await sb.from('eval_feedback').upsert({ cycle_id:cid, employee_id:person.id, author_id:me.id, period, content, updated_at:new Date().toISOString() },{ onConflict:'cycle_id,employee_id,period' }); setBusy(false); if(res.error){ setErr(res.error.message); return; } flash(period+' 면담 저장됨'); load(); }
+  const weightSum=kpis.reduce((s,k)=>s+Number(k.weight||0),0);
+  const kpiTotal=kpis.reduce((s,k)=>s+Number(k.weight||0)*Number(k.final_score||0),0)/100;
+  const minK=Number(cfg.min_kpi_count||3), maxK=Number(cfg.max_kpi_count||6);
+  const PERIODS=['Q1','Q2','Q3','Q4'];
+  const fbByPeriod=pr=>fbs.find(x=>x.period===pr);
+  const st = status ? status.status : 'DRAFT';
+  const locked = st==='SUBMITTED' || st==='APPROVED';
+  const canEdit = kpiEditable && !locked;
+  async function delKpi(k){ if(!confirm('이 KPI를 삭제할까요?')) return; setBusy(true); const r=await sb.from('eval_kpi').delete().eq('id',k.id); setBusy(false); if(r.error){ setErr(r.error.message); return; } load(); }
+  async function requestApproval(){
+    if(kpis.length===0){ alert('KPI를 먼저 등록하세요'); return; }
+    const approver=resolveApprover(person, empById); const now=new Date().toISOString();
+    setBusy(true);
+    const res=await sb.from('eval_kpi_status').upsert({ cycle_id:cid, employee_id:person.id, status:'SUBMITTED', submitted_by:me.id, submitted_at:now, approver_id:approver?approver.id:null, reject_reason:null, updated_at:now },{ onConflict:'cycle_id,employee_id' });
+    setBusy(false);
+    if(res.error){ setErr(res.error.message); return; }
+    flash(approver?(approver.name+'님에게 승인 요청됨'):'승인 요청됨 (승인자 미지정)'); load();
+  }
+  async function cancelReq(){ setBusy(true); const res=await sb.from('eval_kpi_status').update({ status:'DRAFT', updated_at:new Date().toISOString() }).eq('cycle_id',cid).eq('employee_id',person.id); setBusy(false); if(res.error){ setErr(res.error.message); return; } flash('요청이 취소되었습니다'); load(); }
+  async function reviseReq(){ if(!confirm('수정하려면 기존 승인이 해제되고, 수정 후 다시 승인을 받아야 합니다. 계속할까요?')) return; setBusy(true); const res=await sb.from('eval_kpi_status').update({ status:'DRAFT', approved_at:null, updated_at:new Date().toISOString() }).eq('cycle_id',cid).eq('employee_id',person.id); setBusy(false); if(res.error){ setErr(res.error.message); return; } flash('수정 가능 상태로 전환되었습니다'); load(); }
+  if(!person) return null;
+  const badge=KPI_STATUS[st]||KPI_STATUS.DRAFT;
+  const approver=status&&status.approver_id?empById[status.approver_id]:null;
+  return (
+    <div className="space-y-5">
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 flex items-center justify-between gap-3">
+        <div className="font-bold text-slate-800 dark:text-slate-100">{person.name} <span className="text-xs font-normal text-slate-400 dark:text-slate-500">{person.team} · {person.position}</span></div>
+        {feedbackEditable && cfg['fb_release_'+cid]==='true' && <button onClick={()=>setShowFb(true)} className="text-xs px-3 py-1.5 bg-indigo-600 text-white rounded-lg font-semibold whitespace-nowrap">📄 면담 피드백지</button>}
+      </div>
+
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 flex items-center justify-between gap-3 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className={"text-xs font-bold px-2 py-1 rounded "+badge[1]}>{badge[0]}</span>
+          {approver && <span className="text-xs text-slate-400 dark:text-slate-500">승인자: {approver.name}</span>}
+          {st==='REJECTED' && status.reject_reason && <span className="text-xs text-rose-500">반려 사유: {status.reject_reason}</span>}
+        </div>
+        <div className="flex gap-2">
+          {kpiEditable && (st==='DRAFT'||st==='REJECTED') && <button onClick={requestApproval} className="text-xs px-3 py-1.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">승인 요청</button>}
+          {kpiEditable && st==='SUBMITTED' && <button onClick={cancelReq} className="text-xs px-3 py-1.5 border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/40">요청 취소</button>}
+          {kpiEditable && st==='APPROVED' && <button onClick={reviseReq} className="text-xs px-3 py-1.5 border border-amber-300 text-amber-700 dark:text-amber-300 rounded-lg hover:bg-amber-50 dark:hover:bg-amber-950">수정 요청</button>}
+        </div>
+      </div>
+
+      <div>
+        <div className="bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-900 rounded-xl px-4 py-3 mb-3">
+          <div className="text-sm font-bold text-indigo-800 dark:text-indigo-200">📌 성과목표(KPI) — 연초에 본인이 직접 설정 후 [승인 요청]</div>
+          <div className="text-xs text-indigo-700 dark:text-indigo-300 mt-0.5">항목별 가중치 합계 100% · 상반기 평가 후 하반기 수정 시 재승인 · 분기 면담으로 진척 점검</div>
+        </div>
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="font-semibold text-slate-800 dark:text-slate-100">KPI (성과목표)</h3>
+          {canEdit && <button onClick={()=>setEditKpi({ _new:true })} className="text-sm px-3 py-1.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">+ KPI 추가</button>}
+        </div>
+        {locked && kpiEditable && <div className="text-xs text-slate-400 dark:text-slate-500 mb-2">{st==='APPROVED'?'승인 완료되어 잠겨 있습니다. 수정하려면 "수정 요청"을 누르세요.':'승인 대기 중이라 수정할 수 없습니다. 필요하면 "요청 취소" 후 수정하세요.'}</div>}
+        <div className="grid grid-cols-3 gap-2 mb-2 text-center text-xs">
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-2 text-slate-600 dark:text-slate-300">개수 <b className={(kpis.length<minK||kpis.length>maxK)?'text-amber-600':'text-slate-800 dark:text-slate-100'}>{kpis.length}</b> <span className="text-slate-400 dark:text-slate-500">/{minK}~{maxK}</span></div>
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-2 text-slate-600 dark:text-slate-300">가중치 <b className={weightSum!==100?'text-amber-600':'text-emerald-600'}>{weightSum}%</b></div>
+          <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-2 text-slate-600 dark:text-slate-300">총점 <b className="text-indigo-600 dark:text-indigo-400">{kpiTotal.toFixed(1)}</b></div>
+        </div>
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden">
+          <table className="w-full text-sm">
+            <thead className="bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 text-xs"><tr><th className="text-left px-3 py-2">KPI</th><th className="text-left px-3 py-2">지표</th><th className="text-right px-3 py-2">가중치</th><th className="text-right px-3 py-2">목표</th><th className="text-right px-3 py-2">실적</th><th className="text-right px-3 py-2">달성률</th><th className="text-right px-3 py-2">점수</th>{canEdit && <th className="px-3 py-2"></th>}</tr></thead>
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              {kpis.length===0 && <tr><td colSpan="8" className="px-3 py-6 text-center text-slate-300 dark:text-slate-600">등록된 KPI가 없습니다.{canEdit?' "KPI 추가"로 등록하세요.':''}</td></tr>}
+              {kpis.map(k=>(<tr key={k.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/40">
+                <td className="px-3 py-2 font-medium text-slate-800 dark:text-slate-100">{k.kpi_name}</td>
+                <td className="px-3 py-2 text-slate-500 dark:text-slate-400 text-xs">{k.metric||'-'}</td>
+                <td className="px-3 py-2 text-right text-slate-600 dark:text-slate-300">{k.weight||0}%</td>
+                <td className="px-3 py-2 text-right text-slate-500 dark:text-slate-400">{k.target_value==null?'-':k.target_value}</td>
+                <td className="px-3 py-2 text-right text-slate-500 dark:text-slate-400">{k.actual_value==null?'-':k.actual_value}</td>
+                <td className="px-3 py-2 text-right text-slate-500 dark:text-slate-400">{k.achievement_rate!=null?k.achievement_rate+'%':'-'}</td>
+                <td className="px-3 py-2 text-right font-semibold text-slate-800 dark:text-slate-100">{k.final_score==null?'-':k.final_score}</td>
+                {canEdit && <td className="px-3 py-2 text-right whitespace-nowrap"><button onClick={()=>setEditKpi(k)} className="text-xs text-indigo-600 mr-2">수정</button><button onClick={()=>delKpi(k)} className="text-xs text-red-500">삭제</button></td>}
+              </tr>))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="font-semibold text-slate-800 dark:text-slate-100">분기 면담 · 피드백</h3>
+          {feedbackEditable ? <span className="text-xs text-slate-400 dark:text-slate-500">분기별로 기록·수정</span> : <span className="text-xs text-slate-400 dark:text-slate-500">팀장/인사부가 기록</span>}
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {PERIODS.map(pr=><FeedbackCard key={pr} pr={pr} fb={fbByPeriod(pr)} editable={feedbackEditable} empById={empById} onSave={saveFb} />)}
+        </div>
+      </div>
+
+      {feedbackEditable && <ResultFeedback result={result} cid={cid} employeeId={person.id} me={me} setBusy={setBusy} flash={flash} setErr={setErr} reload={load} />}
+      {showFb && <FeedbackSheetModal person={person} cid={cid} comps={comps} cfg={cfg} grades={grades} empById={empById} cycleName={cycleName} onClose={()=>setShowFb(false)} setErr={setErr} me={me} flash={flash} setBusy={setBusy} />}
+      {editKpi && <KpiEditModal k={editKpi} cid={cid} eid={person.id} reload={load} setBusy={setBusy} flash={flash} setErr={setErr} onClose={()=>setEditKpi(null)} />}
+      {editFb && <FeedbackModal fb={editFb} cid={cid} employeeId={person.id} authorId={me.id} reload={load} setBusy={setBusy} flash={flash} setErr={setErr} onClose={()=>setEditFb(null)} />}
+    </div>
+  );
+}
+
+function FeedbackModal({ fb, cid, employeeId, authorId, reload, setBusy, flash, setErr, onClose }){
+  const [period,setPeriod]=useState(fb.period||'Q1');
+  const [content,setContent]=useState(fb.content||'');
+  async function save(){
+    setBusy(true);
+    const res=await sb.from('eval_feedback').upsert({ cycle_id:cid, employee_id:employeeId, author_id:authorId, period, content, updated_at:new Date().toISOString() },{ onConflict:'cycle_id,employee_id,period' });
+    setBusy(false);
+    if(res.error){ setErr(res.error.message); return; }
+    flash('면담 기록이 저장되었습니다'); await reload(); onClose();
+  }
+  async function del(){
+    if(!fb.id){ onClose(); return; }
+    if(!confirm('이 면담 기록을 삭제할까요?')) return;
+    setBusy(true); const res=await sb.from('eval_feedback').delete().eq('id',fb.id); setBusy(false);
+    if(res.error){ setErr(res.error.message); return; }
+    flash('삭제되었습니다'); await reload(); onClose();
+  }
+  return (
+    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-lg p-5" onClick={ev=>ev.stopPropagation()}>
+        <h3 className="font-bold text-slate-800 dark:text-slate-100 mb-4">분기 면담 기록</h3>
+        <div className="space-y-3">
+          <Field label="분기"><select value={period} onChange={e=>setPeriod(e.target.value)} disabled={!!fb.id} className="inp">{['Q1','Q2','Q3','Q4'].map(q=><option key={q} value={q}>{q}</option>)}</select></Field>
+          <Field label="면담 내용 / 피드백"><textarea value={content} onChange={e=>setContent(e.target.value)} rows="6" className="inp" placeholder="목표 진척, 강점·개선점, 코칭 내용 등을 기록하세요." /></Field>
+        </div>
+        <div className="flex justify-between items-center mt-5">
+          {fb.id ? <button onClick={del} className="text-sm text-red-600 hover:text-red-700">삭제</button> : <span />}
+          <div className="flex gap-2">
+            <button onClick={onClose} className="px-4 py-2 text-sm text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">취소</button>
+            <button onClick={save} className="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">저장</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function KpiEditModal({ k, cid, eid, reload, setBusy, flash, setErr, onClose }){
+  const isNew=!!k._new;
+  const [f,setF]=useState({ kpi_name:k.kpi_name||'', metric:k.metric||'', weight:k.weight??'', target_value:k.target_value??'', actual_value:k.actual_value??'', achievement_rate:k.achievement_rate??'', final_score:k.final_score??'', comment:k.comment||'' });
+  const set=(key,v)=>setF(s=>({...s,[key]:v}));
+  function autoRate(){ const t=Number(f.target_value), a=Number(f.actual_value); if(t>0){ set('achievement_rate', Math.round(a/t*1000)/10); } }
+  const num=v=> v===''||v==null ? null : Number(v);
+  async function save(){
+    if(!f.kpi_name.trim()){ alert('KPI 이름을 입력하세요'); return; }
+    setBusy(true);
+    const payload={ cycle_id:cid, employee_id:eid, kpi_name:f.kpi_name.trim(), metric:f.metric, weight:num(f.weight)||0, target_value:num(f.target_value), actual_value:num(f.actual_value), achievement_rate:num(f.achievement_rate), final_score:num(f.final_score), comment:f.comment };
+    let res;
+    if(isNew) res=await sb.from('eval_kpi').insert(payload);
+    else res=await sb.from('eval_kpi').update(payload).eq('id',k.id);
+    setBusy(false);
+    if(res.error){ setErr(res.error.message); return; }
+    flash(isNew?'KPI가 추가되었습니다':'KPI가 수정되었습니다'); await reload(); onClose();
+  }
+  return (
+    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-lg p-5 max-h-[92vh] overflow-y-auto" onClick={ev=>ev.stopPropagation()}>
+        <h3 className="font-bold text-slate-800 dark:text-slate-100 mb-4">{isNew?'KPI 추가':'KPI 수정'}</h3>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="col-span-2"><Field label="KPI 이름"><input value={f.kpi_name} onChange={e=>set('kpi_name',e.target.value)} className="inp" placeholder="예: 신규 계약 건수" /></Field></div>
+          <div className="col-span-2"><Field label="측정 지표"><input value={f.metric} onChange={e=>set('metric',e.target.value)} className="inp" placeholder="예: 분기 신규계약 수" /></Field></div>
+          <Field label="가중치(%)"><input type="number" value={f.weight} onChange={e=>set('weight',e.target.value)} className="inp" /></Field>
+          <Field label="최종 점수(0~100)"><input type="number" value={f.final_score} onChange={e=>set('final_score',e.target.value)} className="inp" /></Field>
+          <Field label="목표값"><input type="number" value={f.target_value} onChange={e=>set('target_value',e.target.value)} className="inp" /></Field>
+          <Field label="실적값"><input type="number" value={f.actual_value} onChange={e=>set('actual_value',e.target.value)} className="inp" /></Field>
+          <div className="col-span-2 flex items-end gap-2">
+            <div className="flex-1"><Field label="달성률(%)"><input type="number" value={f.achievement_rate} onChange={e=>set('achievement_rate',e.target.value)} className="inp" /></Field></div>
+            <button onClick={autoRate} className="px-3 py-2 text-xs text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/40 whitespace-nowrap">실적/목표로 자동</button>
+          </div>
+          <div className="col-span-2"><Field label="비고"><input value={f.comment} onChange={e=>set('comment',e.target.value)} className="inp" /></Field></div>
+        </div>
+        <div className="flex justify-end gap-2 mt-5">
+          <button onClick={onClose} className="px-4 py-2 text-sm text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">취소</button>
+          <button onClick={save} className="px-4 py-2 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">저장</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function parseRatio(str){ const a=String(str||'60:40').split(':'); const x=Number(a[0]), y=Number(a[1]); return [isNaN(x)?60:x, isNaN(y)?40:y]; }
+var RATIO_POSITIONS=['대표이사','본부장','팀장','파트장','매니저','연구원'];
+function tierRatio(person, evalType, cfg){
+  if(evalType==='SIMPLE') return { key:'간이', ratio:parseRatio(cfg.ratio_simple||cfg.ratio_new||'100:0') };
+  var pos=String((person&&person.position)||'')+' '+String((person&&person.rank)||'');
+  var def={대표이사:cfg.ratio_leader||'40:60',본부장:cfg.ratio_leader||'40:60',팀장:cfg.ratio_leader||'40:60',파트장:cfg.ratio_partlead||'50:50',매니저:cfg.ratio_general||'60:40',연구원:cfg.ratio_general||'60:40'};
+  for(var i=0;i<RATIO_POSITIONS.length;i++){ var P=RATIO_POSITIONS[i]; if(pos.indexOf(P)>=0) return { key:P, ratio:parseRatio(cfg['ratio_pos_'+P]||def[P]) }; }
+  if(/대표|이사|본부장|팀장/.test(pos)) return { key:'리더', ratio:parseRatio(cfg['ratio_pos_팀장']||cfg.ratio_leader||'40:60') };
+  return { key:'일반', ratio:parseRatio(cfg['ratio_pos_연구원']||cfg.ratio_general||'60:40') };
+}
+function gradeOf(score, grades){ for(const g of grades){ if(score>=Number(g.min_score)&&score<=Number(g.max_score)) return g.grade; } return grades.length?grades[grades.length-1].grade:'-'; }
+function compScoreFor(ratee, comps, cfg, rows){
+  const tr=getEvalTrack(ratee), lead=isLeaderRole(ratee,cfg);
+  const app=comps.filter(c=>c.active!==false && (c.track==='COMMON'||c.track===tr||(c.track==='LEADER'&&lead)||(c.track==='FOLLOWER'&&!lead)));
+  const rw={ self:Number(cfg.rater_weight_self||10), manager:Number(cfg.rater_weight_manager||50), peer:Number(cfg.rater_weight_peer||30), subordinate:Number(cfg.rater_weight_subordinate||10) };
+  let earned=0, wsum=0, rated=0; const core=[];
+  app.forEach(c=>{
+    const rs=rows.filter(r=>r.ratee_id===ratee.id && r.comp_id===c.comp_id && r.score!=null);
+    if(!rs.length) return;
+    const byType={};
+    rs.forEach(r=>{ (byType[r.rater_type]=byType[r.rater_type]||[]).push(Number(r.score)); });
+    let num=0, den=0;
+    Object.keys(byType).forEach(t=>{ const arr=byType[t]; const avg=arr.reduce((a,b)=>a+b,0)/arr.length; const w=rw[t]||0; num+=w*avg; den+=w; });
+    if(den===0) return;
+    const cs=num/den;
+    earned+=Number(c.weight)*cs; wsum+=Number(c.weight); rated++;
+    if(c.is_core) core.push(cs);
+  });
+  return { score: wsum>0? earned/wsum : null, rated, applicable: app.length, core };
+}
+function kpiScoreFor(kpis){
+  const rel=(kpis||[]).filter(k=>k.final_score!=null && Number(k.weight)>0);
+  if(!rel.length) return null;
+  const num=rel.reduce((s,k)=>s+Number(k.weight)*Number(k.final_score),0);
+  const den=rel.reduce((s,k)=>s+Number(k.weight),0);
+  return den>0? num/den : null;
+}
+function tenureMonthsAt(join, ref){ if(!join) return 999; var j=new Date(join); if(isNaN(j)) return 999; var r=ref?new Date(ref):new Date(); if(isNaN(r)) r=new Date(); var m=(r.getFullYear()-j.getFullYear())*12+(r.getMonth()-j.getMonth()); if(r.getDate()<j.getDate()) m-=1; return m; }
+function newhireState(person, cyc, cfg){ var ref=(cyc&&cyc.end_date)||(cyc&&cyc.start_date)||null; var m=tenureMonthsAt(person&&person.join_date, ref); var dm=Number(cfg.newhire_defer_months||3), rm=Number(cfg.newhire_ramp_months||6); if(m<dm) return {defer:true,ramp:false,months:m}; if(m<rm) return {defer:false,ramp:true,months:m}; return {defer:false,ramp:false,months:m}; }
+function computeResult(person, evalType, comps, cfg, grades, rows360, kpis, ratioOverride){
+  const c=compScoreFor(person, comps, cfg, rows360);
+  const k=kpiScoreFor(kpis);
+  const tr=ratioOverride?{key:'신규',ratio:ratioOverride}:tierRatio(person, evalType, cfg); const cr=tr.ratio[0], kr=tr.ratio[1];
+  let grand;
+  if(k==null || kr===0){ grand = c.score!=null?c.score:0; }
+  else if(c.score==null){ grand = k; }
+  else { grand = c.score*(cr/100) + k*(kr/100); }
+  let grade=gradeOf(grand, grades); let gated=false;
+  if(String(cfg.core_gate_enabled)==='true' && c.core.length){
+    const minCore=Math.min.apply(null,c.core);
+    if(minCore<Number(cfg.core_gate_min||65) && (grade==='S'||grade==='A')){ grade='B'; gated=true; }
+  }
+  const gr=grades.find(g=>g.grade===grade);
+  return { comp:c.score, kpi:k, grand, grade, gated, tier:tr.key, ratio:tr.ratio, raise: gr?Number(gr.raise_rate):0, compRated:c.rated, compApp:c.applicable };
+}
+const GRADE_COLOR={ S:'bg-indigo-600 text-white', A:'bg-emerald-500 text-white', B:'bg-sky-500 text-white', C:'bg-amber-500 text-white', D:'bg-slate-400 text-white' };
+
+function StatusSection({ cycles, emps, setErr }){
+  const inProg=cycles.find(c=>c.status==='IN_PROGRESS');
+  const [cid,setCid]=useState(inProg?inProg.cycle_id:(cycles[0]?cycles[0].cycle_id:''));
+  const [rows,setRows]=useState(null);
+  const empById=useMemo(()=>Object.fromEntries(emps.map(e=>[e.id,e])),[emps]);
+  async function load(){
+    if(!cid){ setRows(null); return; }
+    const [tg,ks,r360,rs]=await Promise.all([
+      sb.from('eval_targets').select('employee_id,eval_type').eq('cycle_id',cid),
+      sb.from('eval_kpi_status').select('employee_id,status').eq('cycle_id',cid),
+      sb.from('eval_360').select('rater_id,score').eq('cycle_id',cid),
+      sb.from('eval_results').select('employee_id').eq('cycle_id',cid)
+    ]);
+    if(tg.error){ setErr(tg.error.message); return; }
+    const ksMap={}; (ks.data||[]).forEach(x=>{ ksMap[x.employee_id]=x.status; });
+    const raters=new Set((r360.data||[]).filter(x=>x.score!=null).map(x=>x.rater_id));
+    const resSet=new Set((rs.data||[]).map(x=>x.employee_id));
+    const list=(tg.data||[]).filter(t=>t.eval_type!=='EXCLUDED').map(t=>({ e:empById[t.employee_id], kpi:ksMap[t.employee_id]||'NONE', p360:raters.has(t.employee_id), res:resSet.has(t.employee_id) })).filter(x=>x.e);
+    list.sort((a,b)=>(a.e.team||'').localeCompare(b.e.team||'')||(a.e.name||'').localeCompare(b.e.name||''));
+    setRows(list);
+  }
+  useEffect(()=>{ load(); },[cid]);
+  const KL={ NONE:['미작성','bg-rose-100 text-rose-700'], DRAFT:['작성중','bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'], SUBMITTED:['승인대기','bg-amber-100 text-amber-700'], APPROVED:['승인완료','bg-emerald-100 text-emerald-700'], REJECTED:['반려','bg-rose-100 text-rose-700'] };
+  const sum=rows?{ kpiNo:rows.filter(r=>r.kpi==='NONE'||r.kpi==='DRAFT'||r.kpi==='REJECTED').length, wait:rows.filter(r=>r.kpi==='SUBMITTED').length, no360:rows.filter(r=>!r.p360).length, noRes:rows.filter(r=>!r.res).length }:null;
+  return (
+    <div>
+      <div className="flex items-center gap-2 mb-3 flex-wrap">
+        <select value={cid} onChange={e=>setCid(e.target.value)} className="inp !w-56"><option value="">평가주기 선택</option>{cycles.map(c=><option key={c.cycle_id} value={c.cycle_id}>{c.name}</option>)}</select>
+        {rows && <span className="text-xs text-slate-400 dark:text-slate-500">대상 {rows.length}명</span>}
+      </div>
+      {!rows ? <div className="text-slate-400 dark:text-slate-500 text-sm py-6">평가주기를 선택하세요.</div> : <div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+          {[['KPI 미완료',sum.kpiNo,'text-rose-600'],['KPI 승인대기',sum.wait,'text-amber-600'],['360 미참여',sum.no360,'text-rose-600'],['결과 미산정',sum.noRes,'text-slate-500 dark:text-slate-400']].map(a=>(
+            <div key={a[0]} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-3 text-center"><div className="text-xs text-slate-400 dark:text-slate-500">{a[0]}</div><div className={"text-xl font-bold mt-0.5 "+a[2]}>{a[1]}명</div></div>
+          ))}
+        </div>
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden">
+          <table className="w-full text-sm"><thead className="bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 text-xs"><tr>
+            <th className="text-left px-3 py-2.5">이름</th><th className="text-left px-3 py-2.5">부서</th><th className="text-center px-3 py-2.5">KPI 상태</th><th className="text-center px-3 py-2.5">360 참여</th><th className="text-center px-3 py-2.5">결과</th></tr></thead>
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              {rows.map(r=>{ const kl=KL[r.kpi]||KL.NONE; return <tr key={r.e.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/40">
+                <td className="px-3 py-2.5 font-medium text-slate-800 dark:text-slate-100">{r.e.name} <span className="text-xs text-slate-400 dark:text-slate-500">{r.e.position}</span></td>
+                <td className="px-3 py-2.5 text-slate-600 dark:text-slate-300">{r.e.team}</td>
+                <td className="px-3 py-2.5 text-center"><span className={"text-[11px] font-bold px-2 py-0.5 rounded "+kl[1]}>{kl[0]}</span></td>
+                <td className="px-3 py-2.5 text-center">{r.p360?<span className="text-[11px] px-2 py-0.5 rounded bg-emerald-100 text-emerald-700">참여</span>:<span className="text-[11px] px-2 py-0.5 rounded bg-rose-100 text-rose-700">미참여</span>}</td>
+                <td className="px-3 py-2.5 text-center">{r.res?<span className="text-emerald-600 text-xs">산정완료</span>:<span className="text-slate-400 dark:text-slate-500 text-xs">-</span>}</td>
+              </tr>; })}
+            </tbody></table>
+        </div>
+        <p className="text-xs text-slate-400 dark:text-slate-500 mt-3">빨간 항목(미작성·미참여)이 진행이 안 된 부분입니다. 해당 인원에게 개별 안내가 필요합니다. 결과 미산정은 <b>결과 산정</b>에서 처리합니다.</p>
+      </div>}
+    </div>
+  );
+}
+function ResultsSection({ cycles, emps, comps, cfg, grades, setBusy, flash, setErr }){
+  const inProg=cycles.find(c=>c.status==='IN_PROGRESS');
+  const [cid,setCid]=useState(inProg?inProg.cycle_id:(cycles[0]?cycles[0].cycle_id:''));
+  const [rows,setRows]=useState(null);
+  const [loading,setLoading]=useState(false);
+  const empById=useMemo(()=>Object.fromEntries(emps.map(e=>[e.id,e])),[emps]);
+  const cyc=cycles.find(c=>c.cycle_id===cid);
+  const half=(function(){ const s=String((cyc&&cyc.cycle_id||'')+' '+(cyc&&cyc.name||'')); return /H1|상반기/.test(s)?'H1':(/H2|하반기/.test(s)?'H2':''); })();
+  const yr=(function(){ const m=String((cyc&&cyc.cycle_id||'')+' '+(cyc&&cyc.name||'')).match(/(20\d{2})/); return m?m[1]:''; })();
+  const isH2=half==='H2';
+  const [fbOpen,setFbOpen]=useState(cfg['fb_release_'+cid]==='true');
+  useEffect(()=>{ setFbOpen(cfg['fb_release_'+cid]==='true'); },[cid]);
+  async function toggleFb(){ const nv=!fbOpen; setFbOpen(nv); const r=await sb.from('eval_config').upsert({key:'fb_release_'+cid,value:nv?'true':'false'},{onConflict:'key'}); if(r.error){ setErr(r.error.message); return; } flash(nv?'피드백지 공개 — 팀장 열람 가능':'피드백지 비공개'); }
+  const band=Number(cfg.adjust_band_pct||5);
+  const h1w=Number(cfg.salary_h1_weight||50); const h2w=Number(cfg.salary_h2_weight!=null?cfg.salary_h2_weight:100-h1w);
+  const won=n=>Number(n||0).toLocaleString('ko-KR');
+  const clampRel=(v,base)=>{ base=Number(base)||0; v=Number(v)||0; const lo=base*(1-band/100), hi=base*(1+band/100); return Math.min(Math.max(v,Math.min(lo,hi)),Math.max(lo,hi)); };
+  const clampPts=(v,base)=>{ base=Number(base)||0; v=Number(v)||0; return Math.min(Math.max(v,base-band),base+band); };
+  const gradeList=grades.map(g=>g.grade);
+  function setAdj(id,key,val){ setRows(rs=>rs.map(x=> x.p.id===id? Object.assign({},x,{adj:Object.assign({},x.adj,{[key]:val})}) : x)); }
+  async function run(){
+    if(!cid){ alert('평가주기를 선택하세요'); return; }
+    setLoading(true);
+    const [t,r,k,pay]=await Promise.all([
+      sb.from('eval_targets').select('*').eq('cycle_id',cid),
+      sb.from('eval_360').select('*').eq('cycle_id',cid),
+      sb.from('eval_kpi').select('*').eq('cycle_id',cid),
+      sb.from('employees').select('id,monthly_pay')
+    ]);
+    let h1map={};
+    if(isH2 && yr){ const h1=await sb.from('eval_results').select('employee_id,grand_total').eq('cycle_id', yr+'H1'); (h1.data||[]).forEach(x=>{ h1map[x.employee_id]=Number(x.grand_total); }); }
+    setLoading(false);
+    if(t.error||r.error||k.error){ setErr((t.error||r.error||k.error).message); return; }
+    const payMap={}; (pay.data||[]).forEach(x=>{ payMap[x.id]=Number(x.monthly_pay)||0; });
+    const kByEmp={}; (k.data||[]).forEach(x=>{ (kByEmp[x.employee_id]=kByEmp[x.employee_id]||[]).push(x); });
+    const out=(t.data||[]).filter(x=>x.eval_type!=='EXCLUDED').map(tg=>{ const p=empById[tg.employee_id]; if(!p) return null;
+      const nh=newhireState(p, cyc, cfg);
+      if(nh.defer) return { p, tg, deferred:true, months:nh.months };
+      const ov = nh.ramp ? parseRatio(cfg.ratio_newhire||'100:0') : null;
+      const base=computeResult(p, tg.eval_type, comps, cfg, grades, r.data||[], kByEmp[p.id]||[], ov);
+      const cur=payMap[p.id]||0;
+      const h1g=h1map[p.id]; const hasH1=(h1g!=null&&!isNaN(h1g));
+      let effRaise=Number(base.raise||0);
+      if(isH2 && hasH1){ const annual=(h1g*h1w/100)+((base.grand||0)*h2w/100); const ag=gradeOf(annual,grades); const gr=grades.find(g=>g.grade===ag); effRaise=gr?Number(gr.raise_rate):Number(base.raise||0); }
+      const baseSalary= isH2? (cur? Math.round(cur*(1+effRaise/100)) : 0) : null;
+      return { p, tg, cur, base, hasH1, ramp:nh.ramp, months:nh.months, raiseBase:effRaise, baseSalary,
+        adj:{ comp:(base.comp!=null?Number(base.comp.toFixed(1)):0), grand:Number((base.grand||0).toFixed(1)), grade:base.grade, raise:effRaise, salary:baseSalary } };
+    }).filter(Boolean).sort((a,b)=>(((b.base&&b.base.grand)||0)-((a.base&&a.base.grand)||0)));
+    setRows(out);
+  }
+  async function save(){
+    if(!rows||!rows.length){ alert('먼저 산정을 실행하세요'); return; }
+    setBusy(true);
+    const payload=rows.filter(x=>!x.deferred).map(({p,base,adj})=>({ cycle_id:cid, employee_id:p.id, kpi_total:base.kpi, comp_total:Number(adj.comp), grand_total:Number(adj.grand), grade:adj.grade, base_raise_rate:Number(adj.raise), final_salary: isH2?(adj.salary!=null&&adj.salary!==''?Number(adj.salary):null):null, status:'CALCULATED' }));
+    const res=await sb.from('eval_results').upsert(payload,{ onConflict:'cycle_id,employee_id' });
+    setBusy(false);
+    if(res.error){ setErr(res.error.message); return; }
+    flash(payload.length+'명 결과 저장됨');
+  }
+  const ninp="w-16 text-right text-sm border border-slate-200 dark:border-slate-700 rounded px-1.5 py-1 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 outline-none focus:border-indigo-400";
+  return (
+    <div>
+      <div className="flex items-center gap-2 mb-3 flex-wrap">
+        <select value={cid} onChange={e=>{ setCid(e.target.value); setRows(null); }} className="inp !w-52"><option value="">평가주기 선택</option>{cycles.map(c=><option key={c.cycle_id} value={c.cycle_id}>{c.name}</option>)}</select>
+        <button onClick={run} disabled={!cid} className="text-sm px-3 py-1.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-40 font-semibold">종합 산정 실행</button>
+        {rows && rows.length>0 && <button onClick={save} className="text-sm px-3 py-1.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">결과 저장</button>}
+        {cid && <button onClick={toggleFb} className={"text-sm px-3 py-1.5 rounded-lg "+(fbOpen?"bg-emerald-600 text-white":"border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300")}>{fbOpen?'피드백지 공개됨 ✓':'피드백지 공개'}</button>}
+        {cid && <span className="text-xs text-slate-400 dark:text-slate-500">{isH2?'하반기 · 신연봉 산출':(half==='H1'?'상반기 · 신연봉 없음':'')} · 조정폭 ±{band}%</span>}
+      </div>
+      {loading ? <div className="text-slate-400 dark:text-slate-500 text-sm py-6">산정 중…</div> :
+       !rows ? <div className="text-slate-400 dark:text-slate-500 text-sm py-6">평가주기 선택 후 "종합 산정 실행"을 누르세요. 산정 후 각 값을 조정폭 내에서 수동 조정할 수 있습니다.</div> :
+       rows.length===0 ? <div className="bg-white dark:bg-slate-800 border rounded-2xl p-8 text-center text-slate-400 dark:text-slate-500">대상자가 없습니다.</div> :
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-x-auto">
+        <table className="w-full text-sm whitespace-nowrap">
+          <thead className="bg-slate-50 dark:bg-slate-900 text-slate-500 dark:text-slate-400 text-xs"><tr>
+            <th className="text-left px-3 py-2.5">이름</th><th className="text-left px-3 py-2.5">부서</th><th className="text-right px-3 py-2.5">역량</th><th className="text-right px-3 py-2.5">KPI</th><th className="text-right px-3 py-2.5">종합</th><th className="text-center px-3 py-2.5">등급</th><th className="text-right px-3 py-2.5">인상률%</th><th className="text-right px-3 py-2.5">현재연봉</th>{isH2 && <th className="text-right px-3 py-2.5">신연봉</th>}
+          </tr></thead>
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+            {rows.map((row)=>{ const p=row.p;
+              if(row.deferred) return (
+                <tr key={p.id} className="bg-amber-50/40 dark:bg-amber-950/20">
+                  <td className="px-3 py-2.5 font-medium text-slate-700 dark:text-slate-200">{p.name} <span className="text-xs text-slate-400 dark:text-slate-500">{p.position}</span></td>
+                  <td className="px-3 py-2.5 text-slate-500 dark:text-slate-400">{p.team}</td>
+                  <td colSpan={isH2?7:6} className="px-3 py-2.5 text-amber-700 dark:text-amber-300 text-xs">평가 유예 — 신규입사(재직 {row.months}개월). 다음 반기 평가에 포함됩니다.</td>
+                </tr>
+              );
+              const base=row.base, cur=row.cur, adj=row.adj, hasH1=row.hasH1, raiseBase=row.raiseBase, baseSalary=row.baseSalary;
+              return (
+              <tr key={p.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/40">
+                <td className="px-3 py-2.5 font-medium text-slate-800 dark:text-slate-100">{p.name} <span className="text-xs text-slate-400 dark:text-slate-500">{p.position}</span>{row.ramp && <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-sky-100 text-sky-700">신규·역량위주</span>}{base.gated && <span className="text-[10px] text-rose-500 block">게이트↓</span>}</td>
+                <td className="px-3 py-2.5 text-slate-600 dark:text-slate-300">{p.team}</td>
+                <td className="px-2 py-2 text-right"><input type="number" step="0.1" className={ninp} value={adj.comp} onChange={e=>setAdj(p.id,'comp',e.target.value)} onBlur={e=>setAdj(p.id,'comp',Number(clampRel(e.target.value,base.comp).toFixed(1)))} title={"기준 "+(base.comp!=null?base.comp.toFixed(1):'-')} /></td>
+                <td className="px-3 py-2.5 text-right text-slate-500 dark:text-slate-400">{base.kpi!=null?base.kpi.toFixed(1):'-'}</td>
+                <td className="px-2 py-2 text-right"><input type="number" step="0.1" className={ninp} value={adj.grand} onChange={e=>setAdj(p.id,'grand',e.target.value)} onBlur={e=>setAdj(p.id,'grand',Number(clampRel(e.target.value,base.grand).toFixed(1)))} title={"기준 "+(base.grand||0).toFixed(1)} /></td>
+                <td className="px-2 py-2 text-center"><select value={adj.grade} onChange={e=>setAdj(p.id,'grade',e.target.value)} className="text-xs border border-slate-200 dark:border-slate-700 rounded px-1 py-1 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100">{gradeList.map(g=><option key={g} value={g}>{g}</option>)}</select></td>
+                <td className="px-2 py-2 text-right"><input type="number" step="0.1" className={ninp} value={adj.raise} onChange={e=>setAdj(p.id,'raise',e.target.value)} onBlur={e=>setAdj(p.id,'raise',clampPts(e.target.value,raiseBase))} title={"기준 "+raiseBase+"%"} /></td>
+                <td className="px-3 py-2.5 text-right text-slate-500 dark:text-slate-400">{cur?won(cur):'-'}</td>
+                {isH2 && <td className="px-2 py-2 text-right">{cur? (hasH1? <input type="number" className={ninp+" !w-24"} value={adj.salary==null?'':adj.salary} onChange={e=>setAdj(p.id,'salary',e.target.value)} onBlur={e=>setAdj(p.id,'salary',Math.round(clampRel(e.target.value,baseSalary)))} title={"기준 "+won(baseSalary)} /> : <span className="text-[11px] text-amber-600">상반기 결과 없음</span>) : '-'}</td>}
+              </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>}
+      <p className="text-xs text-slate-400 dark:text-slate-500 mt-3">기준 계산치에서 <b>조정폭 ±{band}%</b>(인상률은 ±{band}%p) 내로 수동 조정되며(범위 밖은 자동 보정), 저장 시 반영됩니다. 신연봉은 <b>하반기</b>에만 상·하반기 종합을 <b>{h1w}:{h2w}</b> 비중으로 합산→등급→인상률로 산출(상반기 결과 필요). 실제 반영은 급여에서 수동. 저장 후 직원 <b>내 평가결과</b>에 반영됩니다.</p>
+    </div>
+  );
+}
+
+function MyResultTab({ me, cycles, grades, setErr }){
+  const [results,setResults]=useState(null);
+  useEffect(()=>{ (async()=>{ if(!me){ setResults([]); return; } const { data, error }=await sb.from('eval_results').select('*').eq('employee_id',me.id); if(error){ setErr(error.message); return; } setResults(data||[]); })(); },[me&&me.id]);
+  const cycleName=id=>{ const c=cycles.find(x=>x.cycle_id===id); return c?c.name:id; };
+  if(!me) return <Stub title="내 평가결과" desc="로그인 계정이 직원 정보와 연결되지 않았습니다." />;
+  if(results===null) return <div className="text-slate-400 dark:text-slate-500 text-sm py-6">불러오는 중…</div>;
+  if(!results.length) return <Stub title="내 평가결과" desc="아직 산정·공개된 평가결과가 없습니다. 평가주기가 마무리되면 여기에서 확인할 수 있습니다." />;
+  return (
+    <div className="space-y-4 max-w-2xl">
+      {results.map(r=>(
+        <div key={r.id} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-5">
+          <div className="flex items-center justify-between">
+            <div className="font-bold text-slate-800 dark:text-slate-100">{cycleName(r.cycle_id)}</div>
+            <span className={"text-lg font-bold px-3 py-1 rounded-lg "+(GRADE_COLOR[r.grade]||'bg-slate-200')}>{r.grade}</span>
+          </div>
+          <div className="grid grid-cols-3 gap-3 mt-4 text-center">
+            <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-3"><div className="text-xs text-slate-400 dark:text-slate-500">역량평가</div><div className="font-bold text-slate-800 dark:text-slate-100 mt-0.5">{r.comp_total!=null?Number(r.comp_total).toFixed(1):'-'}</div></div>
+            <div className="bg-slate-50 dark:bg-slate-900 rounded-lg p-3"><div className="text-xs text-slate-400 dark:text-slate-500">성과(KPI)</div><div className="font-bold text-slate-800 dark:text-slate-100 mt-0.5">{r.kpi_total!=null?Number(r.kpi_total).toFixed(1):'-'}</div></div>
+            <div className="bg-indigo-50 dark:bg-indigo-950 rounded-lg p-3"><div className="text-xs text-indigo-400">종합</div><div className="font-bold text-indigo-700 mt-0.5">{r.grand_total!=null?Number(r.grand_total).toFixed(1):'-'}</div></div>
+          </div>
+          {r.base_raise_rate!=null && <div className="text-xs text-slate-500 dark:text-slate-400 mt-3">기준 인상률: <b className="text-slate-700 dark:text-slate-200">{r.base_raise_rate}%</b></div>}
+          {r.feedback && r.feedback_published && <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700"><div className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">평가 총평</div><div className="text-sm text-slate-700 dark:text-slate-200 whitespace-pre-wrap">{r.feedback}</div></div>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
