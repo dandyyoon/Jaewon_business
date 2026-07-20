@@ -4,7 +4,6 @@
 <base target="_top">
 <meta charset="UTF-8">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* ============================================================
    DEMO 급여자동화 — Supabase 데이터층 (GAS Code.gs v4.0 이식)
@@ -452,25 +451,33 @@ window.PB_SUPA_URL="";
 
 /* ==================== google.script.run 호환 shim ==================== */
 (function(){
-  var BE=window.__PB_BE;
-  function runnerFactory(){
+  var BE=window.__PB_BE||{};
+  function makeRunner(){
     var okh=null, errh=null;
-    var api={
-      withSuccessHandler:function(f){ okh=f; return api; },
-      withFailureHandler:function(f){ errh=f; return api; }
+    var target={
+      withSuccessHandler:function(f){ okh=f; return proxy; },
+      withFailureHandler:function(f){ errh=f; return proxy; },
+      withUserObject:function(){ return proxy; }
     };
-    Object.keys(BE).forEach(function(name){
-      api[name]=function(){
-        var args=[].slice.call(arguments);
-        Promise.resolve().then(function(){ return BE[name].apply(null,args); })
-          .then(function(res){ if(okh) okh(res); },
-                function(e){ console.error('[PB]',name,e); if(errh) errh(e); else if(window.toast) toast('오류: '+(e&&e.message||e)); });
-        return api;
-      };
+    var proxy=new Proxy(target,{
+      get:function(t,p){
+        if(p in t) return t[p];
+        if(typeof p!=='string') return undefined;
+        return function(){
+          var args=[].slice.call(arguments);
+          Promise.resolve().then(function(){
+            if(typeof BE[p]==='function') return BE[p].apply(null,args);
+            console.warn('[DEMO] 백엔드 함수 미구현:',p,args);
+            return {ok:true,msg:'(데모) '+p+' 처리 완료'};
+          }).then(function(res){ if(okh) okh(res); },
+                  function(e){ console.error('[DEMO]',p,e); if(errh) errh(e); else if(window.toast) toast('오류: '+(e&&e.message||e)); });
+          return proxy;
+        };
+      }
     });
-    return api;
+    return proxy;
   }
-  window.google={ script:{ get run(){ return runnerFactory(); }, host:{origin:''} } };
+  window.google={ script:{ get run(){ return makeRunner(); }, host:{origin:''} } };
 })();
 
 </script>
@@ -627,18 +634,19 @@ a{color:var(--accent);font-weight:600;text-decoration:none;} a:hover{text-decora
 <div style="background:#FFF4E2;color:#B77B12;text-align:center;font-size:13px;font-weight:700;padding:7px;font-family:sans-serif">● 데모 화면입니다 · 모든 데이터는 가상입니다</div>
 <div class="app">
 
-<div class="hdr">
-  <div class="hdr-logo">C</div>
-  <div><h1>급여자동화시스템</h1><div class="sub">PAYROLL v4.0</div></div>
-  <span class="badge month" id="hdr-month">월 미선택</span>
-  <span class="badge" id="hdr-emp">직원 0명</span>
+<div class="hdr" style="flex-wrap:wrap;row-gap:10px;align-items:center;">
+  <div class="hdr-logo" style="flex-shrink:0;">C</div>
+  <div style="flex-shrink:0;"><h1 style="white-space:nowrap;">급여자동화시스템</h1><div class="sub">PAYROLL v4.0</div></div>
+  <span class="badge month" id="hdr-month" style="white-space:nowrap;flex-shrink:0;">월 미선택</span>
+  <span class="badge" id="hdr-emp" style="white-space:nowrap;flex-shrink:0;">직원 0명</span>
+  <span class="badge" id="hdr-role" style="display:none;white-space:nowrap;flex-shrink:0;"></span>
+  <a href="index.html" style="text-decoration:none;white-space:nowrap;flex-shrink:0;padding:8px 16px;border-radius:8px;background:#dc2647;color:#fff;font-weight:700;font-size:13px;">DEMO 포털</a>
+  <a href="demo-hr.html" style="text-decoration:none;white-space:nowrap;flex-shrink:0;padding:8px 16px;border-radius:8px;background:#2d3748;color:#fff;font-weight:700;font-size:13px;">e-HR</a>
+  <a href="demo-eval.html" style="text-decoration:none;white-space:nowrap;flex-shrink:0;padding:8px 16px;border-radius:8px;background:#4f46e5;color:#fff;font-weight:700;font-size:13px;">인사평가시스템</a>
   <span style="flex:1"></span>
-  <span class="badge" id="hdr-role" style="display:none"></span>
-  <button class="hdr-btn" onclick="window.open('hr.html','_self')">🧑‍💼 e-HR 시스템 바로가기</button>
-  <button class="hdr-btn" onclick="window.open('demo-eval.html','_self')">📊 DEMO 인사시스템 가기</button>
-  <button class="hdr-btn" onclick="if(window.PB_SUPA)PB_SUPA.auth.signOut().then(function(){location.href='index.html';});else location.href='index.html'">로그아웃</button>
-  <button id="btn-master" class="hdr-btn" style="display:none" onclick="openEmpModal()">👥 직원마스터</button>
-  <button id="btn-conf" class="hdr-btn" style="display:none" onclick="openModal('conf-modal')">⚙️ 설정</button>
+  <button id="btn-logout" class="hdr-btn" style="white-space:nowrap;flex-shrink:0;" onclick="doLogout()">🚪 로그아웃</button>
+  <button id="btn-master" class="hdr-btn" style="display:none;white-space:nowrap;flex-shrink:0;" onclick="openEmpModal()">👥 직원마스터</button>
+  <button id="btn-conf" class="hdr-btn" style="display:none;white-space:nowrap;flex-shrink:0;" onclick="openModal('conf-modal')">⚙️ 설정</button>
 </div>
 
 <div class="tabs">
@@ -875,8 +883,11 @@ a{color:var(--accent);font-weight:600;text-decoration:none;} a:hover{text-decora
 <div id="tab-drive" class="tab-pnl">
   <div class="card">
     <div class="card-title">드라이브 폴더 현황</div>
-    <div class="row" style="margin-top:8px"><div><label class="lbl">귀속월</label>
-      <select id="sel-drive" onchange="doDriveStatus()" style="width:180px"><option value="">- 선택 -</option></select></div></div>
+    <div class="row" style="margin-top:8px;align-items:flex-end;gap:8px">
+      <div><label class="lbl">귀속월</label>
+      <select id="sel-drive" onchange="doDriveStatus()" style="width:180px"><option value="">- 선택 -</option></select></div>
+      <button class="btn btn-p" onclick="doDriveStatus()">🔍 조회하기</button>
+    </div>
     <div id="drive-status" style="margin-top:16px"></div>
   </div>
 </div>
@@ -1110,7 +1121,7 @@ window.onload=function(){
 };
 function onInit(d){
   G.employees=d.employees||[]; G.conf=d.conf||{}; G.role=d.role||'USER';
-  G.isAdmin=!!d.isAdmin; G.mastCols=d.mastCols||Object.keys(FIELD_META);
+  G.isAdmin=!!d.isAdmin; G.mastCols=d.mastCols||Object.keys(FIELD_META); G.appUrl=d.appUrl||'';
   document.getElementById('hdr-emp').textContent='직원 '+G.employees.length+'명';
   var rb=document.getElementById('hdr-role');
   rb.style.display=''; rb.textContent=(G.isAdmin?'🔑 ADMIN':'👤 사용자')+(d.email?' · '+d.email:'');
@@ -1888,6 +1899,9 @@ function saveNotes(){
     updateNotesPreview();
   }).withFailureHandler(onErr).setSetting(key+'_참고사항',val);
 }
+function doLogout(){
+  location.href='index.html';
+}
 function doDriveStatus(){
   var m=normMonth(document.getElementById('sel-drive').value); if(!m) return;
   document.getElementById('drive-status').innerHTML='<span class="spin"></span> 조회 중...';
@@ -2292,6 +2306,7 @@ function showTab(id){
   }
   if(id==='notes'){ initNotesTab(); }
   if(G.month){ document.getElementById('sel-drive').value=G.month; }
+  if(id==='drive' && document.getElementById('sel-drive').value){ doDriveStatus(); }
 }
 function openModal(id){ document.getElementById(id).classList.add('open'); }
 function closeModal(id){ document.getElementById(id).classList.remove('open'); }
