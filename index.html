@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>실무형 업무 자동화 시스템 구축 · 포트폴리오</title>
+<meta name="description" content="재무·회계·인사·IPO 20년 실무 경력자가 AI로 직접 만든 영업 CRM·정부과제 관리·인사(HR) 자동화 시스템. 의료기기·헬스케어·SaaS 기업 맞춤 구축." />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<style>
+  :root{
+    --navy:#0B1F3A; --ink:#10233F; --slate:#3A4A63; --muted:#6B7A90;
+    --teal:#0EA5A0; --teal-d:#0B857F; --blue:#2563EB; --line:#E6EBF2;
+    --bg:#F6F8FB; --card:#FFFFFF; --soft:#EEF4F8; --gold:#E0A93B;
+    --radius:16px; --maxw:1120px;
+    --shadow:0 1px 2px rgba(16,35,63,.04),0 12px 32px rgba(16,35,63,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:"Pretendard",system-ui,-apple-system,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:999px;font-weight:700;font-size:15px;transition:.2s;cursor:pointer;border:1px solid transparent}
+  .btn-p{background:var(--teal);color:#fff}
+  .btn-p:hover{background:var(--teal-d);transform:translateY(-1px)}
+  .btn-g{background:transparent;color:#fff;border-color:rgba(255,255,255,.35)}
+  .btn-g:hover{background:rgba(255,255,255,.1)}
+  .btn-o{background:#fff;color:var(--navy);border-color:var(--line)}
+  .btn-o:hover{border-color:var(--teal);color:var(--teal-d)}
+
+  header.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:66px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.02em;font-size:18px}
+  .brand .dot{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,var(--teal),var(--blue));display:inline-block}
+  .nav-links{display:flex;gap:26px;align-items:center;font-weight:600;font-size:15px;color:var(--slate)}
+  .nav-links a:hover{color:var(--teal-d)}
+  .nav-cta{padding:9px 18px;font-size:14px}
+  @media(max-width:820px){.nav-links{display:none}}
+
+  .hero{position:relative;background:radial-gradient(1200px 600px at 80% -10%,rgba(14,165,160,.25),transparent),linear-gradient(160deg,#0B1F3A 0%,#12305A 60%,#143a63 100%);color:#fff;overflow:hidden}
+  .hero:after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(180deg,#000,transparent 70%)}
+  .hero-in{position:relative;z-index:2;padding:92px 0 84px}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:.04em;color:#9BE6DF;background:rgba(14,165,160,.15);border:1px solid rgba(14,165,160,.35);padding:7px 14px;border-radius:999px;margin-bottom:22px}
+  .hero h1{font-size:clamp(32px,5vw,52px);line-height:1.18;letter-spacing:-.03em;font-weight:800;max-width:19ch}
+  .hero h1 .hl{color:#4FD8CE}
+  .hero p.sub{margin-top:22px;font-size:clamp(16px,2vw,19px);color:#C9D5E6;max-width:56ch}
+  .hero-cta{margin-top:34px;display:flex;gap:12px;flex-wrap:wrap}
+  .hero-stats{margin-top:52px;display:grid;grid-template-columns:repeat(4,1fr);gap:22px;max-width:760px}
+  .hero-stats .s{border-left:2px solid rgba(79,216,206,.5);padding-left:16px}
+  .hero-stats .n{font-size:30px;font-weight:800;letter-spacing:-.02em}
+  .hero-stats .l{font-size:13px;color:#A9B8CD;margin-top:2px}
+  @media(max-width:680px){.hero-stats{grid-template-columns:1fr 1fr;gap:20px}}
+
+  section{padding:78px 0}
+  .sec-head{text-align:center;max-width:720px;margin:0 auto 50px}
+  .kicker{color:var(--teal-d);font-weight:800;font-size:14px;letter-spacing:.06em;text-transform:uppercase}
+  .sec-head h2{font-size:clamp(26px,3.4vw,36px);letter-spacing:-.03em;font-weight:800;margin-top:10px;line-height:1.25}
+  .sec-head p{color:var(--muted);margin-top:14px;font-size:17px}
+
+  .founder{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:44px;display:grid;grid-template-columns:1.1fr 1fr;gap:44px;align-items:center;box-shadow:var(--shadow)}
+  .founder h3{font-size:26px;letter-spacing:-.02em;line-height:1.3}
+  .founder .role{color:var(--teal-d);font-weight:700;margin:8px 0 16px}
+  .founder p{color:var(--slate);font-size:16px}
+  .badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+  .badge{background:var(--soft);color:var(--ink);font-weight:600;font-size:13.5px;padding:7px 13px;border-radius:999px;border:1px solid var(--line)}
+  .founder-side{background:linear-gradient(160deg,#0B1F3A,#12305A);border-radius:18px;padding:30px;color:#fff}
+  .founder-side .big{font-size:52px;font-weight:800;color:#4FD8CE;letter-spacing:-.03em}
+  .founder-side ul{list-style:none;margin-top:16px;display:grid;gap:12px}
+  .founder-side li{display:flex;gap:10px;font-size:15px;color:#D4DEEC}
+  .founder-side li b{color:#fff}
+  .chk{color:#4FD8CE;font-weight:800}
+  @media(max-width:820px){.founder{grid-template-columns:1fr;padding:30px}}
+
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  @media(max-width:820px){.grid3{grid-template-columns:1fr}}
+  .vcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:30px;box-shadow:var(--shadow);transition:.2s}
+  .vcard:hover{transform:translateY(-3px);border-color:#CFE7E4}
+  .vicon{width:48px;height:48px;border-radius:12px;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:18px}
+  .vcard h4{font-size:19px;letter-spacing:-.02em}
+  .vcard p{color:var(--muted);margin-top:8px;font-size:15px}
+
+  .prod{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  @media(max-width:900px){.prod{grid-template-columns:1fr}}
+  .pcard{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;transition:.2s}
+  .pcard:hover{transform:translateY(-4px);box-shadow:0 20px 44px rgba(16,35,63,.14)}
+  .pcard .top{padding:26px 26px 0;position:relative}
+  .ptag{position:absolute;top:26px;right:26px;font-size:12px;font-weight:700;padding:5px 11px;border-radius:999px}
+  .ptag.live{background:#E7F7F1;color:#0B857F}
+  .ptag.dev{background:#FFF4E2;color:#B77B12}
+  .pnum{font-size:13px;font-weight:800;color:var(--teal-d);letter-spacing:.05em}
+  .pcard h3{font-size:22px;letter-spacing:-.02em;margin-top:8px;line-height:1.3}
+  .pcard .desc{color:var(--slate);font-size:15px;margin-top:12px;padding:0 26px}
+  .pcard ul{list-style:none;padding:18px 26px 0;display:grid;gap:9px;flex:1}
+  .pcard li{display:flex;gap:9px;font-size:14.5px;color:var(--slate)}
+  .pcard li:before{content:"";flex:0 0 7px;height:7px;border-radius:2px;background:var(--teal);margin-top:8px}
+  .pcard .foot{padding:22px 26px 26px;border-top:1px solid var(--line);margin-top:18px;display:flex;justify-content:space-between;align-items:center}
+  .pcard .more{font-weight:700;color:var(--teal-d);font-size:15px}
+  .pcard .more:hover{gap:10px}
+
+  .targ{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  @media(max-width:820px){.targ{grid-template-columns:1fr 1fr}}
+  .tcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px;text-align:center;box-shadow:var(--shadow)}
+  .tcard .sz{font-size:30px;font-weight:800;color:var(--navy);letter-spacing:-.02em}
+  .tcard .sz small{font-size:16px;color:var(--muted);font-weight:600}
+  .tcard p{color:var(--muted);font-size:14px;margin-top:8px}
+
+  .indbar{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:34px}
+  .ind{background:var(--soft);border:1px solid var(--line);color:var(--slate);padding:9px 18px;border-radius:999px;font-weight:600;font-size:15px}
+
+  .proc{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  @media(max-width:820px){.proc{grid-template-columns:1fr 1fr}}
+  .step{position:relative;padding-top:20px}
+  .step .no{width:40px;height:40px;border-radius:12px;background:var(--navy);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:17px}
+  .step h4{margin-top:16px;font-size:17px;letter-spacing:-.02em}
+  .step p{color:var(--muted);font-size:14.5px;margin-top:6px}
+
+  .cta{background:linear-gradient(160deg,#0B1F3A,#123763);border-radius:26px;padding:60px;text-align:center;color:#fff;position:relative;overflow:hidden}
+  .cta:before{content:"";position:absolute;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(14,165,160,.4),transparent 70%);top:-120px;right:-60px}
+  .cta h2{font-size:clamp(26px,3.4vw,36px);letter-spacing:-.03em;position:relative}
+  .cta p{color:#C9D5E6;margin-top:14px;font-size:17px;position:relative}
+  .cta .hero-cta{justify-content:center;position:relative}
+
+  footer{background:#081627;color:#9AAAC0;padding:48px 0 40px;font-size:14px}
+  .foot-in{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}
+  footer .brand{color:#fff;font-size:17px;margin-bottom:12px}
+  footer a:hover{color:#fff}
+  .edit{background:#FFF9E9;border:1px dashed #E0A93B;color:#8a6a12;font-size:12.5px;padding:2px 8px;border-radius:6px;font-weight:600}
+
+  .caps{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  @media(max-width:900px){.caps{grid-template-columns:1fr}}
+  .cap{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px;box-shadow:var(--shadow);position:relative;transition:.2s}
+  .cap:hover{transform:translateY(-3px);border-color:#CFE7E4}
+  .cap .ct{position:absolute;top:22px;right:22px;font-size:11.5px;font-weight:700;padding:4px 11px;border-radius:999px}
+  .cap .ct.done{background:#E7F7F1;color:#0B857F}
+  .cap .ct.able{background:#EEF2FF;color:#4338CA}
+  .cap .ci{width:46px;height:46px;border-radius:12px;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:23px}
+  .cap h4{font-size:18px;margin-top:15px;letter-spacing:-.02em}
+  .cap p{color:var(--muted);font-size:14px;margin-top:9px}
+  .exp-note{text-align:center;color:var(--muted);font-size:15px;margin-top:30px}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="index.html"><span class="dot"></span> 재원 &nbsp;<span style="color:var(--muted);font-weight:600;font-size:14px">Business Systems Studio</span></a>
+    <nav class="nav-links">
+      <a href="#products">솔루션</a>
+      <a href="#capabilities">자동화 영역</a>
+      <a href="crm.html">영업 CRM</a>
+      <a href="gov.html">정부과제</a>
+      <a href="hr.html">인사·급여</a>
+      <a href="#process">진행방식</a>
+    </nav>
+    <a class="btn btn-p nav-cta" href="#contact">상담 문의</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-in">
+    <span class="eyebrow">● 재무·회계·인사·IPO 20년 실무 × AI 개발</span>
+    <h1>현업이 직접 만든 <span class="hl">업무 자동화 시스템</span>, 당신의 회사에 맞춰 구축합니다.</h1>
+    <p class="sub">영업 CRM, 정부과제 관리, 인사·급여부터 재무·회계·세무·재고관리 자동화까지 — 대기업 ERP 없이도 5~100인 규모 기업이 곧바로 쓰는 실무형 웹 시스템을, 도메인을 아는 개발자가 맞춤 제작합니다.</p>
+    <div class="hero-cta">
+      <a class="btn btn-p" href="#products">솔루션 둘러보기</a>
+      <a class="btn btn-g" href="#contact">무료 상담 신청</a>
+    </div>
+    <div class="hero-stats">
+      <div class="s"><div class="n">20년</div><div class="l">재무·회계·인사·IPO 실무</div></div>
+      <div class="s"><div class="n">3종</div><div class="l">실무로 검증된 시스템</div></div>
+      <div class="s"><div class="n">100%</div><div class="l">현업 요구 반영 맞춤 설계</div></div>
+      <div class="s"><div class="n">웹 즉시</div><div class="l">설치 없는 브라우저 구동</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="wrap">
+    <div class="founder">
+      <div>
+        <span class="kicker">Why me</span>
+        <h3>“시스템을 아는 개발자가 아니라,<br/>업무를 아는 사람이 만든 시스템입니다.”</h3>
+        <div class="role">재무 · 회계 · 인사 · 총무 · IT · IPO 약 20년 경력</div>
+        <p>재무제표 마감, 급여·4대보험 정산, 정부 R&D 과제 정산, 인사평가, IPO 준비까지 — 실제로 손으로 처리해 본 업무를 그대로 시스템에 담았습니다. 그래서 “현업에서 실제로 걸리는 부분”을 정확히 자동화합니다. 여기에 최신 AI 개발 도구를 결합해, 예전이라면 팀이 몇 달 걸릴 시스템을 1인이 빠르게 맞춤 구축합니다. <b>재무·회계·인사·총무·IT 전 영역을 두루 다뤘기에</b>, 재고관리·세무신고 관리·자금·결산처럼 <b>반복되는 업무라면 대부분 시스템으로 만들 수 있습니다.</b></p>
+        <div class="badges">
+          <span class="badge">재무·회계</span><span class="badge">세무</span><span class="badge">재고·자산</span><span class="badge">인사·급여</span>
+          <span class="badge">총무</span><span class="badge">IT·시스템</span>
+          <span class="badge">IPO 실무</span><span class="badge">정부과제 정산</span><span class="badge">AI 활용 개발</span>
+        </div>
+      </div>
+      <div class="founder-side">
+        <div class="big">1인 개발</div>
+        <ul>
+          <li><span class="chk">✓</span> <span><b>도메인 이해</b> — 요구사항 통역 없이 바로 이해</span></li>
+          <li><span class="chk">✓</span> <span><b>빠른 납기</b> — AI 활용으로 개발 주기 단축</span></li>
+          <li><span class="chk">✓</span> <span><b>합리적 비용</b> — SI 대비 낮은 구축 비용</span></li>
+          <li><span class="chk">✓</span> <span><b>직접 소통</b> — 담당자와 개발자가 동일</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section style="background:linear-gradient(180deg,#fff,var(--bg))">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">What you get</span>
+      <h2>흩어진 업무를, 하나의 시스템으로</h2>
+      <p>엑셀·이메일·수기 대장으로 나뉘어 있던 업무를 단일 데이터베이스로 묶고, 반복 계산과 문서 작업을 자동화합니다.</p>
+    </div>
+    <div class="grid3">
+      <div class="vcard">
+        <div class="vicon">⚡</div>
+        <h4>업무 자동화 · 시간 절감</h4>
+        <p>급여 계산, 인건비 계상, 세금계산서 대사처럼 매달 반복되는 수작업을 자동화해 담당자의 마감 공수를 크게 줄입니다.</p>
+      </div>
+      <div class="vcard">
+        <div class="vicon">🧩</div>
+        <h4>맞춤 구축 · 빠른 납기</h4>
+        <p>범용 툴을 억지로 맞추는 대신, 회사의 실제 프로세스에 맞춰 필드·화면·규칙을 설계합니다. AI 개발로 납기는 짧게.</p>
+      </div>
+      <div class="vcard">
+        <div class="vicon">📊</div>
+        <h4>데이터 통합 · 가시성</h4>
+        <p>부서별로 흩어진 데이터를 한 곳에 모아 대시보드로 조망합니다. 경영진이 현황과 다음 액션을 즉시 파악합니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="products">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">Solutions</span>
+      <h2>실무로 검증된 3가지 시스템</h2>
+      <p>모두 실무 현장에서 설계·검증된 시스템입니다. 귀사 환경에 맞춰 모듈 단위로 맞춤 구축·납품합니다.</p>
+    </div>
+    <div class="prod">
+
+      <div class="pcard">
+        <div class="top">
+          <span class="ptag live">운영 중</span>
+          <div class="pnum">01 · SALES</div>
+          <h3>영업 CRM + 리드허브 통합</h3>
+        </div>
+        <div class="desc">리드 발굴부터 데모·계약·세금계산서·입금까지 영업 전 주기를 하나의 DB로 연결하는 웹 CRM.</div>
+        <ul>
+          <li>리드 소스·영업 파이프라인(퍼널) 단계 관리</li>
+          <li>데모 사용·전환 추적, 학회·전시회 부스 관리</li>
+          <li>세금계산서·매출채권·입금 정산 자동화</li>
+          <li>AI 요약으로 영업 현황·다음 액션 파악</li>
+        </ul>
+        <div class="foot">
+          <span style="font-size:13px;color:var(--muted)">Supabase · Vercel · PWA</span>
+          <a class="more" href="crm.html">자세히 →</a>
+        </div>
+      </div>
+
+      <div class="pcard">
+        <div class="top">
+          <span class="ptag live">운영 중</span>
+          <div class="pnum">02 · GRANT</div>
+          <h3>정부과제 관리 시스템</h3>
+        </div>
+        <div class="desc">예산 편성부터 인건비·현물 자동계상, 집행·증빙, 정산·보고까지 정부 R&D 과제 전 과정 관리.</div>
+        <ul>
+          <li>참여율만 입력하면 인건비·현물 자동 계상</li>
+          <li>참여율 100% 초과·장비 중복 등 규정 자동 경고</li>
+          <li>다과제 예산·집행·잔액 통합 대시보드</li>
+          <li>증빙 폴더 자동 생성 · 정산 엑셀 원클릭</li>
+        </ul>
+        <div class="foot">
+          <span style="font-size:13px;color:var(--muted)">React · Supabase</span>
+          <a class="more" href="gov.html">자세히 →</a>
+        </div>
+      </div>
+
+      <div class="pcard">
+        <div class="top">
+          <span class="ptag live">운영 중</span>
+          <div class="pnum">03 · HR</div>
+          <h3>인사 시스템 (e-HR·평가·급여)</h3>
+        </div>
+        <div class="desc">조직·발령 관리, 360도+KPI 인사평가, 4대보험·연말정산까지 자동화하는 통합 인사 플랫폼.</div>
+        <ul>
+          <li>e-HR: 조직도·직원 마스터·발령 이력 관리</li>
+          <li>평가: 공통·직무 역량모델 + KPI, 평가자 자동구성</li>
+          <li>급여: 4대보험·세액·수당 자동계산, 명세서 PDF 발행</li>
+          <li>권한 기반 접근제어로 담당자·관리자 분리</li>
+        </ul>
+        <div class="foot">
+          <span style="font-size:13px;color:var(--muted)">Supabase · React</span>
+          <a class="more" href="hr.html">자세히 →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="capabilities">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">More than 3</span>
+      <h2>이 3가지는 시작일 뿐입니다</h2>
+      <p>재무·회계·인사·총무·IT 20년 실무. 회사에서 매달·매분기 반복되는 업무라면 대부분 자동화 시스템으로 만들 수 있습니다.</p>
+    </div>
+    <div class="caps">
+      <div class="cap">
+        <span class="ct done">구축 완료</span>
+        <div class="ci">🎯</div>
+        <h4>영업 · CRM</h4>
+        <p>리드 발굴·파이프라인, 데모 전환, 세금계산서·입금 정산까지 영업 전 주기 통합.</p>
+      </div>
+      <div class="cap">
+        <span class="ct done">구축 완료</span>
+        <div class="ci">📁</div>
+        <h4>정부과제 관리</h4>
+        <p>예산 편성·인건비/현물 자동계상·집행·증빙·정산·보고, 규정 위반 자동 경고.</p>
+      </div>
+      <div class="cap">
+        <span class="ct done">구축 완료</span>
+        <div class="ci">👥</div>
+        <h4>인사 · 평가 · 급여</h4>
+        <p>조직·발령, 360도+KPI 평가, 4대보험·연말정산 급여 자동화와 명세서 발행.</p>
+      </div>
+      <div class="cap">
+        <span class="ct able">구축 가능</span>
+        <div class="ci">📦</div>
+        <h4>재무 · 회계 자동화</h4>
+        <p>재고관리, 자동 분개·전표, 자금·입출금 관리, 월·분기 결산, 예산 대비 실적 대시보드.</p>
+      </div>
+      <div class="cap">
+        <span class="ct able">구축 가능</span>
+        <div class="ci">🧾</div>
+        <h4>세무 관리</h4>
+        <p>부가세·원천세 신고 일정·자료 관리, 세금계산서 매입·매출 대사, 증빙 자동 정리.</p>
+      </div>
+      <div class="cap">
+        <span class="ct able">구축 가능</span>
+        <div class="ci">🗄️</div>
+        <h4>총무 · 자산 · IT</h4>
+        <p>자산·비품 관리, 계약·문서 관리, 사내 대시보드·업무용 웹앱, 데이터 통합.</p>
+      </div>
+    </div>
+    <p class="exp-note">✔ 위 6개 영역 외에도, “이 업무 자동화 될까요?” 싶은 게 있다면 먼저 상담해 보세요.</p>
+  </div>
+</section>
+
+<section style="background:linear-gradient(180deg,var(--bg),#fff)">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">For</span>
+      <h2>이런 기업에 맞습니다</h2>
+      <p>전담 IT 인력이 부족하지만 업무는 이미 복잡해진, 성장 중인 조직을 위해 설계했습니다.</p>
+    </div>
+    <div class="targ">
+      <div class="tcard"><div class="sz">5–10<small>인</small></div><p>초기 팀, 기반 세팅</p></div>
+      <div class="tcard"><div class="sz">10–30<small>인</small></div><p>업무 급증, 자동화 필요</p></div>
+      <div class="tcard"><div class="sz">30–50<small>인</small></div><p>부서 분화, 데이터 통합</p></div>
+      <div class="tcard"><div class="sz">50–100<small>인</small></div><p>체계화·감사·IPO 대비</p></div>
+    </div>
+    <div class="indbar">
+      <span class="ind">🩺 의료기기</span>
+      <span class="ind">💊 헬스케어</span>
+      <span class="ind">☁️ SaaS · IT</span>
+      <span class="ind">🔬 바이오 · R&D</span>
+      <span class="ind">🏢 스타트업 · 중소기업</span>
+    </div>
+  </div>
+</section>
+
+<section id="process">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="kicker">How it works</span>
+      <h2>상담부터 납품까지</h2>
+      <p>툴 단위로 시작해 필요에 따라 확장합니다. 소유권은 귀사 계정으로 안전하게 이관됩니다.</p>
+    </div>
+    <div class="proc">
+      <div class="step"><div class="no">1</div><h4>상담 · 진단</h4><p>현재 업무 흐름과 병목을 함께 진단하고 우선순위를 정합니다.</p></div>
+      <div class="step"><div class="no">2</div><h4>설계 · 견적</h4><p>필요한 화면·데이터·자동화 규칙을 정의하고 범위와 비용을 확정합니다.</p></div>
+      <div class="step"><div class="no">3</div><h4>구축 · 검수</h4><p>AI 개발로 빠르게 프로토타입을 만들고 실제 데이터로 검증합니다.</p></div>
+      <div class="step"><div class="no">4</div><h4>납품 · 이관</h4><p>귀사 계정(Supabase·Vercel)으로 소유권을 이관하고 사용법을 인계합니다.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <div class="cta">
+      <h2>우리 회사엔 어떤 자동화가 맞을까요?</h2>
+      <p>30분 무료 상담으로 가장 효과 큰 자동화 지점을 함께 찾아드립니다.</p>
+      <div class="hero-cta">
+        <a class="btn btn-p" href="mailto:dandyyoon80@gmail.com">이메일로 상담 신청</a>
+        <a class="btn btn-g" href="brochure.pdf" download>브로셔 PDF 다운로드</a>
+      </div>
+      <p style="margin-top:22px;font-size:14px">📧 dandyyoon80@gmail.com &nbsp;·&nbsp; <span class="edit">☎ 연락처·상호 수정하세요</span></p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-in">
+    <div>
+      <div class="brand">재원 · Business Systems Studio</div>
+      <div>재무·회계·인사·IPO 20년 실무 경력의 1인 개발 스튜디오<br/>의료기기·헬스케어·SaaS 기업을 위한 업무 자동화 시스템 맞춤 구축</div>
+    </div>
+    <div style="display:grid;gap:8px">
+      <a href="crm.html">영업 CRM + 리드허브</a>
+      <a href="gov.html">정부과제 관리 시스템</a>
+      <a href="hr.html">인사 시스템 (e-HR·평가·급여)</a>
+      <a href="brochure.pdf" download>브로셔 PDF 다운로드</a>
+      <a href="mailto:dandyyoon80@gmail.com">상담 문의</a>
+    </div>
+  </div>
+  <div class="wrap" style="margin-top:28px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08);font-size:12.5px;color:#66788f">© 2026 재원. 본 페이지의 수치·기능은 실제 운영 시스템 기준이며, 상호·연락처 등 <span style="color:#c9a24a">표시된 항목</span>은 자유롭게 수정하실 수 있습니다.</div>
+</footer>
+
+</body>
+</html>
