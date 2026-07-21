@@ -74,6 +74,28 @@
   .ptab.active{color:var(--brand);border-bottom-color:var(--brand)}
   .ptab:hover{color:var(--text-sub)}
   .tbl-sticky thead th{position:sticky;top:0;z-index:5;background:var(--card-2)}
+  .mob-topbar{display:none;}
+  .mob-backdrop{display:none;}
+  *{-webkit-tap-highlight-color:transparent;}
+  @media (max-width:860px){
+    body{overflow-x:hidden;}
+    .app-shell{flex-direction:column;}
+    .mob-topbar{display:flex;align-items:center;gap:10px;padding:10px 14px;
+      padding-top:calc(10px + env(safe-area-inset-top));
+      background:var(--navy);position:sticky;top:0;z-index:90;width:100%;
+      border-bottom:1px solid var(--border);}
+    .app-side{position:fixed !important;top:0;left:0;height:100%;z-index:120;
+      transform:translateX(-100%);transition:transform .25s ease;width:240px !important;
+      box-shadow:2px 0 24px rgba(0,0,0,.4);overflow-y:auto;}
+    .app-side.open{transform:translateX(0);}
+    .mob-nav-close{display:block !important;}
+    .mob-backdrop.open{display:block;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:110;}
+    .app-main{padding:16px !important;}
+    .kpi{padding:14px 16px;}
+    .ptab{padding:10px 4px;margin-right:18px;font-size:13px;}
+    .modal-bg{padding:16px 10px;}
+    .sidebar-item{padding:11px 12px;}
+  }
 </style>
 </head>
 <body>
@@ -224,8 +246,8 @@ function Login(){
     if(error) setErr('로그인 실패: 이메일 또는 비밀번호를 확인하세요.');
   }
   return (
-    <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'var(--navy)'}}>
-      <div style={{width:360,padding:'36px 32px',background:'var(--card)',border:'1px solid var(--border)',borderRadius:14,boxShadow:'0 10px 40px rgba(0,0,0,.5)'}}>
+    <div style={{minHeight:'100vh',display:'flex',alignItems:'center',justifyContent:'center',background:'var(--navy)',padding:16}}>
+      <div style={{width:'min(360px,100%)',padding:'36px 28px',background:'var(--card)',border:'1px solid var(--border)',borderRadius:14,boxShadow:'0 10px 40px rgba(0,0,0,.5)'}}>
         <div style={{fontSize:22,fontWeight:800,color:'var(--brand)',letterSpacing:'-.02em'}}>DEMO</div>
         <div style={{fontSize:13,color:'var(--text-muted)',marginTop:2,marginBottom:24}}>정부과제 관리 시스템</div>
         <label className="form-label">이메일</label>
@@ -244,25 +266,28 @@ function Login(){
 }
 
 /* ================= 사이드바 ================= */
-function Sidebar({user,onLogout,tab,setTab}){
+function Sidebar({user,onLogout,tab,setTab,navOpen,onCloseNav}){
   return (
-    <aside style={{width:220,background:'var(--navy)',display:'flex',flexDirection:'column',flexShrink:0,padding:'18px 12px'}}>
-      <div style={{padding:'6px 8px 16px',borderBottom:'1px solid rgba(255,255,255,.08)'}}>
-        <div style={{fontSize:16,fontWeight:800,color:'var(--brand)',letterSpacing:'-.02em'}}>DEMO</div>
-        <div style={{fontSize:10,color:'#aeb9c9',marginTop:1}}>정부과제 관리</div>
+    <aside className={"app-side"+(navOpen?" open":"")} style={{width:220,background:'var(--navy)',display:'flex',flexDirection:'column',flexShrink:0,padding:'18px 12px'}}>
+      <div style={{padding:'6px 8px 16px',borderBottom:'1px solid rgba(255,255,255,.08)',display:'flex',justifyContent:'space-between',alignItems:'flex-start'}}>
+        <div>
+          <div style={{fontSize:16,fontWeight:800,color:'var(--brand)',letterSpacing:'-.02em'}}>DEMO</div>
+          <div style={{fontSize:10,color:'#aeb9c9',marginTop:1}}>정부과제 관리</div>
+        </div>
+        <button className="mob-nav-close" onClick={onCloseNav} style={{display:'none',background:'none',border:'none',color:'#fff',fontSize:22,cursor:'pointer',lineHeight:1}}>×</button>
       </div>
       <div className="grp-label">메인</div>
-      <div className={"sidebar-item"+(tab==='dashboard'?' active':'')} onClick={()=>setTab('dashboard')}>
+      <div className={"sidebar-item"+(tab==='dashboard'?' active':'')} onClick={()=>{setTab('dashboard');onCloseNav&&onCloseNav();}}>
         <i className="ti ti-layout-dashboard"/> 전체 현황판
       </div>
       <div className="grp-label">공통 관리</div>
-      <div className={"sidebar-item"+(tab==='employee'?' active':'')} onClick={()=>setTab('employee')}>
+      <div className={"sidebar-item"+(tab==='employee'?' active':'')} onClick={()=>{setTab('employee');onCloseNav&&onCloseNav();}}>
         <i className="ti ti-users"/> 직원 관리
       </div>
-      <div className={"sidebar-item"+(tab==='matrix'?' active':'')} onClick={()=>setTab('matrix')}>
+      <div className={"sidebar-item"+(tab==='matrix'?' active':'')} onClick={()=>{setTab('matrix');onCloseNav&&onCloseNav();}}>
         <i className="ti ti-layout-grid"/> 참여율 현황
       </div>
-      <div className={"sidebar-item"+(tab==='audit'?' active':'')} onClick={()=>setTab('audit')}>
+      <div className={"sidebar-item"+(tab==='audit'?' active':'')} onClick={()=>{setTab('audit');onCloseNav&&onCloseNav();}}>
         <i className="ti ti-history"/> 감사 로그
       </div>
       <div style={{marginTop:'auto',padding:'14px 8px 0',borderTop:'1px solid rgba(255,255,255,.08)'}}>
@@ -321,7 +346,7 @@ function ProjectModal({user,editItem,onClose,onSaved,showToast}){
           <div style={{fontSize:18,fontWeight:800}}>{isNew?'신규 과제 등록':'과제 수정'}</div>
           <button onClick={onClose} style={{background:'none',border:'none',fontSize:22,cursor:'pointer',color:'var(--text-muted)'}}>×</button>
         </div>
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:14}}>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))',gap:14}}>
           <div><label className="form-label">사업명 * (지원사업명)</label>
             <input value={f.name} onChange={e=>set('name',e.target.value)} placeholder="예: 2026 첨단 AI 지원사업"/></div>
           <div><label className="form-label">과제명 (선정된 과제 제목)</label>
@@ -416,7 +441,7 @@ function Dashboard({user,showToast,onOpen}){
   const Th = ({k,children,style}) => (<th onClick={()=>toggleSort(k)} style={style}>{children}{sortIcon(k)}</th>);
 
   return (
-    <main style={{flex:1,padding:32,overflow:'auto'}}>
+    <main className="app-main" style={{flex:1,padding:32,overflow:'auto'}}>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:24}}>
         <div>
           <h1 style={{fontSize:22,fontWeight:800,letterSpacing:'-.02em'}}>전체 현황판</h1>
@@ -437,7 +462,7 @@ function Dashboard({user,showToast,onOpen}){
         </div>
       </div>
 
-      <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:14,marginBottom:22}}>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))',gap:14,marginBottom:22}}>
         <div className="kpi"><div style={{fontSize:12,color:'var(--text-sub)',fontWeight:600,marginBottom:8}}>총 과제 수</div>
           <div style={{fontSize:26,fontWeight:800}}>{kpi.count}건</div></div>
         <div className="kpi"><div style={{fontSize:12,color:'var(--text-sub)',fontWeight:600,marginBottom:8}}>수행 중</div>
@@ -589,7 +614,7 @@ function YearModal({year,onClose,onSave}){
           <div style={{fontSize:17,fontWeight:800}}>{isNew?'연차 추가':'연차 수정'}</div>
           <button onClick={onClose} style={{background:'none',border:'none',fontSize:22,cursor:'pointer',color:'var(--text-muted)'}}>×</button>
         </div>
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:13}}>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))',gap:13}}>
           <div style={{gridColumn:'1 / span 2'}}><label className="form-label">연차명</label>
             <input value={f.year_label} onChange={e=>set('year_label',e.target.value)} placeholder="예: 1차년도"/></div>
           <div><label className="form-label">시작일</label>
@@ -712,7 +737,7 @@ function YearManager({user,proj,showToast}){
 
       {/* 연차별 합계 */}
       {rows && rows.length>0 && (
-        <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:12,marginBottom:16}}>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))',gap:12,marginBottom:16}}>
           <div className="card" style={{padding:'14px 16px'}}>
             <div style={{fontSize:11,color:'var(--text-muted)',marginBottom:4}}>정부출연금 합계</div>
             <div style={{fontSize:17,fontWeight:800}}>{fmt(sum.govt)}원</div></div>
@@ -883,7 +908,7 @@ function BudgetCalculator({user,proj,onSaved,showToast}){
         <div style={{fontSize:12,color:'var(--text-sub)',marginBottom:18}}>
           자부담현금·현물 비율은 <b>총사업비 기준</b>입니다. 비율을 넣으면 금액이, 금액을 넣으면 비율이 자동 계산됩니다. (총사업비 = 정부지원금 ÷ (1 − 자부담비율합))
         </div>
-        <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:14}}>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))',gap:14}}>
           <div><label className="form-label">정부지원금</label>
             <input inputMode="numeric" value={govt} onChange={e=>handleGovtChange(e.target.value)} placeholder="0"/></div>
           <div><label className="form-label">자부담현금 비율 (%)</label>
@@ -899,7 +924,7 @@ function BudgetCalculator({user,proj,onSaved,showToast}){
 
       <div className="card" style={{padding:22,marginBottom:16}}>
         <div style={{fontSize:13,fontWeight:700,marginBottom:14,color:'var(--text-sub)'}}>계산 결과</div>
-        <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:12,marginBottom:12}}>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))',gap:12,marginBottom:12}}>
           <Result label="정부지원금" value={g} pct={total>0?govtPct:null}/>
           <Result label="자부담현금" value={c} pct={total>0?cPct:null}/>
           <Result label="자부담현물" value={k} pct={total>0?kPct:null}/>
@@ -954,7 +979,7 @@ function CategoryModal({cat,onClose,onSave}){
           <div style={{fontSize:17,fontWeight:800}}>{isNew?'비목 추가':'비목 수정'}</div>
           <button onClick={onClose} style={{background:'none',border:'none',fontSize:22,cursor:'pointer',color:'var(--text-muted)'}}>×</button>
         </div>
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:13}}>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))',gap:13}}>
           <div><label className="form-label">비목 *</label>
             <select value={f.category} onChange={e=>set('category',e.target.value)}>
               {CAT_OPTIONS.map(c=><option key={c} value={c}>{c}</option>)}
@@ -1044,7 +1069,7 @@ function CategoryManager({user,proj,showToast}){
       </div>
 
       {/* 합계 카드 + 과제 예산 대비 */}
-      <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:12,marginBottom:16}}>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))',gap:12,marginBottom:16}}>
         <div className="card" style={{padding:'14px 16px'}}>
           <div style={{fontSize:11,color:'var(--text-muted)',marginBottom:4}}>정부출연금 합계</div>
           <div style={{fontSize:16,fontWeight:800}}>{fmt(sum.govt)}원</div></div>
@@ -1169,7 +1194,7 @@ function StaffAllocModal({proj,employees,alloc,initRates,onClose,onSave}){
           <button onClick={onClose} style={{background:'none',border:'none',fontSize:22,cursor:'pointer',color:'var(--text-muted)'}}>×</button>
         </div>
 
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:13,marginBottom:16}}>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(180px,1fr))',gap:13,marginBottom:16}}>
           <div><label className="form-label">직원 *</label>
             <select value={employeeId} onChange={e=>setEmployeeId(e.target.value)}>
               <option value="">직원 선택</option>
@@ -1206,7 +1231,7 @@ function StaffAllocModal({proj,employees,alloc,initRates,onClose,onSave}){
             협약기간이 없습니다. 상단 "기본정보 수정"에서 협약 시작일/종료일을 먼저 입력하세요.
           </div>
         ) : (
-          <div style={{display:'grid',gridTemplateColumns:'repeat(6,1fr)',gap:8,marginBottom:16}}>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(90px,1fr))',gap:8,marginBottom:16}}>
             {months.map(m=>(
               <div key={m}>
                 <label style={{fontSize:10,color:'var(--text-sub)',display:'block',marginBottom:4,textAlign:'center'}}>{m}</label>
@@ -1311,7 +1336,7 @@ function StaffManager({user,proj,showToast}){
       </div>
 
       {allocs && allocs.length>0 && (
-        <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:12,marginBottom:16}}>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))',gap:12,marginBottom:16}}>
           <div className="card" style={{padding:'14px 16px'}}>
             <div style={{fontSize:11,color:'var(--text-muted)',marginBottom:4}}>배정 인원</div>
             <div style={{fontSize:17,fontWeight:800}}>{allocs.length}명</div></div>
@@ -1416,7 +1441,7 @@ function TxModal({proj,tx,onClose,onSave}){
           <div style={{fontSize:17,fontWeight:800}}>{isNew?'집행 입력':'집행 수정'}</div>
           <button onClick={onClose} style={{background:'none',border:'none',fontSize:22,cursor:'pointer',color:'var(--text-muted)'}}>×</button>
         </div>
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:13}}>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))',gap:13}}>
           <div><label className="form-label">지출일 *</label>
             <input type="date" value={f.spent_date} onChange={e=>set('spent_date',e.target.value)}/></div>
           <div><label className="form-label">재원구분</label>
@@ -1524,7 +1549,7 @@ function SpendManager({user,proj,showToast}){
         <button className="btn btn-brand btn-sm" onClick={()=>setModal('new')}><i className="ti ti-plus"/> 집행 입력</button>
       </div>
 
-      <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:12,marginBottom:16}}>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))',gap:12,marginBottom:16}}>
         <div className="card" style={{padding:'14px 16px'}}>
           <div style={{fontSize:11,color:'var(--text-muted)',marginBottom:4}}>총 집행액</div>
           <div style={{fontSize:16,fontWeight:800,color:'var(--brand)'}}>{fmt(sum.total)}원</div></div>
@@ -1781,7 +1806,7 @@ function EquipmentModal({equip,onClose,onSave}){
           <div style={{fontSize:17,fontWeight:800}}>{isNew?'장비 현물 추가':'장비 현물 수정'}</div>
           <button onClick={onClose} style={{background:'none',border:'none',fontSize:22,cursor:'pointer',color:'var(--text-muted)'}}>×</button>
         </div>
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:13}}>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))',gap:13}}>
           <div><label className="form-label">장비명 *</label>
             <input value={f.name} onChange={e=>set('name',e.target.value)} placeholder="예: HP Z6 워크스테이션"/></div>
           <div><label className="form-label">유형</label>
@@ -1858,7 +1883,7 @@ function LeaseModal({lease,onClose,onSave}){
           <div style={{fontSize:17,fontWeight:800}}>{isNew?'임차 현물 추가':'임차 현물 수정'}</div>
           <button onClick={onClose} style={{background:'none',border:'none',fontSize:22,cursor:'pointer',color:'var(--text-muted)'}}>×</button>
         </div>
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:13}}>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))',gap:13}}>
           <div><label className="form-label">임차 항목명 *</label>
             <input value={f.name} onChange={e=>set('name',e.target.value)} placeholder="예: 연구실 임차료"/></div>
           <div><label className="form-label">유형</label>
@@ -2150,7 +2175,7 @@ function SettleView({user,proj,showToast}){
         </button>
       </div>
       {/* 총괄 KPI */}
-      <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:14,marginBottom:18}}>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(190px,1fr))',gap:14,marginBottom:18}}>
         <div className="kpi"><div style={{fontSize:12,color:'var(--text-sub)',fontWeight:600,marginBottom:8}}>총 예산</div>
           <div style={{fontSize:22,fontWeight:800}}>{fmt(budget.total)}<span style={{fontSize:13}}>원</span></div></div>
         <div className="kpi"><div style={{fontSize:12,color:'var(--text-sub)',fontWeight:600,marginBottom:8}}>총 집행</div>
@@ -2271,7 +2296,7 @@ function ProjectDetail({user,project,onBack,showToast}){
   );
 
   return (
-    <main style={{flex:1,padding:32,overflow:'auto'}}>
+    <main className="app-main" style={{flex:1,padding:32,overflow:'auto'}}>
       <button className="btn btn-ghost btn-sm" onClick={onBack} style={{marginBottom:16}}>
         <i className="ti ti-arrow-left"/> 목록으로
       </button>
@@ -2288,7 +2313,7 @@ function ProjectDetail({user,project,onBack,showToast}){
           </div>
           <button className="btn btn-ghost btn-sm" onClick={()=>setModal(true)}><i className="ti ti-pencil"/> 기본정보 수정</button>
         </div>
-        <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:18,marginTop:20,
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))',gap:18,marginTop:20,
           paddingTop:18,borderTop:'1px solid var(--border)'}}>
           <Info label="주관기관" value={proj.agency}/>
           <Info label="협약기간" value={(proj.period_start||'—')+' ~ '+(proj.period_end||'—')}/>
@@ -2394,7 +2419,7 @@ function EmployeeModal({emp,onClose,onSave}){
             <i className="ti ti-info-circle"/> 월 인건비를 수정하면 이 직원이 배정된 모든 과제 계산에 반영됩니다.
           </div>
         )}
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:13}}>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))',gap:13}}>
           <div><label className="form-label">이름 *</label>
             <input value={f.name} onChange={e=>set('name',e.target.value)} placeholder="홍길동"/></div>
           <div><label className="form-label">직급</label>
@@ -2476,7 +2501,7 @@ function EmployeeView({user,showToast}){
   }
 
   return (
-    <main style={{flex:1,padding:32,overflow:'auto'}}>
+    <main className="app-main" style={{flex:1,padding:32,overflow:'auto'}}>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:24}}>
         <div>
           <h1 style={{fontSize:22,fontWeight:800,letterSpacing:'-.02em'}}>직원 관리</h1>
@@ -2641,7 +2666,7 @@ function StaffMatrixView({user,showToast}){
     [people,ratesByAlloc,year]);
 
   return (
-    <main style={{flex:1,padding:32,overflow:'auto'}}>
+    <main className="app-main" style={{flex:1,padding:32,overflow:'auto'}}>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:18,flexWrap:'wrap',gap:12}}>
         <div>
           <h1 style={{fontSize:22,fontWeight:800,letterSpacing:'-.02em'}}>참여율 현황</h1>
@@ -2852,7 +2877,7 @@ function AuditLogView({user,showToast}){
       +String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); };
 
   return (
-    <main style={{flex:1,padding:32,overflow:'auto'}}>
+    <main className="app-main" style={{flex:1,padding:32,overflow:'auto'}}>
       <div style={{marginBottom:24}}>
         <h1 style={{fontSize:22,fontWeight:800,letterSpacing:'-.02em'}}>감사 로그</h1>
         <div style={{fontSize:13,color:'var(--text-sub)',marginTop:4}}>누가 언제 무엇을 등록·수정·삭제했는지 기록 (최근 500건)</div>
@@ -2904,11 +2929,20 @@ function Shell({user,onLogout}){
   const [tab,setTab] = useState('dashboard');
   const [openProj,setOpenProj] = useState(null); // 열려있는 과제 (상세)
   const [toastNode,showToast] = useToast();
+  const [navOpen,setNavOpen] = useState(false);
+
+  const tabTitle = {dashboard:'전체 현황판',employee:'직원 관리',matrix:'참여율 현황',audit:'감사 로그'}[openProj?'':tab] || (openProj?'과제 상세':'');
 
   return (
-    <div style={{display:'flex',minHeight:'100vh'}}>
+    <div className="app-shell" style={{display:'flex',minHeight:'100vh'}}>
+      <div className="mob-topbar">
+        <button onClick={()=>setNavOpen(true)} style={{background:'none',border:'none',color:'#fff',fontSize:22,cursor:'pointer',padding:'4px 6px'}}>☰</button>
+        <div style={{fontSize:15,fontWeight:700,color:'#fff'}}>{tabTitle}</div>
+      </div>
+      <div className={"mob-backdrop"+(navOpen?' open':'')} onClick={()=>setNavOpen(false)}></div>
       <Sidebar user={user} onLogout={onLogout}
         tab={openProj?'':tab}
+        navOpen={navOpen} onCloseNav={()=>setNavOpen(false)}
         setTab={t=>{ setOpenProj(null); setTab(t); }}/>
       {openProj
         ? <ProjectDetail user={user} project={openProj} onBack={()=>setOpenProj(null)} showToast={showToast}/>
