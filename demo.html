@@ -3,95 +3,388 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>라이브 데모 · Silmoo Lab · 실무랩</title>
-<meta name="description" content="실제 시스템 UI를 그대로 체험하는 라이브 데모. 모든 데이터는 가상입니다." />
+<title>라이브 데모 · 3분 체험 · Silmoo Lab</title>
+<meta name="description" content="엑셀 방식과 시스템을 나란히 비교하고, 버튼 한 번으로 급여 계산·인건비 계상·입금 대사 결과를 직접 확인하세요. 로그인 없음, 데이터는 모두 가상." />
+<meta property="og:title" content="라이브 데모 · 3분 체험 · Silmoo Lab" />
+<meta property="og:description" content="엑셀 방식과 시스템을 나란히 비교하고, 버튼 한 번으로 급여 계산·인건비 계상·입금 대사 결과를 직접 확인하세요. 로그인 없음, 데이터는 모두 가상." />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+<link rel="stylesheet" href="silmoo.css" />
+
 <style>
-  :root{--navy:#0B1F3A;--ink:#10233F;--slate:#3A4A63;--muted:#6B7A90;--teal:#0EA5A0;--teal-d:#0B857F;--blue:#2563EB;--violet:#7C3AED;--line:#E6EBF2;--bg:#F6F8FB;--soft:#EEF4F8;--shadow:0 1px 2px rgba(16,35,63,.04),0 12px 32px rgba(16,35,63,.08)}
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:"Pretendard",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;word-break:keep-all}
-  a{color:inherit;text-decoration:none}
-  .top{background:#0B1F3A;color:#fff;padding:14px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-  .top .brand{display:flex;align-items:center;gap:9px;font-weight:800}
-  .top .brand .dot{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,var(--teal),var(--blue));display:inline-block}
-  .top .badge{background:#FFF4E2;color:#B77B12;font-weight:700;font-size:12px;padding:4px 11px;border-radius:999px}
-  .top .home{margin-left:auto;color:#C9D5E6;font-size:14px;font-weight:600}
-  .top .home:hover{color:#fff}
-  .wrap{max-width:980px;margin:0 auto;padding:44px 22px 60px}
-  h1{font-size:clamp(24px,3.4vw,32px);letter-spacing:-.03em}
-  .sub{color:var(--muted);margin-top:10px;font-size:16px}
-  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:34px}
-  @media(max-width:860px){.grid{grid-template-columns:1fr}}
-  .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px;box-shadow:var(--shadow);display:flex;flex-direction:column;transition:.2s}
-  .card:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(16,35,63,.13)}
-  .ci{width:44px;height:44px;border-radius:12px;background:var(--soft);display:flex;align-items:center;justify-content:center;font-size:22px}
-  .card h3{font-size:17.5px;margin-top:14px;letter-spacing:-.02em}
-  .card p{color:var(--muted);font-size:13.5px;margin-top:7px;flex:1}
-  .go{margin-top:16px;display:inline-flex;align-items:center;gap:7px;font-weight:700;font-size:14px;color:#fff;background:var(--teal);padding:9px 16px;border-radius:999px;justify-content:center}
-  .go.blue{background:var(--blue)}
-  .go.violet{background:var(--violet)}
-  .note{margin-top:34px;background:#FFF7ED;border:1px solid #FCD9A8;border-radius:12px;padding:16px 20px;font-size:13.5px;color:#7c3c12}
-  /* Silmoo Lab A-3 깜빡임 로고 */
-  .silmoo-mark{display:inline-block;line-height:0;vertical-align:middle;flex-shrink:0}
-  .silmoo-mark svg{display:block;width:100%;height:auto}
-  .silmoo-blink{transform-box:fill-box;transform-origin:center;animation:silmooBlink 1.6s ease-in-out infinite}
-  @keyframes silmooBlink{0%,100%{opacity:1}50%{opacity:.25}}
-  @media (prefers-reduced-motion: reduce){.silmoo-blink{animation:none}}
+.dhero{background:linear-gradient(160deg,#0B1F3A,#12305A);color:#fff;padding:44px 0 0}
+.dhero h1{font-size:clamp(26px,3.8vw,38px);letter-spacing:-.03em;text-wrap:balance}
+.dhero p{color:#C9D5E6;margin-top:12px;font-size:16.5px;max-width:64ch}
+.dtabs{display:flex;gap:6px;flex-wrap:wrap;margin-top:28px}
+.dtabs a{display:inline-flex;align-items:center;gap:8px;padding:11px 16px;border-radius:12px 12px 0 0;background:rgba(255,255,255,.06);color:#C9D5E6;font-weight:700;font-size:14px;border:1px solid rgba(255,255,255,.1);border-bottom:none}
+.dtabs a.on{background:var(--bg);color:var(--navy)}
+.dtabs a .st{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.25)}
+.dtabs a.done .st{background:#4FD8CE;box-shadow:0 0 0 3px rgba(79,216,206,.25)}
+.progress{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:22px;font-size:14px;color:#C9D5E6}
+.progress .pb{flex:1;min-width:160px;height:8px;background:rgba(255,255,255,.12);border-radius:999px;overflow:hidden}
+.progress .pb i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),#4FD8CE);width:0;transition:width .5s}
+.progress b{color:#4FD8CE;font-family:var(--mono)}
+.scn{display:none;padding:36px 0 56px;scroll-margin-top:70px}
+.scn.on{display:block}
+.scn-head{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;align-items:flex-end;margin-bottom:22px}
+.scn-head h2{font-size:clamp(22px,3vw,30px);letter-spacing:-.03em}
+.scn-head p{color:var(--muted);margin-top:6px;max-width:64ch}
+.timing{display:flex;gap:8px;flex-wrap:wrap}
+.timing span{font-size:13px;font-weight:700;padding:7px 12px;border-radius:999px;background:#fff;border:1px solid var(--line)}
+.timing .was{color:#B45309;background:var(--gold-s);border-color:#FCD9A8;text-decoration:line-through}
+.timing .now{color:var(--teal-d);background:var(--teal-s);border-color:#BFE9DE}
+.lab{display:grid;grid-template-columns:1fr 1.25fr;gap:18px}
+@media(max-width:900px){.lab{grid-template-columns:1fr}}
+.pane{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+.pane .ph{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line);background:var(--soft)}
+.pane .ph h3{font-size:15px;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+.pane .ph .stepn{width:24px;height:24px;border-radius:8px;background:var(--navy);color:#fff;font-size:12.5px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
+.pane .pb{padding:18px}
+.field{display:grid;gap:5px;font-size:13px;color:var(--slate);font-weight:600}
+.field input,.field select{font:inherit;font-weight:500;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);width:100%}
+.field input:focus,.field select:focus{outline:2px solid var(--teal);border-color:transparent}
+.frow{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
+.t{width:100%;border-collapse:collapse;font-size:13.5px}
+.t th{text-align:left;font-size:12px;color:var(--muted);font-weight:700;padding:8px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+.t td{padding:8px;border-bottom:1px solid var(--line);vertical-align:middle;white-space:nowrap}
+.t td.r,.t th.r{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.t input{font:inherit;width:72px;padding:5px 7px;border:1px solid var(--line);border-radius:7px;text-align:right;font-family:var(--mono)}
+.t input:focus{outline:2px solid var(--teal);border-color:transparent}
+.t tr.warn td{background:#FFF7ED}
+.t .tot td{font-weight:700;background:var(--soft)}
+.tscroll{overflow-x:auto}
+.run{display:inline-flex;align-items:center;gap:8px;background:var(--teal);color:#fff;font-weight:800;font-size:15px;padding:12px 20px;border-radius:999px;border:none;cursor:pointer;font-family:inherit;transition:.2s}
+.run:hover{background:var(--teal-d);transform:translateY(-1px)}
+.run.navy{background:var(--navy)}
+.run.ghost{background:#fff;color:var(--navy);border:1px solid var(--line);font-weight:700}
+.run:disabled{opacity:.5;cursor:default;transform:none}
+.badge{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px}
+.badge.g{background:var(--teal-s);color:var(--teal-d)}.badge.a{background:var(--gold-s);color:#B45309}.badge.r{background:var(--red-s);color:#B91C1C}.badge.b{background:var(--blue-s);color:var(--blue)}.badge.n{background:var(--soft);color:var(--slate)}.badge.v{background:var(--violet-s);color:var(--violet)}
+.log{font-family:var(--mono);font-size:12.5px;background:#0B1F3A;color:#C9D5E6;border-radius:10px;padding:12px 14px;display:grid;gap:4px;max-height:190px;overflow:auto;min-height:60px}
+.log .ok{color:#4FD8CE}.log .wn{color:#FAC775}.log .er{color:#F09595}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.kpi{background:var(--soft);border-radius:10px;padding:10px 12px}
+.kpi .l{font-size:11.5px;color:var(--muted);font-weight:600}
+.kpi .v{font-family:var(--mono);font-size:16.5px;font-weight:700;color:var(--navy);margin-top:2px;white-space:nowrap}
+.kpi.good .v{color:var(--teal-d)}.kpi.warn .v{color:#B45309}
+.slip{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:12.5px}
+.slip h5{text-align:center;letter-spacing:.25em;font-size:13px;margin-bottom:8px}
+.slip table{width:100%;border-collapse:collapse;font-size:12px}
+.slip td{padding:3px 4px;border-bottom:1px solid #eee}
+.slip td.r{text-align:right;font-family:var(--mono)}
+.slip .tot td{font-weight:700;border-top:2px solid var(--navy);border-bottom:none}
+.alert{border-radius:10px;padding:11px 14px;font-size:13.5px;display:flex;gap:9px;align-items:flex-start}
+.alert.warn{background:var(--gold-s);border:1px solid #FCD9A8;color:#7c3c12}
+.alert.ok{background:var(--teal-s);border:1px solid #BFE9DE;color:#0B6B62}
+.alert.info{background:var(--blue-s);border:1px solid #C7D7FB;color:#1E40AF}
+.bar{height:8px;background:var(--soft);border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--teal);border-radius:999px;transition:width .6s}
+.bar i.a{background:var(--gold)}.bar i.r{background:var(--red)}.bar i.b{background:var(--blue)}
+.org{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.org div{background:var(--soft);border-radius:10px;padding:10px 12px}
+.org b{display:block;font-size:13px}
+.org span{font-size:11.5px;color:var(--muted)}
+.org ul{list-style:none;margin-top:6px;font-size:12.5px;color:var(--slate);display:grid;gap:2px}
+.org li.new{color:var(--teal-d);font-weight:700}
+.org li.gone{color:#B45309;text-decoration:line-through}
+.ai{background:linear-gradient(135deg,#E7F7F1,#EAF0FE);border:1px solid #BFE9DE;border-radius:12px;padding:14px 16px}
+.ai .t{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--teal-d);font-weight:700;margin-bottom:6px}
+.ai p{font-size:13.5px;color:var(--ink)}
+.ai ul{margin:8px 0 0 18px;font-size:13px;color:var(--slate);display:grid;gap:3px}
+.after{margin-top:22px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:820px){.after{grid-template-columns:1fr}}
+.after .xl{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+.after .xl h4{font-size:14px;letter-spacing:.04em;color:var(--muted);text-transform:uppercase}
+.after .xl ul{list-style:none;margin-top:10px;display:grid;gap:7px;font-size:14px;color:var(--slate)}
+.after .xl.bad li:before{content:"✕ ";color:var(--red);font-weight:800}
+.after .xl.good{border-color:#BFE9DE;background:#F4FBF9}
+.after .xl.good h4{color:var(--teal-d)}
+.after .xl.good li:before{content:"✓ ";color:var(--teal);font-weight:800}
+.links{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;align-items:center}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:11px 18px;border-radius:10px;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.3);z-index:20}
+.dropzone{border:2px dashed #BFE9DE;border-radius:12px;padding:18px;text-align:center;color:var(--slate);font-size:13.5px;background:#F4FBF9;cursor:pointer}
+.dropzone:hover{background:var(--teal-s)}
+.file{display:flex;gap:8px;align-items:center;font-size:13px;background:var(--soft);border-radius:8px;padding:8px 10px;font-family:var(--mono)}
+.sum{position:sticky;bottom:0;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:12px 0;z-index:10;font-size:14px}
+.sum .wrap{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.sum b{font-family:var(--mono);color:var(--teal-d)}
 </style>
+
 </head>
 <body>
-<div class="top">
-  <a class="brand" href="index.html"><span class="silmoo-mark" style="width:24px"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="gradDemo" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2563EB"/><stop offset="0.55" stop-color="#159BC0"/><stop offset="1" stop-color="#0EA5A0"/></linearGradient></defs><rect width="100" height="100" rx="24" fill="url(#gradDemo)"/><rect x="22" y="22" width="16" height="16" rx="4" fill="#fff"/><rect x="42" y="22" width="16" height="16" rx="4" fill="#fff"/><rect x="62" y="22" width="16" height="16" rx="4" fill="#fff"/><rect x="22" y="42" width="16" height="16" rx="4" fill="#fff"/><rect x="62" y="42" width="16" height="16" rx="4" fill="#fff"/><rect x="22" y="62" width="16" height="16" rx="4" fill="#fff"/><rect x="42" y="62" width="16" height="16" rx="4" fill="#fff"/><rect x="62" y="62" width="16" height="16" rx="4" fill="#fff"/><rect class="silmoo-blink" x="42" y="42" width="16" height="16" rx="4" fill="#F97316"/></svg></span> Silmoo Lab · 라이브 데모</a>
-  <span class="badge">● 실제 시스템 UI · 데이터는 모두 가상</span>
-  <a class="home" href="index.html">← 포트폴리오 홈</a>
-</div>
+<header class="nav"><div class="wrap nav-in">
+  <a class="brand" href="index.html"><span class="silmoo-mark" style="width:28px"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="gnav" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2563EB"/><stop offset="0.55" stop-color="#159BC0"/><stop offset="1" stop-color="#0EA5A0"/></linearGradient></defs><rect width="100" height="100" rx="24" fill="url(#gnav)"/><rect x="22" y="22" width="16" height="16" rx="4" fill="#fff"/><rect x="42" y="22" width="16" height="16" rx="4" fill="#fff"/><rect x="62" y="22" width="16" height="16" rx="4" fill="#fff"/><rect x="22" y="42" width="16" height="16" rx="4" fill="#fff"/><rect x="62" y="42" width="16" height="16" rx="4" fill="#fff"/><rect x="22" y="62" width="16" height="16" rx="4" fill="#fff"/><rect x="42" y="62" width="16" height="16" rx="4" fill="#fff"/><rect x="62" y="62" width="16" height="16" rx="4" fill="#fff"/><rect class="silmoo-blink" x="42" y="42" width="16" height="16" rx="4" fill="#F97316"/></svg></span> Silmoo Lab <small>실무랩 · with you</small></a>
+  <nav class="nav-links"><a href="index.html#products" class="">솔루션</a><a href="crm.html" class="">영업 CRM</a><a href="gov.html" class="">정부과제</a><a href="hr.html" class="">인사·급여</a><a href="index.html#process" class="">진행방식</a><a href="demo.html" class="demo-link active">라이브 데모</a></nav>
+  <a class="btn btn-p nav-cta" href="index.html#contact">무료 상담</a>
+</div></header>
 
-<div class="wrap">
-  <h1>실제 시스템을 직접 눌러보세요</h1>
-  <p class="sub">아래 데모는 실제 운영 시스템과 <b>동일한 화면</b>입니다. 데이터만 가상으로 교체했으며, 로그인 없이 바로 체험할 수 있습니다.</p>
 
-  <div class="grid">
-    <div class="card">
-      <div class="ci">🎯</div>
-      <h3>Sales Hub (리드허브)</h3>
-      <p>리드 발굴·파이프라인·데모 추적·전시회 관리까지, 영업 앞단을 담당하는 시스템.</p>
-      <a class="go" href="demo-sales.html">데모 열기 →</a>
-    </div>
-    <div class="card">
-      <div class="ci">🧾</div>
-      <h3>영업 CRM (고객·정산)</h3>
-      <p>고객 마스터·주문·세금계산서·매출채권·입금까지, 계약 이후를 담당하는 시스템.</p>
-      <a class="go" href="demo-crm.html">데모 열기 →</a>
-    </div>
-    <div class="card">
-      <div class="ci">📁</div>
-      <h3>정부과제 관리</h3>
-      <p>참여율 매트릭스·인건비 자동계상·집행·정산. 참여율 120% 초과 경고도 직접 확인해 보세요.</p>
-      <a class="go blue" href="demo-gov.html">데모 열기 →</a>
-    </div>
-    <div class="card">
-      <div class="ci">🏢</div>
-      <h3>e-HR (조직·발령)</h3>
-      <p>조직도 관리, 임직원 마스터, 전보·승진·겸직 발령 이력.</p>
-      <a class="go violet" href="demo-hr.html">데모 열기 →</a>
-    </div>
-    <div class="card">
-      <div class="ci">📈</div>
-      <h3>인사평가 (360°+KPI)</h3>
-      <p>역량모델·평가주기·평가자 자동구성·KPI 승인 흐름.</p>
-      <a class="go violet" href="demo-eval.html">데모 열기 →</a>
-    </div>
-    <div class="card">
-      <div class="ci">💰</div>
-      <h3>급여 자동화</h3>
-      <p>급여대장·4대보험/세액 자동계산·명세서 발행 흐름.</p>
-      <a class="go violet" href="demo-payroll.html">데모 열기 →</a>
-    </div>
+<section class="dhero">
+  <div class="wrap">
+    <span class="tag" style="background:rgba(14,165,160,.18);color:#9BE6DF;border:1px solid rgba(14,165,160,.35)">● 로그인 없음 · 데이터는 모두 가상 · 저장되지 않습니다</span>
+    <h1 style="margin-top:14px">3분이면, 엑셀로 하던 일이<br/>어떻게 달라지는지 체감됩니다</h1>
+    <p>다섯 가지 시나리오를 준비했습니다. 값을 바꾸고 버튼을 누르면 실제 시스템과 같은 계산·검증·문서 생성이 그 자리에서 일어납니다. 체험이 끝나면 "실제 화면 열기"로 운영 시스템과 동일한 UI를 직접 눌러볼 수 있습니다.</p>
+    <div class="progress"><span>체험 진행</span><div class="pb"><i id="pbar"></i></div><span><b id="pdone">0</b> / 5 완료 · 시스템이 대신한 작업 <b id="ptasks">0</b>건</span></div>
+    <nav class="dtabs" id="dtabs">
+      <a href="#payroll" data-s="payroll"><i class="st"></i>① 급여 계산</a>
+      <a href="#gov" data-s="gov"><i class="st"></i>② 정부과제 인건비</a>
+      <a href="#crm" data-s="crm"><i class="st"></i>③ 입금 자동 대사</a>
+      <a href="#hr" data-s="hr"><i class="st"></i>④ 발령 → 조직도</a>
+      <a href="#eval" data-s="eval"><i class="st"></i>⑤ 인사평가 사이클</a>
+    </nav>
   </div>
+</section>
 
-  <div class="note">
-    ⚠ 본 데모의 모든 이름·수치·기관명은 가상이며, 저장 버튼은 동작하지만 데이터가 실제로 저장되지는 않습니다. 실제 도입 시 귀사 환경·프로세스에 맞춰 재구성됩니다. &nbsp;문의: dandyyoon80@gmail.com
+<!-- ① PAYROLL -->
+<section class="scn" id="payroll">
+  <div class="wrap">
+    <div class="scn-head"><div><span class="kicker">Scenario 1 · 급여 자동화</span><h2>근태만 넣으면, 급여·4대보험·명세서까지</h2><p>연장·야간 시간을 바꿔 보세요. 통상시급 계산, 가산수당, 2026년 요율 기준 4대보험·세액, 명세서 생성이 한 번에 실행됩니다.</p></div>
+      <div class="timing"><span class="was">엑셀 · 인당 20분 + 요율 확인</span><span class="now">시스템 · 전체 3초</span></div></div>
+    <div class="lab">
+      <div class="pane"><div class="ph"><h3><span class="stepn">1</span>근태·기본급 입력</h3><span class="badge n">2026-10월분</span></div>
+        <div class="pb" style="display:grid;gap:14px">
+          <div class="tscroll"><table class="t" id="payIn"><tr><th>성명</th><th>부서</th><th class="r">기본급</th><th class="r">연장(h)</th><th class="r">야간(h)</th><th class="r">휴일(h)</th></tr></table></div>
+          <div class="alert info">ⓘ 식대 비과세 200,000원 · 월 소정근로 209h · 연장 150% / 야간 +50% / 휴일 150% · 국민연금 4.75% · 건강보험 3.595% · 장기요양 12.95% · 고용보험 0.9% (2026 근로자 부담)</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><button class="run" id="payRun">▶ 급여 계산 실행</button><button class="run ghost" id="payReset">초기화</button></div>
+        </div></div>
+      <div class="pane"><div class="ph"><h3><span class="stepn">2</span>계산 결과 · 검증 · 명세서</h3><span class="badge n" id="payState">대기</span></div>
+        <div class="pb" style="display:grid;gap:14px">
+          <div class="log" id="payLog"><span>▶ 실행을 누르면 계산 과정이 표시됩니다.</span></div>
+          <div class="kpis" id="payKpi"></div>
+          <div class="tscroll" id="payOut"></div>
+          <div id="payAlerts" style="display:grid;gap:8px"></div>
+          <div id="paySlip"></div>
+        </div></div>
+    </div>
+    <div class="after">
+      <div class="xl bad"><h4>엑셀이라면</h4><ul><li>요율 바뀔 때마다 수식 12개 손보기, 한 칸 틀리면 전원 오류</li><li>명세서는 인원수만큼 복사·붙여넣기·PDF 저장</li><li>연장 한도(주 12h) 초과는 아무도 경고하지 않음</li><li>전월 대비 이상치 검증은 눈으로</li></ul></div>
+      <div class="xl good"><h4>시스템이라면</h4><ul><li>요율·한도는 설정값, 시행월만 지정</li><li>명세서 PDF 일괄 생성·이메일 발송</li><li>한도 초과·전월 대비 ±15% 변동 자동 경고</li><li>급여대장·이체 파일·원천징수 자료 동시 출력</li></ul></div>
+    </div>
+    <div class="links"><a class="run navy" href="demo-payroll.html" target="_blank">실제 급여 시스템 화면 열기 ↗</a><a class="run ghost" href="hr.html#payroll">기능 자세히</a><a class="run ghost" href="index.html#contact">이 업무로 상담하기</a></div>
+  </div>
+</section>
+
+<!-- ② GOV -->
+<section class="scn" id="gov">
+  <div class="wrap">
+    <div class="scn-head"><div><span class="kicker">Scenario 2 · 정부과제 관리</span><h2>참여율만 입력하면, 인건비·현물이 자동 계상됩니다</h2><p>연구원 3명이 과제 2개에 참여합니다. 참여율을 바꿔 보세요. 과제별 인건비가 즉시 재계산되고, 합산 100%를 넘기면 정산 지적 사항을 미리 경고합니다.</p></div>
+      <div class="timing"><span class="was">엑셀 · 월 반나절 + 정산 때 지적</span><span class="now">시스템 · 입력 즉시</span></div></div>
+    <div class="lab">
+      <div class="pane"><div class="ph"><h3><span class="stepn">1</span>인력 배정 · 참여율(%)</h3><span class="badge b">2026년 10월</span></div>
+        <div class="pb" style="display:grid;gap:14px">
+          <div class="tscroll"><table class="t" id="govIn"><tr><th>연구원</th><th class="r">월 급여</th><th class="r">과제 A<br><small>AI 판독</small></th><th class="r">과제 B<br><small>영상 DB</small></th><th class="r">합계</th></tr></table></div>
+          <div class="frow">
+            <label class="field">장비 취득가 (현물)<input id="govEq" type="number" value="48000000" step="1000000"></label>
+            <label class="field">내구연한 (년)<input id="govLife" type="number" value="5" min="1" max="10"></label>
+            <label class="field">과제 A 장비 사용률 (%)<input id="govEqA" type="number" value="60" min="0" max="100"></label>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="run" id="govRun">▶ 정산 자료 생성</button><button class="run ghost" id="govOver">참여율 초과 상황 만들기</button></div>
+        </div></div>
+      <div class="pane"><div class="ph"><h3><span class="stepn">2</span>자동 계상 결과 · 규정 검증</h3><span class="badge n" id="govState">실시간</span></div>
+        <div class="pb" style="display:grid;gap:14px">
+          <div class="kpis" id="govKpi"></div>
+          <div class="tscroll" id="govOut"></div>
+          <div id="govAlerts" style="display:grid;gap:8px"></div>
+          <div class="log" id="govLog"><span>▶ 참여율을 바꾸면 즉시 재계산됩니다. '정산 자료 생성'으로 엑셀 구조를 확인하세요.</span></div>
+        </div></div>
+    </div>
+    <div class="after">
+      <div class="xl bad"><h4>엑셀이라면</h4><ul><li>연구원별·과제별·월별 참여율 시트를 따로 관리, 겹치면 정산 때 발견</li><li>장비 현물은 감가상각 계산을 매번 손으로</li><li>비목 총합 ≠ 총사업비 같은 오류를 제출 직전에 발견</li></ul></div>
+      <div class="xl good"><h4>시스템이라면</h4><ul><li>참여율 매트릭스 하나로 모든 과제 인건비 동시 계상</li><li>장비·임차 현물 자동 계산, 중복 배정 경고</li><li>참여율 초과·비목 한도·총합 불일치 즉시 경고, 정산 엑셀 원클릭</li></ul></div>
+    </div>
+    <div class="links"><a class="run navy" href="demo-gov.html" target="_blank">실제 정부과제 시스템 화면 열기 ↗</a><a class="run ghost" href="gov.html">기능 자세히</a><a class="run ghost" href="index.html#contact">이 업무로 상담하기</a></div>
+  </div>
+</section>
+
+<!-- ③ CRM -->
+<section class="scn" id="crm">
+  <div class="wrap">
+    <div class="scn-head"><div><span class="kicker">Scenario 3 · 영업 CRM · 정산</span><h2>은행 입금 내역을 올리면, 세금계산서와 자동 대사됩니다</h2><p>발행한 세금계산서 6건이 있습니다. 입금 내역(가상 은행 파일)을 올리면 사업자번호·금액 기준으로 자동 매칭하고, 부분 입금·미확인 건을 가려냅니다. 마지막엔 AI가 다음 액션을 요약합니다.</p></div>
+      <div class="timing"><span class="was">엑셀 · 월말 반나절 대사</span><span class="now">시스템 · 업로드 후 2초</span></div></div>
+    <div class="lab">
+      <div class="pane"><div class="ph"><h3><span class="stepn">1</span>발행 세금계산서 · 입금 파일</h3><span class="badge n">2026-10</span></div>
+        <div class="pb" style="display:grid;gap:14px">
+          <div class="tscroll"><table class="t" id="crmInv"><tr><th>기관</th><th>사업자번호</th><th>발행일</th><th class="r">공급대가</th><th>상태</th></tr></table></div>
+          <div class="dropzone" id="crmDrop">⬆ 입금 내역 파일 올리기 (클릭하면 가상 은행 파일 <span class="num">bank_2026-10.xlsx</span>가 올라갑니다)</div>
+          <div id="crmFile"></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="run" id="crmRun" disabled>▶ 자동 대사 실행</button><button class="run ghost" id="crmAI" disabled>✦ AI 요약</button></div>
+        </div></div>
+      <div class="pane"><div class="ph"><h3><span class="stepn">2</span>대사 결과 · 미수 에이징 · AI 요약</h3><span class="badge n" id="crmState">대기</span></div>
+        <div class="pb" style="display:grid;gap:14px">
+          <div class="kpis" id="crmKpi"></div>
+          <div class="tscroll" id="crmOut"></div>
+          <div id="crmAging"></div>
+          <div id="crmAIOut"></div>
+        </div></div>
+    </div>
+    <div class="after">
+      <div class="xl bad"><h4>엑셀이라면</h4><ul><li>영업팀 시트와 회계팀 엑셀을 VLOOKUP으로 맞추다 이름 표기가 달라 실패</li><li>부분 입금·선입금은 메모로 관리, 담당자 바뀌면 유실</li><li>미수금은 월말에 "누가 얼마 안 냈지?"부터 시작</li></ul></div>
+      <div class="xl good"><h4>시스템이라면</h4><ul><li>사업자번호·금액·기간 규칙으로 자동 매칭, 예외만 사람이 확인</li><li>부분 입금은 잔액으로 추적, 에이징이 매일 갱신</li><li>60일 초과 건 알림 → 독촉 메일 초안 자동 생성</li></ul></div>
+    </div>
+    <div class="links"><a class="run navy" href="demo-crm.html" target="_blank">실제 CRM 화면 열기 ↗</a><a class="run ghost" href="demo-sales.html" target="_blank">Sales Hub(리드·영업) 열기 ↗</a><a class="run ghost" href="crm.html">기능 자세히</a><a class="run ghost" href="index.html#contact">이 업무로 상담하기</a></div>
+  </div>
+</section>
+
+<!-- ④ HR -->
+<section class="scn" id="hr">
+  <div class="wrap">
+    <div class="scn-head"><div><span class="kicker">Scenario 4 · e-HR · 발령</span><h2>발령 한 건 등록하면, 시행일에 조직도·명부가 바뀝니다</h2><p>발령 유형과 대상, 시행일을 고르고 등록해 보세요. 발령 목록에 "시행예정"으로 쌓이고, "시행일 후 조직도 보기"로 반영 결과를 미리 확인할 수 있습니다. 발령장도 자동 생성됩니다.</p></div>
+      <div class="timing"><span class="was">수기 · 조직도·명부·급여대장 3곳 수정</span><span class="now">시스템 · 1건 등록</span></div></div>
+    <div class="lab">
+      <div class="pane"><div class="ph"><h3><span class="stepn">1</span>발령 등록</h3><span class="badge v">14종 유형</span></div>
+        <div class="pb" style="display:grid;gap:14px">
+          <div class="frow">
+            <label class="field">발령 유형<select id="hrType"><option>전보</option><option>승진</option><option>겸직 등록</option><option>직무 변경</option><option>휴직</option><option>복직</option><option>신규 입사</option><option>퇴사</option></select></label>
+            <label class="field">대상자<select id="hrWho"></select></label>
+            <label class="field">발령 조직<select id="hrOrg"><option>경영지원팀</option><option>국내영업팀</option><option>해외영업팀</option><option>연구소</option><option>제품팀</option></select></label>
+            <label class="field">직위<select id="hrPos"><option>사원</option><option>대리</option><option>과장</option><option>팀장</option></select></label>
+            <label class="field">시행일<input id="hrDate" type="date" value="2026-11-01"></label>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="run" id="hrRun">▶ 발령 등록</button><button class="run ghost" id="hrDoc" disabled>📄 발령장 미리보기</button></div>
+          <div class="tscroll"><table class="t" id="hrOrders"><tr><th>발령번호</th><th>유형</th><th>대상</th><th>내용</th><th>시행일</th><th>상태</th></tr></table></div>
+        </div></div>
+      <div class="pane"><div class="ph"><h3><span class="stepn">2</span>조직도</h3><div style="display:flex;gap:6px"><button class="run ghost" style="padding:6px 12px;font-size:13px" id="hrNow">현재</button><button class="run" style="padding:6px 12px;font-size:13px" id="hrAfter">시행일 후 보기</button></div></div>
+        <div class="pb" style="display:grid;gap:14px">
+          <div id="hrOrgView" class="org"></div>
+          <div id="hrDocOut"></div>
+          <div class="alert info">ⓘ 실제 시스템은 시행일 0시에 직원 마스터·조직·급여 기준을 자동 갱신하고, 주민번호·계좌 같은 민감정보는 열람 승인과 접근 로그로 통제합니다.</div>
+        </div></div>
+    </div>
+    <div class="after">
+      <div class="xl bad"><h4>수기라면</h4><ul><li>발령 나면 조직도 PPT, 명부 엑셀, 급여대장을 각각 수정 — 하나는 꼭 빠짐</li><li>재직증명서·발령장은 워드 양식에 직접 타이핑</li><li>주민번호가 든 엑셀이 메일로 돌아다님</li></ul></div>
+      <div class="xl good"><h4>시스템이라면</h4><ul><li>발령 1건이 조직도·명부·급여 기준·평가 대상까지 연동</li><li>증명서·발령장·근로계약서 PDF 자동 생성</li><li>민감정보 마스킹 + 열람 승인 + 접근 로그</li></ul></div>
+    </div>
+    <div class="links"><a class="run navy" href="demo-hr.html" target="_blank">실제 e-HR 화면 열기 ↗</a><a class="run ghost" href="hr.html">기능 자세히</a><a class="run ghost" href="index.html#contact">이 업무로 상담하기</a></div>
+  </div>
+</section>
+
+<!-- ⑤ EVAL -->
+<section class="scn" id="eval">
+  <div class="wrap">
+    <div class="scn-head"><div><span class="kicker">Scenario 5 · 인사평가 360°+KPI</span><h2>평가 시작 버튼 하나로, 평가자 매핑부터 등급까지</h2><p>조직도를 기준으로 본인·상사·동료·상향 평가자를 자동 구성하고, 제출 현황을 모아, 역량 60% + KPI 40% 가중 합산으로 등급을 산출합니다. 등급 분포가 가이드를 넘으면 경고합니다.</p></div>
+      <div class="timing"><span class="was">엑셀 · 3주 취합</span><span class="now">시스템 · 1주 운영</span></div></div>
+    <div class="lab">
+      <div class="pane"><div class="ph"><h3><span class="stepn">1</span>평가 사이클 설정</h3><span class="badge v">2026 하반기</span></div>
+        <div class="pb" style="display:grid;gap:14px">
+          <div class="frow">
+            <label class="field">역량 : KPI 가중치<select id="evW"><option value="60">60 : 40</option><option value="50">50 : 50</option><option value="70">70 : 30</option></select></label>
+            <label class="field">익명성<select id="evAnon"><option>HR만 실명</option><option>팀장도 실명</option></select></label>
+            <label class="field">S+A 등급 가이드 (%)<input id="evGuide" type="number" value="35" min="10" max="60"></label>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="run" id="evRun">▶ 평가 시작 (평가자 자동 구성)</button><button class="run ghost" id="evRemind" disabled>✉ 미완료자 독려</button><button class="run ghost" id="evClose" disabled>평가 종료 · 등급 산출</button></div>
+          <div class="tscroll" id="evMap"></div>
+        </div></div>
+      <div class="pane"><div class="ph"><h3><span class="stepn">2</span>진행 현황 · 결과</h3><span class="badge n" id="evState">준비</span></div>
+        <div class="pb" style="display:grid;gap:14px">
+          <div id="evProg"></div>
+          <div class="tscroll" id="evOut"></div>
+          <div id="evAlerts" style="display:grid;gap:8px"></div>
+        </div></div>
+    </div>
+    <div class="after">
+      <div class="xl bad"><h4>엑셀이라면</h4><ul><li>평가표 30장을 메일로 보내고 걷고, 누가 안 냈는지 매일 확인</li><li>취합 수식이 한 번 어긋나면 등급이 통째로 틀림</li><li>익명성 보장이 안 돼 솔직한 상향 평가가 안 나옴</li></ul></div>
+      <div class="xl good"><h4>시스템이라면</h4><ul><li>평가자 자동 매핑, 미제출자 독려 메일 원클릭</li><li>가중치·등급 규칙은 설정, 결과는 자동 산출</li><li>익명 정책·열람 잠금·해제 요청 워크플로우, 면담 피드백지 PDF</li></ul></div>
+    </div>
+    <div class="links"><a class="run navy" href="demo-eval.html" target="_blank">실제 인사평가 화면 열기 ↗</a><a class="run ghost" href="hr.html#eval">기능 자세히</a><a class="run ghost" href="index.html#contact">이 업무로 상담하기</a></div>
+  </div>
+</section>
+
+<div class="sum"><div class="wrap"><span>이 체험에서 시스템이 대신한 작업 <b id="stasks">0</b>건</span><span>·</span><span>절감 추정 <b id="stime">0</b>분</span><span style="margin-left:auto;display:flex;gap:8px;flex-wrap:wrap"><a class="run ghost" style="padding:8px 14px;font-size:13px" href="index.html#contact">우리 회사에 맞는지 상담</a><a class="run" style="padding:8px 14px;font-size:13px" href="brochure.pdf" download>브로셔 PDF</a></span></div></div>
+
+<script>
+/* ============ shared ============ */
+const $=s=>document.querySelector(s), won=n=>Math.round(n).toLocaleString('ko-KR');
+const done={}, stats={tasks:0,min:0};
+function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2200);}
+function credit(key,tasks,min){if(!done[key]){done[key]=1;document.querySelector(`#dtabs a[data-s="${key}"]`).classList.add('done');}stats.tasks+=tasks;stats.min+=min;const n=Object.keys(done).length;$('#pdone').textContent=n;$('#pbar').style.width=(n/5*100)+'%';$('#ptasks').textContent=stats.tasks;$('#stasks').textContent=stats.tasks;$('#stime').textContent=stats.min;}
+function show(key){document.querySelectorAll('.scn').forEach(s=>s.classList.toggle('on',s.id===key));document.querySelectorAll('#dtabs a').forEach(a=>a.classList.toggle('on',a.dataset.s===key));}
+document.querySelectorAll('#dtabs a').forEach(a=>a.onclick=e=>{e.preventDefault();history.replaceState(null,'','#'+a.dataset.s);show(a.dataset.s);document.getElementById(a.dataset.s).scrollIntoView({behavior:'smooth',block:'start'});});
+const first=['payroll','gov','crm','hr','eval'].includes(location.hash.slice(1))?location.hash.slice(1):'payroll';show(first);
+function logTo(el,lines,cb){el.innerHTML='';lines.forEach((l,i)=>setTimeout(()=>{const s=document.createElement('span');s.className=l[0]||'';s.textContent=`[${String(i+1).padStart(2,'0')}] ${l[1]}`;el.appendChild(s);el.scrollTop=el.scrollHeight;if(i===lines.length-1&&cb)cb();},170*(i+1)));}
+function kpi(el,items){el.innerHTML=items.map(k=>`<div class="kpi ${k[2]||''}"><div class="l">${k[0]}</div><div class="v">${k[1]}</div></div>`).join('');}
+
+/* ============ ① PAYROLL ============ */
+const RATE={np:.0475,hi:.03595,ltc:.1295,ei:.009,h:209,meal:200000};
+const PAY0=[['김영업','영업팀',4800000,12,0,0],['정연구','연구소',5600000,8,4,0],['이인사','경영지원팀',3600000,6,0,8],['최신입','영업팀',3200000,14,2,0]];
+let pay=PAY0.map(r=>[...r]);
+function payRender(){$('#payIn').innerHTML='<tr><th>성명</th><th>부서</th><th class="r">기본급</th><th class="r">연장(h)</th><th class="r">야간(h)</th><th class="r">휴일(h)</th></tr>'+pay.map((p,i)=>`<tr><td>${p[0]}</td><td>${p[1]}</td><td class="r"><input data-i="${i}" data-k="2" value="${p[2]}" style="width:96px"></td><td class="r"><input data-i="${i}" data-k="3" value="${p[3]}"></td><td class="r"><input data-i="${i}" data-k="4" value="${p[4]}"></td><td class="r"><input data-i="${i}" data-k="5" value="${p[5]}"></td></tr>`).join('');document.querySelectorAll('#payIn input').forEach(inp=>inp.oninput=()=>{pay[+inp.dataset.i][+inp.dataset.k]=+inp.value||0;});}
+payRender();
+function calc(p){const hourly=Math.round(p[2]/RATE.h);const ot=Math.round(hourly*1.5*p[3]),nt=Math.round(hourly*.5*p[4]),hd=Math.round(hourly*1.5*p[5]);const gross=p[2]+ot+nt+hd+RATE.meal,tax=gross-RATE.meal;const np=Math.floor(tax*RATE.np/10)*10,hi=Math.floor(tax*RATE.hi/10)*10,ltc=Math.floor(hi*RATE.ltc/10)*10,ei=Math.floor(tax*RATE.ei/10)*10;const it=Math.floor(tax*(tax>5000000?.06:tax>3500000?.035:.018)/10)*10,lt=Math.floor(it*.1/10)*10;const ded=np+hi+ltc+ei+it+lt;return{hourly,ot,nt,hd,gross,np,hi,ltc,ei,it,lt,ded,net:gross-ded};}
+$('#payReset').onclick=()=>{pay=PAY0.map(r=>[...r]);payRender();$('#payOut').innerHTML='';$('#payKpi').innerHTML='';$('#payAlerts').innerHTML='';$('#paySlip').innerHTML='';$('#payLog').innerHTML='<span>▶ 초기화됨</span>';$('#payState').textContent='대기';};
+$('#payRun').onclick=()=>{const rows=pay.map(p=>({p,c:calc(p)}));const G=rows.reduce((a,b)=>a+b.c.gross,0),D=rows.reduce((a,b)=>a+b.c.ded,0),N=G-D;const over=rows.filter(r=>r.p[3]+r.p[5]>52);$('#payState').textContent='계산 중';$('#payRun').disabled=true;
+ logTo($('#payLog'),[['','근태 데이터 로드 · '+rows.length+'명 · 연장 '+rows.reduce((a,b)=>a+b.p[3],0)+'h · 야간 '+rows.reduce((a,b)=>a+b.p[4],0)+'h'],['','통상시급 = 기본급 ÷ 209h'],['','연장 ×1.5 · 야간 +0.5 · 휴일 ×1.5 가산'],['','비과세 식대 200,000원 분리'],['','국민연금 4.75% · 건강 3.595% · 장기요양 12.95% · 고용 0.9%'],['','간이세액 소득세 · 지방소득세 10%'],[over.length?'wn':'ok',over.length?'⚠ 연장+휴일 52h 초과 '+over.length+'명 — 근로기준법 한도 확인 필요':'주 12h 연장 한도 검증 통과'],['ok','명세서 PDF '+rows.length+'건 · 급여대장 · 이체 파일 생성 준비 완료']],()=>{
+  $('#payState').textContent='완료';$('#payRun').disabled=false;
+  kpi($('#payKpi'),[['지급 총액',won(G)],['공제 총액',won(D)],['실지급액',won(N),'good'],['생성 문서',rows.length+'건 명세서']]);
+  $('#payOut').innerHTML=`<table class="t"><tr><th>성명</th><th class="r">통상시급</th><th class="r">연장수당</th><th class="r">야간</th><th class="r">휴일</th><th class="r">지급합계</th><th class="r">4대보험</th><th class="r">세액</th><th class="r">실지급</th></tr>${rows.map(r=>`<tr class="${r.p[3]+r.p[5]>52?'warn':''}"><td>${r.p[0]}</td><td class="r">${won(r.c.hourly)}</td><td class="r">${won(r.c.ot)}</td><td class="r">${won(r.c.nt)}</td><td class="r">${won(r.c.hd)}</td><td class="r">${won(r.c.gross)}</td><td class="r">${won(r.c.np+r.c.hi+r.c.ltc+r.c.ei)}</td><td class="r">${won(r.c.it+r.c.lt)}</td><td class="r" style="color:var(--teal-d);font-weight:700">${won(r.c.net)}</td></tr>`).join('')}<tr class="tot"><td>합계</td><td></td><td class="r">${won(rows.reduce((a,b)=>a+b.c.ot,0))}</td><td class="r">${won(rows.reduce((a,b)=>a+b.c.nt,0))}</td><td class="r">${won(rows.reduce((a,b)=>a+b.c.hd,0))}</td><td class="r">${won(G)}</td><td class="r">${won(rows.reduce((a,b)=>a+b.c.np+b.c.hi+b.c.ltc+b.c.ei,0))}</td><td class="r">${won(rows.reduce((a,b)=>a+b.c.it+b.c.lt,0))}</td><td class="r">${won(N)}</td></tr></table>`;
+  $('#payAlerts').innerHTML=(over.length?`<div class="alert warn">⚠ <div><b>${over.map(r=>r.p[0]).join(', ')}</b> — 연장+휴일 근로가 월 52h를 초과합니다(주 12h 한도). 실제 시스템은 마감 전 담당자에게 경고하고 사유 입력을 요구합니다.</div></div>`:'')+`<div class="alert ok">✓ 전월 대비 개인별 공제액 변동 ±15% 검증 통과 · 명세서 ${rows.length}건 생성 · 이체 파일(CSV) 준비</div>`;
+  const r=rows[0];$('#paySlip').innerHTML=`<div class="slip"><h5>급 여 명 세 서</h5><div style="display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:6px"><span>2026년 10월분</span><span>${r.p[0]} · ${r.p[1]}</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><table><tr><td colspan="2"><b>지급</b></td></tr><tr><td>기본급</td><td class="r">${won(r.p[2])}</td></tr><tr><td>연장수당 (${r.p[3]}h×1.5)</td><td class="r">${won(r.c.ot)}</td></tr><tr><td>야간수당 (${r.p[4]}h×0.5)</td><td class="r">${won(r.c.nt)}</td></tr><tr><td>휴일수당 (${r.p[5]}h×1.5)</td><td class="r">${won(r.c.hd)}</td></tr><tr><td>식대(비과세)</td><td class="r">${won(RATE.meal)}</td></tr><tr class="tot"><td>지급 합계</td><td class="r">${won(r.c.gross)}</td></tr></table><table><tr><td colspan="2"><b>공제</b></td></tr><tr><td>국민연금 4.75%</td><td class="r">${won(r.c.np)}</td></tr><tr><td>건강보험 3.595%</td><td class="r">${won(r.c.hi)}</td></tr><tr><td>장기요양</td><td class="r">${won(r.c.ltc)}</td></tr><tr><td>고용보험 0.9%</td><td class="r">${won(r.c.ei)}</td></tr><tr><td>소득세·지방세</td><td class="r">${won(r.c.it+r.c.lt)}</td></tr><tr class="tot"><td>공제 합계</td><td class="r">${won(r.c.ded)}</td></tr></table></div><div style="margin-top:8px;padding:7px 10px;background:var(--soft);display:flex;justify-content:space-between;font-weight:800"><span>실지급액</span><span class="num">${won(r.c.net)} 원</span></div><p style="font-size:10.5px;color:var(--muted);margin-top:6px">근로기준법 48조 2항 임금명세서 기재사항(근로시간·계산방법) 자동 포함 · 통상시급 ${won(r.c.hourly)}원</p></div>`;
+  credit('payroll',rows.length*3+3,rows.length*20);toast('급여 계산 완료 · 명세서 '+rows.length+'건');});};
+
+/* ============ ② GOV ============ */
+const GOV0=[['박선임',6200000,60,30],['김연구',4800000,40,50],['이주임',3900000,20,40]];
+let gov=GOV0.map(r=>[...r]);
+function govRender(){$('#govIn').innerHTML='<tr><th>연구원</th><th class="r">월 급여</th><th class="r">과제 A<br><small>AI 판독</small></th><th class="r">과제 B<br><small>영상 DB</small></th><th class="r">합계</th></tr>'+gov.map((g,i)=>{const s=g[2]+g[3];return`<tr class="${s>100?'warn':''}"><td>${g[0]}</td><td class="r">${won(g[1])}</td><td class="r"><input data-i="${i}" data-k="2" value="${g[2]}">%</td><td class="r"><input data-i="${i}" data-k="3" value="${g[3]}">%</td><td class="r" style="font-weight:700;color:${s>100?'#B91C1C':'inherit'}">${s}%</td></tr>`}).join('');document.querySelectorAll('#govIn input').forEach(inp=>inp.oninput=()=>{gov[+inp.dataset.i][+inp.dataset.k]=+inp.value||0;govRender();govCalc();inp.focus&&0;});}
+function govCalc(){const eq=+$('#govEq').value||0,life=+$('#govLife').value||5,ua=+$('#govEqA').value||0;const mEq=Math.floor(eq/(life*12)/1000)*1000;const A=gov.map(g=>Math.floor(g[1]*g[2]/100/1000)*1000),B=gov.map(g=>Math.floor(g[1]*g[3]/100/1000)*1000);const over=gov.filter(g=>g[2]+g[3]>100);const eqA=Math.floor(mEq*ua/100/1000)*1000,eqB=mEq-eqA;
+ kpi($('#govKpi'),[['과제 A 인건비/월',won(A.reduce((a,b)=>a+b,0))],['과제 B 인건비/월',won(B.reduce((a,b)=>a+b,0))],['장비 현물/월',won(mEq)],['규정 위반',over.length+'건',over.length?'warn':'good']]);
+ $('#govOut').innerHTML=`<table class="t"><tr><th>항목</th><th class="r">과제 A</th><th class="r">과제 B</th><th>산식</th></tr>${gov.map((g,i)=>`<tr class="${g[2]+g[3]>100?'warn':''}"><td>${g[0]} 인건비</td><td class="r">${won(A[i])}</td><td class="r">${won(B[i])}</td><td style="color:var(--muted);font-size:12px">급여 × 참여율, 천원 절사</td></tr>`).join('')}<tr><td>장비 현물 (감가)</td><td class="r">${won(eqA)}</td><td class="r">${won(eqB)}</td><td style="color:var(--muted);font-size:12px">취득가 ÷ (${life}년×12) × 사용률</td></tr><tr class="tot"><td>월 계상 합계</td><td class="r">${won(A.reduce((a,b)=>a+b,0)+eqA)}</td><td class="r">${won(B.reduce((a,b)=>a+b,0)+eqB)}</td><td></td></tr></table>`;
+ $('#govAlerts').innerHTML=over.length?over.map(g=>`<div class="alert warn">⚠ <div><b>${g[0]}</b> 참여율 합산 <b>${g[2]+g[3]}%</b> — 100% 초과. 정산 시 초과분 인건비 불인정·환수 대상입니다. 실제 시스템은 저장을 막고 조정 화면으로 안내합니다.</div></div>`).join(''):`<div class="alert ok">✓ 참여율 합산 100% 이내 · 장비 중복 배정 없음 · 비목 총합 = 총사업비 검증 통과</div>`;return{over};}
+govRender();govCalc();['govEq','govLife','govEqA'].forEach(id=>$('#'+id).oninput=govCalc);
+$('#govOver').onclick=()=>{gov[0][3]=60;govRender();govCalc();toast('박선임 참여율 60+60=120% — 경고를 확인하세요');};
+$('#govRun').onclick=()=>{const {over}=govCalc();logTo($('#govLog'),[['','2026-10 인력 배정 매트릭스 읽기 · 3명 × 2과제'],['','인건비 자동 계상 (참여율 × 월급여, 천원 절사)'],['','장비 현물 = 취득가 ÷ 내구연한(월) × 과제별 사용률'],[over.length?'er':'ok',over.length?'✕ 참여율 초과 '+over.length+'건 — 정산 자료 생성 보류':'규정 검증 통과 (참여율·장비 중복·비목 한도)'],[over.length?'wn':'ok',over.length?'조정 후 다시 실행하세요':'정산 엑셀(연차별·비목별·재원별) 생성 완료 · 증빙 폴더 12개 자동 생성']],()=>{if(!over.length){credit('gov',9,180);toast('정산 자료 생성 완료');}else toast('참여율을 100% 이내로 조정해 주세요');});};
+
+/* ============ ③ CRM ============ */
+const INV=[['서울A병원','120-81-00001','2026-09-30',18500000],['부산B의료원','602-82-00002','2026-10-05',12000000],['대구C대학병원','504-82-00003','2026-10-08',9800000],['인천D정형외과','131-90-00004','2026-08-28',6600000],['수원F병원','135-81-00005','2026-10-12',4400000],['울산I병원','610-82-00006','2026-07-31',9800000]];
+const BANK=[['10-15','서울A병원','120-81-00001',18500000],['10-16','(주)부산비의료원','602-82-00002',12000000],['10-18','대구C대학병원','504-82-00003',5000000],['10-20','인천D정형외과','131-90-00004',6600000],['10-21','제주J의료원','',3300000],['10-22','수원에프병원','135-81-00005',4400000]];
+$('#crmInv').innerHTML='<tr><th>기관</th><th>사업자번호</th><th>발행일</th><th class="r">공급대가</th><th>상태</th></tr>'+INV.map(i=>`<tr><td>${i[0]}</td><td class="num">${i[1]}</td><td class="num">${i[2]}</td><td class="r">${won(i[3])}</td><td><span class="badge a">미입금</span></td></tr>`).join('');
+$('#crmDrop').onclick=()=>{$('#crmFile').innerHTML=`<div class="file">📄 bank_2026-10.xlsx <span style="color:var(--muted)">· 6행 · 컬럼: 거래일·입금자·사업자번호·금액</span> <span class="badge g" style="margin-left:auto">업로드 완료</span></div>`;$('#crmRun').disabled=false;toast('가상 은행 파일 업로드됨');};
+$('#crmRun').onclick=()=>{$('#crmState').textContent='대사 중';const res=INV.map(inv=>{const b=BANK.find(x=>x[2]&&x[2]===inv[1]);if(!b)return{inv,st:'미입금',paid:0};if(b[3]===inv[3])return{inv,st:'완납',paid:b[3],b};return{inv,st:'부분입금',paid:b[3],b};});const unk=BANK.filter(b=>!b[2]);
+ setTimeout(()=>{$('#crmState').textContent='완료';const full=res.filter(r=>r.st==='완납').length,part=res.filter(r=>r.st==='부분입금').length,none=res.filter(r=>r.st==='미입금').length;
+  kpi($('#crmKpi'),[['자동 매칭',full+'건','good'],['부분 입금',part+'건','warn'],['미입금',none+'건','warn'],['미확인 입금',unk.length+'건','warn']]);
+  $('#crmOut').innerHTML=`<table class="t"><tr><th>기관</th><th class="r">계산서</th><th class="r">입금</th><th class="r">잔액</th><th>매칭 근거</th><th>상태</th></tr>${res.map(r=>`<tr class="${r.st!=='완납'?'warn':''}"><td>${r.inv[0]}</td><td class="r">${won(r.inv[3])}</td><td class="r">${won(r.paid)}</td><td class="r">${won(r.inv[3]-r.paid)}</td><td style="font-size:12px;color:var(--muted)">${r.b?'사업자번호 일치'+(r.b[1]!==r.inv[0]?' (입금자명 상이: '+r.b[1]+')':''):'—'}</td><td><span class="badge ${r.st==='완납'?'g':r.st==='부분입금'?'a':'r'}">${r.st}</span></td></tr>`).join('')}${unk.map(u=>`<tr class="warn"><td>${u[1]} <span class="badge n">계산서 없음</span></td><td class="r">—</td><td class="r">${won(u[3])}</td><td class="r">—</td><td style="font-size:12px;color:var(--muted)">사업자번호 없음 → 선입금/가수금 후보</td><td><span class="badge b">확인 필요</span></td></tr>`).join('')}</table>`;
+  const today=new Date('2026-10-25');const ag=res.filter(r=>r.st!=='완납').map(r=>{const d=Math.round((today-new Date(r.inv[2]))/864e5);return{n:r.inv[0],amt:r.inv[3]-r.paid,d};});
+  $('#crmAging').innerHTML=`<div style="font-weight:700;font-size:13.5px;margin-bottom:8px">미수 에이징 (자동 갱신)</div>`+ag.map(a=>`<div style="display:grid;grid-template-columns:110px 1fr 90px 50px;gap:10px;align-items:center;font-size:13px;margin-bottom:6px"><span>${a.n}</span><div class="bar"><i class="${a.d>60?'r':a.d>30?'a':''}" style="width:${Math.min(a.d,100)}%"></i></div><span class="num" style="text-align:right">${won(a.amt)}</span><span class="num" style="color:${a.d>60?'#B91C1C':'inherit'}">${a.d}일</span></div>`).join('');
+  $('#crmAI').disabled=false;credit('crm',INV.length+BANK.length,240);toast('자동 대사 완료 · 예외 '+(part+none+unk.length)+'건만 확인하세요');},900);};
+$('#crmAI').onclick=()=>{$('#crmAIOut').innerHTML=`<div class="ai"><div class="t">✦ AI 요약 생성 중…</div><p>orders · receivables · bank_import 집계 후 요약을 작성합니다.</p></div>`;setTimeout(()=>{$('#crmAIOut').innerHTML=`<div class="ai"><div class="t">✦ AI 요약 · 2026-10-25</div><p>10월 계산서 6건 중 3건 완납(35.5백만). <b>울산I병원 9.8백만은 86일 경과</b>로 독촉 3회 이력이 있어 대표 명의 공문 단계 권고. 대구C대학병원은 부분입금(5백만) 후 잔액 4.8백만 — 분할 약정 여부 확인 필요. 제주J의료원 3.3백만 입금은 계산서가 없어 선입금 가능성이 큽니다.</p><ul><li>재무: 울산I병원 원무과 통화 · 입금 계획서 요청 (오늘)</li><li>영업: 대구C 담당자에게 잔액 일정 확인</li><li>회계: 제주J 3.3백만 가수금 처리 후 계산서 발행 검토</li></ul></div>`;stats.tasks+=3;$('#ptasks').textContent=stats.tasks;$('#stasks').textContent=stats.tasks;},900);};
+
+/* ============ ④ HR ============ */
+const ORG={'경영지원팀':[['이인사','대리']],'국내영업팀':[['김영업','팀장'],['최신입','사원']],'해외영업팀':[['박세일','과장']],'연구소':[['정연구','수석'],['오연구','연구원']],'제품팀':[['한디자','사원']]};
+const people=Object.entries(ORG).flatMap(([o,ps])=>ps.map(p=>[p[0],o,p[1]]));
+$('#hrWho').innerHTML=people.map(p=>`<option>${p[0]}</option>`).join('');
+let orders=[['HO-2026-041','신규 입사','오연구','연구소 · 연구원','2026-10-01','반영완료'],['HO-2026-040','승진','박세일','대리 → 과장','2026-07-01','반영완료']];let pending=[];
+function hrOrders(){$('#hrOrders').innerHTML='<tr><th>발령번호</th><th>유형</th><th>대상</th><th>내용</th><th>시행일</th><th>상태</th></tr>'+orders.map(o=>`<tr><td class="num">${o[0]}</td><td>${o[1]}</td><td>${o[2]}</td><td>${o[3]}</td><td class="num">${o[4]}</td><td><span class="badge ${o[5]==='반영완료'?'g':'a'}">${o[5]}</span></td></tr>`).join('');}
+function hrOrg(after){const org=JSON.parse(JSON.stringify(ORG));const marks={};if(after){pending.forEach(p=>{Object.values(org).forEach(l=>{const i=l.findIndex(x=>x[0]===p.who);if(i>-1){if(p.type!=='겸직 등록')l.splice(i,1);marks['gone:'+p.who+':'+p.from]=1;}});if(p.type==='퇴사'){}else if(p.type==='휴직'){org[p.from]=org[p.from]||[];org[p.from].push([p.who,p.pos+' (휴직)']);marks['new:'+p.who]=1;}else{org[p.org]=org[p.org]||[];org[p.org].push([p.who,p.pos+(p.type==='겸직 등록'?' (겸직)':'')]);marks['new:'+p.who]=1;}});}
+ $('#hrOrgView').innerHTML=Object.entries(org).map(([o,ps])=>`<div><b>${o}</b><span>${ps.length}명</span><ul>${ps.map(p=>`<li class="${marks['new:'+p[0]]?'new':''}">${p[0]} · ${p[1]}</li>`).join('')}${after?pending.filter(p=>p.from===o&&p.type!=='겸직 등록'&&p.type!=='휴직').map(p=>`<li class="gone">${p.who} · ${p.type}</li>`).join(''):''}</ul></div>`).join('')+(after?`<div style="grid-column:1/-1;background:var(--teal-s);color:var(--teal-d);font-weight:700;font-size:13px">시행일 ${pending[pending.length-1]?.date||''} 기준 조직도 미리보기 · 발령 ${pending.length}건 반영</div>`:'');}
+hrOrders();hrOrg(false);
+$('#hrNow').onclick=()=>hrOrg(false);$('#hrAfter').onclick=()=>{if(!pending.length)return toast('먼저 발령을 등록하세요');hrOrg(true);};
+$('#hrRun').onclick=()=>{const who=$('#hrWho').value,type=$('#hrType').value,org=$('#hrOrg').value,pos=$('#hrPos').value,date=$('#hrDate').value;const me=people.find(p=>p[0]===who);const no='HO-2026-0'+(42+pending.length);const content=type==='승진'?`${me[2]} → ${pos}`:type==='휴직'?'휴직':type==='퇴사'?'퇴사':`${me[1]} → ${org} · ${pos}`;orders.unshift([no,type,who,content,date,'시행예정']);pending.push({who,type,org,pos,date,from:me[1]});hrOrders();hrOrg(true);$('#hrDoc').disabled=false;credit('hr',4,60);toast(`발령 ${no} 등록 · 시행일 ${date}에 자동 반영`);};
+$('#hrDoc').onclick=()=>{const p=pending[pending.length-1];$('#hrDocOut').innerHTML=`<div class="slip"><h5>발 령 장</h5><table><tr><td>발령번호</td><td class="r num">HO-2026-0${41+pending.length}</td></tr><tr><td>성명</td><td class="r">${p.who}</td></tr><tr><td>발령 유형</td><td class="r">${p.type}</td></tr><tr><td>발령 내용</td><td class="r">${p.type==='승진'?p.pos+' 승진':p.type==='휴직'?'휴직':p.org+' · '+p.pos}</td></tr><tr><td>시행일</td><td class="r num">${p.date}</td></tr></table><p style="text-align:center;margin-top:12px;font-size:12px">위와 같이 발령함.<br>2026년 10월 25일 · 주식회사 ○○ 대표이사 (인)</p></div>`;stats.tasks+=1;$('#ptasks').textContent=stats.tasks;$('#stasks').textContent=stats.tasks;};
+
+/* ============ ⑤ EVAL ============ */
+const EV=[['김영업','국내영업팀','팀장',4.3,4.1,3.9,88],['정연구','연구소','수석',4.6,4.4,4.5,92],['이인사','경영지원팀','대리',4.0,3.8,4.2,81],['박세일','해외영업팀','과장',3.7,3.9,3.6,76],['최신입','국내영업팀','사원',4.2,4.0,4.4,90],['한디자','제품팀','사원',3.4,3.6,3.5,70],['오연구','연구소','연구원',3.9,4.1,4.0,84]];
+let evStep=0,evProgress=0;
+$('#evRun').onclick=()=>{$('#evState').textContent='진행 중';$('#evMap').innerHTML=`<table class="t"><tr><th>대상자</th><th>본인</th><th>상사(1차)</th><th>동료</th><th>상향</th></tr>${EV.map(e=>{const boss=e[2]==='팀장'||e[2]==='수석'?'대표이사':(EV.find(x=>x[1]===e[1]&&(x[2]==='팀장'||x[2]==='수석'))||['경영지원 총괄'])[0];const peers=EV.filter(x=>x[1]===e[1]&&x[0]!==e[0]).map(x=>x[0]);const up=(e[2]==='팀장'||e[2]==='수석')?EV.filter(x=>x[1]===e[1]&&x[0]!==e[0]).map(x=>x[0]):[];return`<tr><td>${e[0]} <span style="color:var(--muted);font-size:12px">${e[1]}</span></td><td>본인</td><td>${boss}</td><td>${peers.length?peers.join(', '):'<span style="color:var(--muted)">—</span>'}</td><td>${up.length?up.join(', '):'<span style="color:var(--muted)">—</span>'}</td></tr>`}).join('')}</table><p style="font-size:12.5px;color:var(--muted);margin-top:8px">조직도 기준 자동 구성 · 익명성: <b>${$('#evAnon').value}</b> · 시작 안내 메일 ${EV.length}건 발송(가상)</p>`;
+ evProgress=0;const tick=setInterval(()=>{evProgress=Math.min(evProgress+Math.round(Math.random()*14+6),78);renderProg();if(evProgress>=78){clearInterval(tick);$('#evRemind').disabled=false;}},350);$('#evRun').disabled=true;credit('eval',EV.length*3,300);};
+function renderProg(){$('#evProg').innerHTML=`<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px"><span>제출 현황</span><b class="num">${evProgress}%</b></div><div class="bar"><i style="width:${evProgress}%"></i></div><div class="kpis" style="margin-top:12px"><div class="kpi"><div class="l">평가 대상</div><div class="v">${EV.length}</div></div><div class="kpi"><div class="l">평가 건수</div><div class="v">${EV.length*3}</div></div><div class="kpi ${evProgress<100?'warn':'good'}"><div class="l">미완료</div><div class="v">${Math.round(EV.length*3*(100-evProgress)/100)}</div></div></div>`;}
+$('#evRemind').onclick=()=>{$('#evRemind').disabled=true;toast('미완료 평가자에게 독려 메일 발송(가상)');const tick=setInterval(()=>{evProgress=Math.min(evProgress+12,100);renderProg();if(evProgress>=100){clearInterval(tick);$('#evClose').disabled=false;$('#evState').textContent='제출 100%';}},300);};
+$('#evClose').onclick=()=>{const w=+$('#evW').value/100,guide=+$('#evGuide').value;const rows=EV.map(e=>{const comp=(e[3]*.2+e[4]*.5+e[5]*.3)/5*100;const tot=Math.round(comp*w+e[6]*(1-w));const g=tot>=90?'S':tot>=84?'A':tot>=78?'B+':tot>=72?'B':'C';return{e,tot,g};}).sort((a,b)=>b.tot-a.tot);const sa=rows.filter(r=>r.g==='S'||r.g==='A').length,pct=Math.round(sa/rows.length*100);
+ $('#evOut').innerHTML=`<table class="t"><tr><th>성명</th><th>조직</th><th class="r">본인</th><th class="r">상사</th><th class="r">동료·상향</th><th class="r">KPI</th><th class="r">종합</th><th>등급</th></tr>${rows.map(r=>`<tr><td>${r.e[0]}</td><td>${r.e[1]}</td><td class="r">${r.e[3].toFixed(1)}</td><td class="r">${r.e[4].toFixed(1)}</td><td class="r">${r.e[5].toFixed(1)}</td><td class="r">${r.e[6]}</td><td class="r" style="font-weight:700">${r.tot}</td><td><span class="badge ${r.g==='S'?'v':r.g==='A'?'g':r.g==='C'?'r':'b'}">${r.g}</span></td></tr>`).join('')}</table>`;
+ $('#evAlerts').innerHTML=(pct>guide?`<div class="alert warn">⚠ <div>S+A 비율 <b>${pct}%</b>가 가이드 ${guide}%를 초과합니다. 실제 시스템은 등급 조정(캘리브레이션) 화면에서 조직별 분포를 보며 조정하도록 안내합니다.</div></div>`:`<div class="alert ok">✓ S+A 비율 ${pct}% · 가이드 ${guide}% 이내 · 결과 열람은 공개일까지 잠금</div>`)+`<div class="alert info">ⓘ 역량 ${Math.round(w*100)}% + KPI ${Math.round((1-w)*100)}% 가중 합산 · 면담 피드백지 PDF ${rows.length}건 생성 준비</div>`;$('#evState').textContent='등급 산출 완료';$('#evClose').disabled=true;stats.tasks+=rows.length+2;stats.min+=120;$('#ptasks').textContent=stats.tasks;$('#stasks').textContent=stats.tasks;$('#stime').textContent=stats.min;toast('평가 종료 · 등급 산출 완료');};
+</script>
+<footer><div class="wrap foot-in">
+  <div>
+    <div class="brand">Silmoo Lab · 실무랩</div>
+    <div style="color:#4FD8CE;font-weight:600;margin:2px 0 8px">with you — 만들고, 끝까지 함께</div>
+    <div>재무·회계·인사·총무·IT 20년 실무 경력의 1인 개발 스튜디오<br/>5~100인 기업의 반복 업무를 웹 시스템으로 바꾸고, 납품 후에도 함께 운영합니다.</div>
+  </div>
+  <div style="display:grid;gap:8px">
+    <a href="crm.html">영업 CRM + 리드허브</a>
+    <a href="gov.html">정부과제 관리 시스템</a>
+    <a href="hr.html">인사 시스템 (e-HR·평가·급여)</a>
+    <a href="demo.html">라이브 데모 · 3분 체험</a>
+    <a href="brochure.pdf" download>브로셔 PDF 다운로드</a>
+    <a href="mailto:dandyyoon80@gmail.com">dandyyoon80@gmail.com</a>
   </div>
 </div>
+<div class="wrap foot-note">© 2026 Silmoo Lab · 실무랩. 본 사이트의 화면·수치는 실제 운영 시스템 기준이며, 데모 데이터는 모두 가상입니다.</div>
+</footer>
 </body>
 </html>
