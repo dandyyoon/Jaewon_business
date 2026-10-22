@@ -1,7 +1,7 @@
 <!doctype html>
 <!--
   ══════════════════════════════════════════════════════════════════════════
-   3Y 재무관리시스템 — 단일 파일판  finance.html  v2026.09.09-05
+   A1 재무관리시스템 — 단일 파일판  finance.html  v2026.09.09-05
   ══════════════════════════════════════════════════════════════════════════
 
   ★ 이번 판 (v2026.09.09-05) — 화면을 「업무단위」 로 다시 끊었습니다 (시안 B 승인)
@@ -142,12 +142,12 @@
          같은 거래처가 여러 줄이어도 한 번만 재면 됩니다.
       ④ 이름 유사값(nsim) · 낱말 쪼개기(toks) 결과를 기억해 둡니다.
 
-      ★ 검증 : 3Y 9/7 (있음 206 · 없음 10 · 기준일 뒤 114 · 새로 넣을 것 124건 108,036,965원)
-               3Y 8/31 (있음 209 · 없음 2 · 162,000원) — 빠르게 바꾸기 전과 **완전히 같습니다.**
+      ★ 검증 : A1 9/7 (있음 206 · 없음 10 · 기준일 뒤 114 · 새로 넣을 것 124건 108,036,965원)
+               A1 8/31 (있음 209 · 없음 2 · 162,000원) — 빠르게 바꾸기 전과 **완전히 같습니다.**
 
   ★ v2026.09.09-01 — 로직 점검 : 「계속 뭔가 안 맞습니다」 를 파고든 결과
 
-      실제 자료(3Y 9/7 · 지출결의서 693줄 × 자금일보 4,562줄)로 한 줄씩 뜯어보고
+      실제 자료(A1 9/7 · 지출결의서 693줄 × 자금일보 4,562줄)로 한 줄씩 뜯어보고
       **틀린 곳 셋**을 고쳤습니다. 모두 「자동으로 붙여서 빼 버리는」 쪽의 잘못이었습니다.
 
       ① ★★ 「확인 불가」 를 기본으로 **넣습니다** (예전엔 기본으로 뺐습니다)
@@ -180,7 +180,7 @@
          → 이제 아래 둘 중 하나일 때만 묶습니다.
               ⓐ 그 거래처의 **남은 건을 몽땅** 더해서 맞을 때 (배철순 2건 · 마젠타 19건 …)
               ⓑ 일부만 골랐다면 조각이 넷 이하이고 **모두 자금일보 줄 날짜 ±10일 안**
-         3Y 8/31 자료로 되돌려 확인 — 묶음 7건 · 없음 1건 그대로입니다.
+         A1 8/31 자료로 되돌려 확인 — 묶음 7건 · 없음 1건 그대로입니다.
       ② ★ 「확인 불가」 를 **기준일과 오늘 사이**로 좁혔습니다
          지급기한이 오늘이거나 앞으로인 건은 아직 나갔을 리가 없습니다.
          (자금일보가 9/4 까지인데 지급기한이 9/7 이면 그것은 **오늘 집행할 것**입니다)
@@ -193,25 +193,25 @@
          나가는 돈이었습니다. 함부로 빼면 미지급이 되므로, 표만 달고 단추 한 번으로
          뺄 수 있게 했습니다 (엑셀 첫 장도 붉게 칠하고 K 칸에 적습니다).
 
-  ★ v2026.09.06-03 — 오드웨이브 9/7 자료를 뜯어보고 고친 다섯 가지
+  ★ v2026.09.06-03 — 다온미디어 9/7 자료를 뜯어보고 고친 다섯 가지
       재무리드 2026-09-06 : 「자금일보 전체를 찾아서 나간 것이 있을 텐데 나가야 한다고
         뜨는 것들이 있으니 면밀하게 체크해 주시고, 한국전력공사도 자동이체 건일 텐데
-        3Y 처럼 오류 검사해 주세요.」
+        A1 처럼 오류 검사해 주세요.」
 
       ① ★★ 대조를 **자금일보 전체**에서 합니다
          전에는 위에서 고른 주차 안에서만 찾았습니다. 이제 고른 주차는 **화면에 보여 줄 범위**일
          뿐이고, 「이미 나갔는가」 는 올린 자금일보의 **모든 주차**에서 찾습니다.
       ② ★★ 「똑같은 줄 겹침」 — 지급기한·거래처·금액·적요·용도가 글자 하나까지 같은 줄은
-         첫 줄만 남깁니다. 오드웨이브 자료에서 **잔키 13,475,000원 ×5 · 정유빈 3,650,000원 ×6**
+         첫 줄만 남깁니다. 다온미디어 자료에서 **잔키 13,475,000원 ×5 · 정유빈 3,650,000원 ×6**
          처럼 같은 줄이 여러 번 실려 있었고, 자금일보 한 줄은 한 번만 쓰므로 나머지가 전부
          「새로 넣을 것」 으로 떨어졌습니다. 그대로 넣으면 **같은 돈을 여러 번 내보냅니다.**
-         (금액이 같아도 **적요가 다르면 겹침이 아닙니다** — 3Y 「주민세 5개 사업장 ×12,500원」 은 그대로 남습니다)
-      ③ 자동이체를 **계정명으로도** 찾습니다 — 오드웨이브는 자금일보에 「07월전기료」,
+         (금액이 같아도 **적요가 다르면 겹침이 아닙니다** — A1 「주민세 5개 사업장 ×12,500원」 은 그대로 남습니다)
+      ③ 자동이체를 **계정명으로도** 찾습니다 — 다온미디어는 자금일보에 「07월전기료」,
          지출결의서에는 「한국전력공사」 라고 적어 이름으로는 못 맞춥니다.
          자금일보 자동이체 줄의 계정이 공과금 계정(전력비·수도료·통신비 …)이면 그 계정명도 열쇠로 씁니다.
       ④ 개인카드 사용분(기명식 법인카드) 을 뺍니다 — 재무리드 : 「별도로 정산하기 때문에 예외」
       ⑤ (사)한국음악저작권협회는 **「관리수수료」 일 때만** 뺍니다 — 같은 협회라도
-         저작권료 분배금 지급(오드웨이브 「FIRST:DELIVERY-소급」 24,495,913원)은 진짜로 나갑니다.
+         저작권료 분배금 지급(다온미디어 「FIRST:DELIVERY-소급」 24,495,913원)은 진짜로 나갑니다.
 
   ★ v2026.09.06-02 — 나눠 지급 · 개인카드분 되돌림
       ① ★ 나눠 지급 — 한 건이 **여러 날에 나뉘어** 나간 것을 합쳐서 맞춥니다
@@ -320,11 +320,11 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#0b111c" />
-<title>3Y 재무관리시스템</title>
+<title>A1 재무관리시스템</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>📘</text></svg>" />
 <style>
 /* ══════════════════════════════════════════════════════════════
-   3Y 디자인 시스템 v0.6 — 유리형 (Glassmorphism)
+   A1 디자인 시스템 v0.6 — 유리형 (Glassmorphism)
    · 배경 그라디언트 위에 반투명 유리 패널
    · 화이트 / 안정 / 다크 / 시스템 4모드 (모두 유리 질감 유지)
    · 숫자는 고정폭(tabular-nums)
@@ -549,8 +549,8 @@ a{color:inherit}
 .logo{
   display:block; flex:0 0 auto;
   background-color:currentColor;
-  -webkit-mask:url("data:image/png;base64,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") no-repeat center / contain;
-          mask:url("data:image/png;base64,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") no-repeat center / contain;
+  -webkit-mask:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1NiIgaGVpZ2h0PSIyNiIgdmlld0JveD0iMCAwIDU2IDI2Ij48dGV4dCB4PSIyOCIgeT0iMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iOTAwIiBmaWxsPSIjMDAwIj5ERU1PPC90ZXh0Pjwvc3ZnPg==") no-repeat center / contain;
+          mask:url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1NiIgaGVpZ2h0PSIyNiIgdmlld0JveD0iMCAwIDU2IDI2Ij48dGV4dCB4PSIyOCIgeT0iMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtZmFtaWx5PSJBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iOTAwIiBmaWxsPSIjMDAwIj5ERU1PPC90ZXh0Pjwvc3ZnPg==") no-repeat center / contain;
 }
 .brand{display:flex; align-items:center; gap:10px; font-weight:900; font-size:13px; letter-spacing:-.3px}
 .brand .logo{width:56px; height:26px; color:var(--tx)}
@@ -960,7 +960,7 @@ tbody tr.done td{opacity:.55}
 }
 
 /* ── 결산일정(D+n) 을 달력 칸 안에 ─────────────────────────────
-      D+n = 익월 n번째 영업일. 파랑 = 3Y 가 하는 날, 청록 = 삼일(BPO). */
+      D+n = 익월 n번째 영업일. 파랑 = A1 가 하는 날, 청록 = 삼일(BPO). */
 .cal .c.dn{border-color:var(--sel); box-shadow:inset 3px 0 0 var(--sel), var(--sh-1), var(--hi-in)}
 .cal .dn-t{
   font-size:9.5px; font-weight:900; color:#fff; padding:1px 6px; border-radius:20px;
@@ -1441,7 +1441,7 @@ tbody tr.done td{opacity:.55}
   animation:slide 1.25s ease-in-out infinite}
 @keyframes slide{0%{margin-left:-40%}100%{margin-left:100%}}
 
-/* ══ 회사 고르기 (3Y / 오드웨이브) ══════════════════════ */
+/* ══ 회사 고르기 (A1 / 다온미디어) ══════════════════════ */
 .ents{display:flex; gap:7px; flex-wrap:wrap}
 .ent{
   display:inline-flex; align-items:center; gap:7px;
@@ -2548,7 +2548,7 @@ const WHEN_MODE = [
 const WHO_C = {
   ext: { l: "외부에서 옴", c: "#93a7bf" },
   bpo: { l: "삼일(BPO)", c: "#5ec8d8" },
-  we:  { l: "우리(3Y)", c: "#e8934a" },
+  we:  { l: "우리(A1)", c: "#e8934a" },
   out: { l: "밖으로 나감", c: "#8a72e0" },
 };
 const MAP_BLOCKS = [
@@ -2606,8 +2606,8 @@ function Job(props) {
             className: "st " + (hw.who === "삼일" ? "bad" : hw.who === "현업" ? "warn" : "ok"),
             title: hw.who === "삼일" ? "삼일(BPO)이 하는 일입니다 — 우리는 제대로 됐는지 봅니다"
                  : hw.who === "현업" ? "현업 담당자가 해줘야 하는 일입니다 — 재촉이 우리 일입니다"
-                 : hw.who === "HR" ? "HR 팀이 하는 일입니다" : "우리(3Y 재무팀)가 하는 일입니다",
-          }, hw.who === "3Y" ? "우리가 함" : hw.who + "가 함") : null,
+                 : hw.who === "HR" ? "HR 팀이 하는 일입니다" : "우리(A1 재무팀)가 하는 일입니다",
+          }, hw.who === "A1" ? "우리가 함" : hw.who + "가 함") : null,
           r.actor ? h("span", { className: "st" }, r.actor) : null,
           r.period ? h("span", { className: "st" }, r.period) : null,
           hw && hw.files && hw.files.length
@@ -2754,7 +2754,7 @@ function CloseFlow(props) {
     fl.length > 0 ? h(React.Fragment, null,
       h("div", { className: "muted", style: { fontSize: 11.5, marginTop: 10, lineHeight: 1.8 } },
         h("b", null, "회사 결산일정"), " — D+n 은 ", h("b", null, "익월 n번째 영업일"), "입니다. ",
-        h("span", { className: "lg" }, h("i", { style: { background: "var(--sel)" } }), "3Y 가 하는 날"),
+        h("span", { className: "lg" }, h("i", { style: { background: "var(--sel)" } }), "A1 가 하는 날"),
         h("span", { className: "lg" }, h("i", { style: { background: "#5ec8d8" } }), "삼일(BPO)이 하는 날")),
       h("div", { className: "tl" },
         h("svg", { viewBox: "0 0 " + (60 + fl.length * 104) + " 168", width: 60 + fl.length * 104, height: 168,
@@ -2868,9 +2868,9 @@ function ScreenCalendar(props) {
     const rs = await Promise.all([
       rpc("f_close_month", { p_ym: ym }),
       rpc("f_close_month_stat", { p_ym: ym }),
-      rpc("f_cash_fixed", { p_entity: "3Y", p_ym: ym }),
+      rpc("f_cash_fixed", { p_entity: "A1", p_ym: ym }),
       sb.from("close_task").select("id,menu,how,watch,hand,seen,seen_kind,files,grp,screen,who,when_why,on_event,event_why,ended,ended_why,infile,save,chk"),
-      rpc("f_close_today", { p_d: today(), p_entity: "3Y" }),
+      rpc("f_close_today", { p_d: today(), p_entity: "A1" }),
       rpc("f_je_pattern", { p_q: null }),
       rpc("f_close_over", {}),
     ]);
@@ -3013,7 +3013,7 @@ function ScreenCalendar(props) {
     const r = await rpc("cal_note_set", {
       p_id: note.id || null, p_d: note.d || null,
       p_title: note.title || null, p_body: body,
-      p_color: note.color || "sel", p_entity: "3Y",
+      p_color: note.color || "sel", p_entity: "A1",
       p_author: (auth && auth.name) || null,
     });
     setBusy(false);
@@ -3027,7 +3027,7 @@ function ScreenCalendar(props) {
   const openAdd = useCallback(function (t) {
     if (!t) {
       setAdd({ id: null, area: "결산", title: "", mode: "day", dn: 3, day: 10,
-               dow: [1], months: [3, 6, 9, 12], one: today(), actor: "3Y", detail: "", note: "" });
+               dow: [1], months: [3, 6, 9, 12], one: today(), actor: "A1", detail: "", note: "" });
       return;
     }
     const mode = t.cycle === "수시" ? "none"
@@ -3042,7 +3042,7 @@ function ScreenCalendar(props) {
       dow: t.dow && t.dow.length ? t.dow : [1],
       months: t.months && t.months.length ? t.months : [3, 6, 9, 12],
       one: t.one_date || today(),
-      actor: t.actor || "3Y", detail: t.detail || "", note: t.note || "",
+      actor: t.actor || "A1", detail: t.detail || "", note: t.note || "",
     });
   }, []);
 
@@ -3164,7 +3164,7 @@ function ScreenCalendar(props) {
                 "💵 자금 집행일") : null,
               fw ? h("div", { className: "dn-w" },
                 h("b", null, String(fw.title || "").replace(/^[①-⑨]\s*/, "")),
-                h("span", null, fw.who === "삼일" ? "삼일(BPO)" : "3Y")) : null,
+                h("span", null, fw.who === "삼일" ? "삼일(BPO)" : "A1")) : null,
               /* ★ 할 일 — 눌러서 완료합니다 */
               todo.length ? h("div", { className: "tks" },
                 shownTk.map(function (r) {
@@ -3261,7 +3261,7 @@ function ScreenCalendar(props) {
       (flowByDay[pickDay] || []).length ? h("div", { className: "warnbox info", style: { marginTop: 9 } },
         (flowByDay[pickDay] || []).map(function (f) {
           return h("div", { key: f.dn },
-            h("b", null, "결산일정 D+" + f.dn + " · " + (f.who === "삼일" ? "삼일(BPO)" : "3Y") + " 가 하는 날"),
+            h("b", null, "결산일정 D+" + f.dn + " · " + (f.who === "삼일" ? "삼일(BPO)" : "A1") + " 가 하는 날"),
             " — ", String(f.title || "").replace(/^[①-⑨]\s*/, ""),
             h("span", { className: "muted" }, "  (" + flowPeriod + " 결산)"));
         })) : null,
@@ -3670,7 +3670,7 @@ function AddForm(props) {
       h("select", { value: add.area, onChange: function (e) { up("area", e.target.value); } },
         ADD_AREAS.map(function (a) { return h("option", { key: a, value: a }, a); }))),
     h("label", null, "담당",
-      h("input", { value: add.actor, placeholder: "3Y", onChange: function (e) { up("actor", e.target.value); } })),
+      h("input", { value: add.actor, placeholder: "A1", onChange: function (e) { up("actor", e.target.value); } })),
     h("label", { className: "wide" }, "할 일 (제목)",
       h("input", { value: add.title, autoFocus: true, placeholder: "예 · 법인카드 결제일 확인",
         onChange: function (e) { up("title", e.target.value); } })),
@@ -5152,7 +5152,7 @@ function ScreenAcct() {
 function AcctUsed(props) {
   const st = useStatus();
   const auth = useAuth();
-  const [entity, setEntity] = useState("3Y");
+  const [entity, setEntity] = useState("A1");
   const [head, setHead] = useState(null);
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -5227,7 +5227,7 @@ function AcctUsed(props) {
           head.balanced ? "차대 맞음" : "★ 차대 안 맞음") : null,
         h("div", { className: "sp" }),
         h("div", { className: "act" },
-          ["3Y", "OW"].map(function (e) {
+          ["A1", "B1"].map(function (e) {
             return h("button", { key: e, className: "btn sm" + (entity === e ? " on" : ""),
               onClick: function () { setEntity(e); } }, e);
           }))),
@@ -6307,8 +6307,8 @@ const SLACK_STEPS = [
     cmd: "supabase secrets set SLACK_SIGNING_SECRET=여기에서명 SLACK_BOT_TOKEN=xoxb-여기에토큰",
     trap: "서명이 없으면 모든 요청이 401 로 거절됩니다 — 아무나 못 밀어넣게 막는 장치입니다." },
   { n: 6, t: "채널에 앱 부르기", where: "슬랙 각 채널",
-    body: "볼 채널마다 /invite @3Y 결산봇 을 칩니다. 부르지 않은 채널의 글은 오지 않습니다.",
-    cmd: "/invite @3Y 결산봇",
+    body: "볼 채널마다 /invite @A1 결산봇 을 칩니다. 부르지 않은 채널의 글은 오지 않습니다.",
+    cmd: "/invite @A1 결산봇",
     trap: "가장 자주 빠지는 단계입니다. 앱을 만들고 배포까지 다 해도 채널에 안 부르면 아무 것도 안 옵니다." },
   { n: 7, t: "채널 ID 등록", where: "바로 아래 「볼 채널」",
     body: "슬랙에서 채널 우클릭 → 링크 복사 → 주소 끝의 C… 를 아래에 등록합니다. 등록한 채널만 받습니다.",
@@ -6835,7 +6835,7 @@ function ScreenSlack() {
     try {
       const E = await loadExcelJS();
       const wb = new E.Workbook();
-      wb.creator = "3Y 재무관리시스템"; wb.created = new Date();
+      wb.creator = "A1 재무관리시스템"; wb.created = new Date();
       const ws = wb.addWorksheet("카드 전표");
       ws.getColumn("A").width = 13; ws.getColumn("B").width = 88; ws.getColumn("C").width = 15;
       const thin = { style: "thin" };
@@ -7667,7 +7667,7 @@ function ScreenSlack() {
           " 전화번호 · 주소의 번지 · 링크 속 숫자는 일부러 금액으로 보지 않습니다.")),
       h("div", { className: "grid2" },
         h("div", { className: "field" }, h("label", null, "거래처 · 회사"),
-          h("input", { value: fCo, placeholder: "예: 오드웨이브", onChange: function (e) { st.setEditing(); setFCo(e.target.value); } })),
+          h("input", { value: fCo, placeholder: "예: 다온미디어", onChange: function (e) { st.setEditing(); setFCo(e.target.value); } })),
         h("div", { className: "field" }, h("label", null, "프로젝트"),
           h("input", { value: fPj, placeholder: "예: QWER", onChange: function (e) { st.setEditing(); setFPj(e.target.value); } }))),
       h("div", { className: "field" }, h("label", null, "요청자 (이름으로 적으셔도 됩니다)"),
@@ -8026,7 +8026,7 @@ function whenKo(ms) {
 /* ══════════════════════════════════════════════════════════════
    자금 집행일 — 우리 회사가 돈을 내보내는 날      (v2026.08.31-02)
 
-   3Y 는 **매주 월요일 · 목요일**에 자금을 집행합니다.
+   A1 는 **매주 월요일 · 목요일**에 자금을 집행합니다.
    그 날이 공휴일이면 **다음 영업일**로 밉니다 (토·일도 마찬가지).
 
    ★ 신입사원께 —
@@ -8633,7 +8633,7 @@ function isRefundRow(r) {
      같은 성격의 곳이 생기면 여기에만 더하면 됩니다. */
 const SKIP_PARTY = [
   /* ★ 「관리수수료」 일 때만 뺍니다 — 같은 협회라도 **저작권료 분배금 지급**은 진짜로 나갑니다.
-        (오드웨이브 : (사)한국음악저작권협회 「FIRST:DELIVERY-소급」 24,495,913원 은 나가는 돈입니다) */
+        (다온미디어 : (사)한국음악저작권협회 「FIRST:DELIVERY-소급」 24,495,913원 은 나가는 돈입니다) */
   { re: /한국음악저작권협회/, need: /관리\s*수수료/, tag: "수수료공제후 입금분",
     why: "관리수수료는 저작권료가 들어올 때 미리 떼고 들어옵니다 — 우리가 따로 내보내는 돈이 아닙니다 (세금계산서는 그 뒤에 옵니다)" },
   { re: /한국대중음악산업협회/, tag: "수수료공제후 입금분",
@@ -8666,7 +8666,7 @@ function skipParty(r) {
 
         그래서 이제 **(법인) · (개인) 을 가리지 않고** 신용카드매출전표는 모두 뺍니다.
         다만 되돌릴 수 있게 화면에 단추를 두고, (개인) 이 몇 건인지 따로 세어 보여 줍니다.
-        (3Y 9/7 자료 : 법인 232건 · 개인 1건) */
+        (A1 9/7 자료 : 법인 232건 · 개인 1건) */
 function isSlipRow(r) {
   const t = String((r && r.proofRaw) || "");
   return /신용카드매출전표/.test(t);
@@ -8676,7 +8676,7 @@ function isSlipOwn(r) {
   const t = String((r && r.proofRaw) || "");
   return /신용카드매출전표/.test(t) && /개인/.test(t);
 }
-/** ★ 개인카드 사용분(기명식 법인카드) — 재무리드 2026-09-06 (오드웨이브) :
+/** ★ 개인카드 사용분(기명식 법인카드) — 재무리드 2026-09-06 (다온미디어) :
       「개인카드 사용분(기명식법인카드) 이것은 별도로 정산하기 때문에 예외」
       개인 이름으로 발급된 법인카드로 쓴 돈입니다. 카드대금으로 따로 정산하므로
       자금일보 출금예정에는 넣지 않습니다. */
@@ -8838,7 +8838,7 @@ function memoOk(t, vocab) {
 }
 /* 계정 이름만으로 자동이체라고 볼 수 있는 것 — **공과금성 계정만** 넣습니다.
    (지급수수료·직접임차료 같은 넓은 계정은 넣지 않습니다. 엉뚱한 건이 딸려 옵니다.)
-   ★ 오드웨이브는 자금일보에 거래처를 「07월전기료」 라고 적고, 지출결의서에는
+   ★ 다온미디어는 자금일보에 거래처를 「07월전기료」 라고 적고, 지출결의서에는
      「한국전력공사」 라고 적습니다 — 이름으로는 못 맞춥니다. 계정명 「전력비」 로 맞춥니다. */
 const AUTO_ACCT = /^(전력비|수도광열비|가스료|수도료|전기료|통신비|보험료|세금과공과|세금과공과금|공과금)$/;
 /* ══════════════════════════════════════════════════════════════
@@ -9466,7 +9466,7 @@ function readPaper(aoa, hdr) {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   ★ 똑같은 줄 겹침   (재무리드 2026-09-06 · 오드웨이브 자료에서 드러남)
+   ★ 똑같은 줄 겹침   (재무리드 2026-09-06 · 다온미디어 자료에서 드러남)
 
    내려받은 지출결의서에 **글자 하나까지 똑같은 줄**이 여러 번 실려 있었습니다.
      잔키(JAAN KEE)   13,475,000원  ×5   (자금일보에는 한 줄뿐)
@@ -9477,7 +9477,7 @@ function readPaper(aoa, hdr) {
 
    그래서 지급기한 · 거래처 · 금액 · 적요 · 용도 · 문서번호가 **모두 같은** 줄은
    첫 줄만 남기고 나머지에 표를 달아 둡니다 (화면에서 되돌릴 수 있습니다).
-   ★ 금액이 같아도 **적요가 다르면 겹침이 아닙니다** — 3Y 의 「주민세 5개 사업장
+   ★ 금액이 같아도 **적요가 다르면 겹침이 아닙니다** — A1 의 「주민세 5개 사업장
      × 12,500원」 처럼 진짜로 여러 번 나가는 건은 그대로 남습니다.
    ══════════════════════════════════════════════════════════════ */
 function markSame(rows) {
@@ -9603,17 +9603,17 @@ function guessProof(row, book) {
 
 /* ══ 화면 ══════════════════════════════════════════════════ */
 /* ══ 회사 고르기 ═══════════════════════════════════════════
-   3Y(쓰리와이)와 OW(오드웨이브)는 **자금일보가 따로**입니다.
+   A1(가온테크)와 OW(다온미디어)는 **자금일보가 따로**입니다.
    섞으면 남의 회사 지출이 우리 엑셀에 들어갑니다.
    그래서 같은 탭 안에서 회사를 갈라 두고, 올린 파일도 **각각 따로** 기억합니다.
    ══════════════════════════════════════════════════════════ */
 const CASH_ENTS = [
-  { k: "3Y", label: "3Y 쓰리와이", full: "주식회사 쓰리와이코프레이션", c: "#199e70" },
-  { k: "OW", label: "OW 오드웨이브", full: "오드웨이브", c: "#5ec8d8" },
+  { k: "A1", label: "A1 가온테크", full: "주식회사 가온테크코프레이션", c: "#199e70" },
+  { k: "B1", label: "B1 다온미디어", full: "다온미디어", c: "#5ec8d8" },
 ];
 function ScreenCash() {
   const [ent, setEnt] = useState(function () {
-    try { return localStorage.getItem("cash.ent") || "3Y"; } catch (e) { return "3Y"; }
+    try { return localStorage.getItem("cash.ent") || "A1"; } catch (e) { return "A1"; }
   });
   function go(k) {
     setEnt(k);
@@ -9632,7 +9632,7 @@ function ScreenCash() {
             h("i", { style: { background: e.c } }), e.label);
         }))),
       h("p", { className: "lead" }, h(Txt, { k: "p.cash.ent" },
-        h("b", null, "3Y 와 오드웨이브는 자금일보가 따로입니다."),
+        h("b", null, "A1 와 다온미디어는 자금일보가 따로입니다."),
         " 섞으면 남의 회사 지출이 우리 엑셀에 들어갑니다. ",
         "그래서 회사를 먼저 고르고 시작합니다 — ",
         h("b", null, "올린 파일은 회사마다 따로 기억"), "하므로, 회사를 바꿨다가 돌아와도 그대로 있습니다."))),
@@ -10199,7 +10199,7 @@ function CashOne(props) {
        예전에는 기본으로 뺐습니다. 그런데 자금일보는 **늘 며칠 전 것**을 올립니다
        (9/7 자금일보를 만들려고 9/4 자금일보를 올립니다). 그러면 지급기한이
        기준일보다 뒤인 건이 **매번 대량으로** 확인 불가가 되어 화면에서 사라졌습니다.
-       (3Y 9/7 자료 : 693건 중 114건 — 오늘 나가야 할 것이 통째로 안 보였습니다)
+       (A1 9/7 자료 : 693건 중 114건 — 오늘 나가야 할 것이 통째로 안 보였습니다)
 
        게다가 대조는 출금 **내역**뿐 아니라 **출금 예정 · 차기 예정**까지 모두 봅니다.
        그러니 자금일보 어디에도 없으면 **정말로 없는 것**입니다.
@@ -10589,7 +10589,7 @@ function CashOne(props) {
     try {
       const E = await loadExcelJS();
       const wb = new E.Workbook();
-      wb.creator = "3Y 재무관리시스템"; wb.created = new Date();
+      wb.creator = "A1 재무관리시스템"; wb.created = new Date();
       const ws = wb.addWorksheet("자금일보", { views: [{ zoomScale: 85 }] });
 
       /* 열 너비 — 양식 파일에서 잰 값 그대로입니다 */
@@ -13444,10 +13444,10 @@ function Login() {
   return h("div", { className: "login" },
     h("div", { style: { position: "fixed", top: 16, right: 16, width: 250, maxWidth: "62vw" } }, h(ThemeToggle, null)),
     h("form", { onSubmit: submit },
-      h("div", { className: "logo", role: "img", "aria-label": "3Y" }),
-      h("h1", null, "3Y 재무관리시스템"),
+      h("div", { className: "logo", role: "img", "aria-label": "A1" }),
+      h("h1", null, "A1 재무관리시스템"),
       h("p", { className: "muted", style: { fontSize: 11.5, textAlign: "center", marginTop: 4, marginBottom: 20 } },
-        "쓰리와이코프레이션 결산 관리 시스템"),
+        "가온테크코프레이션 결산 관리 시스템"),
       !sb ? h("div", { className: "warnbox", style: { marginBottom: 12 } },
         "⚠ DB 가 연결되지 않았습니다. finance.html 맨 위 SB_URL · SB_KEY 를 채우세요.") : null,
       h("div", { className: "field" }, h("label", null, "이메일"),
@@ -13502,7 +13502,7 @@ function Shell() {
     h("aside", { className: "side" + (open ? " on" : ""), id: "side" },
       h("div", { className: "side-h" },
         h("div", { className: "brand" },
-          h("span", { className: "logo", role: "img", "aria-label": "3Y" }),
+          h("span", { className: "logo", role: "img", "aria-label": "A1" }),
           h("span", { style: { minWidth: 0 } }, "재무관리시스템", h("small", null, APP_VERSION)))),
       h("nav", { className: "side-n", role: "tablist", "aria-label": "화면 고르기" },
         GROUPS.map(function (G) {
