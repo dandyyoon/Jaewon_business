@@ -1,0 +1,470 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>전재원 시스템 포트폴리오</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+html,body{min-height:100%}
+body{padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0)}
+
+/* layout: ink-green system UI; mono labels & figures; warm paper light / deep-green dark */
+:root{
+  --bg:#eaeeec; --surface:#ffffff; --surface-2:#f3f6f4; --ink:#13201c; --muted:#5a6c65;
+  --line:#dde4e1; --accent:#0d7a62; --accent-soft:#d9efe8; --gold:#8f6418;
+  --good:#15803d; --good-bg:#e4f3ea; --warn:#b45309; --warn-bg:#f6ecd9; --bad:#b4402f; --bad-bg:#fbeae7;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:'IBM Plex Sans KR',system-ui,-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0b1411; --surface:#121f1a; --surface-2:#0f1b17; --ink:#e7efea; --muted:#92a69e;
+  --line:#22332c; --accent:#2fd3a6; --accent-soft:#143a30; --gold:#d6ad63;
+  --good:#34d399; --good-bg:#10291f; --warn:#f0b05a; --warn-bg:#2a2112; --bad:#f08a76; --bad-bg:#2c1512; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0b1411; --surface:#121f1a; --surface-2:#0f1b17; --ink:#e7efea; --muted:#92a69e;
+  --line:#22332c; --accent:#2fd3a6; --accent-soft:#143a30; --gold:#d6ad63;
+  --good:#34d399; --good-bg:#10291f; --warn:#f0b05a; --warn-bg:#2a2112; --bad:#f08a76; --bad-bg:#2c1512; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.mono{font-family:var(--mono);font-feature-settings:"tnum"}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+h1,h2,h3{text-wrap:balance;margin:0;font-weight:700;letter-spacing:-.6px}
+.nav{position:sticky;top:env(safe-area-inset-top,0);z-index:20;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.nav-in{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:4px;flex-wrap:wrap;padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.nav .home{font-weight:700;margin-right:auto;text-decoration:none;display:flex;align-items:center;gap:8px;font-size:15px}
+.nav .home .dot{width:9px;height:9px;border-radius:50%;background:var(--accent)}
+.nav a.t{text-decoration:none;color:var(--muted);font-size:13px;padding:6px 11px;border-radius:8px;white-space:nowrap}
+.nav a.t:hover{color:var(--ink);background:var(--surface-2)}
+.nav a.t.on{color:var(--accent);background:var(--accent-soft);font-weight:600}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.demo-banner{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:26px 0 6px}
+.demo-banner h1{font-size:25px}
+.demo-banner .pill{font-family:var(--mono);font-size:11px;letter-spacing:.5px;color:var(--gold);border:1px solid var(--gold);border-radius:20px;padding:3px 10px}
+.lead{color:var(--muted);font-size:14.5px;max-width:64ch;margin:8px 0 0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.btn{font-family:var(--sans);font-weight:600;font-size:14px;border:none;border-radius:10px;padding:11px 18px;cursor:pointer;background:var(--accent);color:#fff;transition:.15s}
+.btn:hover{filter:brightness(1.06)}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.ghost{background:var(--surface-2);color:var(--ink);border:1px solid var(--line)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:15px 16px}
+.tile .k{font-family:var(--mono);font-size:11px;letter-spacing:.5px;color:var(--muted);text-transform:uppercase}
+.tile .v{font-family:var(--mono);font-size:23px;font-weight:600;margin-top:5px;font-feature-settings:"tnum"}
+.tile .v small{font-size:13px;color:var(--muted);font-weight:400}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.4px;text-transform:uppercase;color:var(--muted);text-align:left;font-weight:500;padding:10px 12px;border-bottom:1px solid var(--line)}
+td{padding:11px 12px;border-bottom:1px solid var(--line)}
+td.num,th.num{text-align:right;font-family:var(--mono);font-feature-settings:"tnum"}
+tbody tr:last-child td{border-bottom:none}
+.tablebox{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
+.badge{font-family:var(--mono);font-size:11px;padding:2px 9px;border-radius:20px;white-space:nowrap;display:inline-block}
+.b-good{background:var(--good-bg);color:var(--good)} .b-warn{background:var(--warn-bg);color:var(--warn)} .b-bad{background:var(--bad-bg);color:var(--bad)} .b-mut{background:var(--surface-2);color:var(--muted)}
+.foot{margin:46px 0 40px;color:var(--muted);font-size:12.5px;font-family:var(--mono)}
+.sel,select,input[type=date]{font-family:var(--sans);font-size:14px;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)}
+@media(max-width:560px){.nav a.t{padding:6px 8px}.demo-banner h1{font-size:21px}}
+
+.hero{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:46px 30px}
+.hero h1{font-size:clamp(30px,5.4vw,50px);line-height:1.08}
+.hero .accent{color:var(--accent)}
+.roletoggle{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px;margin-bottom:22px}
+.roletoggle button{font-family:var(--sans);font-weight:600;font-size:13.5px;border:none;background:transparent;color:var(--muted);padding:9px 16px;border-radius:9px;cursor:pointer}
+.roletoggle button.on{background:var(--accent);color:#fff}
+.herolead{color:var(--muted);font-size:16px;max-width:60ch;margin:16px 0 0}
+.herolead b{color:var(--ink);font-weight:600}
+.statstrip{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:30px}
+.statstrip .s{background:var(--surface);padding:18px 18px}
+.statstrip .s .v{font-family:var(--mono);font-size:26px;font-weight:600;font-feature-settings:"tnum"}
+.statstrip .s .l{font-size:12.5px;color:var(--muted);margin-top:3px}
+.sec{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.sechead{display:flex;align-items:baseline;gap:12px;margin:48px 0 18px}
+.sechead h2{font-size:21px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.syscard{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;text-decoration:none;transition:.16s;position:relative;overflow:hidden}
+.syscard:hover{border-color:var(--accent);transform:translateY(-2px)}
+.syscard .cat{font-family:var(--mono);font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:var(--accent)}
+.syscard h3{font-size:18px;margin:9px 0 6px}
+.syscard p{color:var(--muted);font-size:13.5px;margin:0;flex:1}
+.syscard .metric{font-family:var(--mono);font-size:12px;color:var(--ink);margin-top:14px;padding-top:13px;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.syscard .metric .go{color:var(--accent);font-weight:600}
+.syscard.soon{opacity:.72}
+.syscard.soon:hover{transform:none;border-color:var(--line)}
+.stack{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.stack span{font-family:var(--mono);font-size:11.5px;color:var(--muted);border:1px solid var(--line);border-radius:7px;padding:4px 9px}
+.how{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:26px;margin-top:20px;display:grid;grid-template-columns:1.2fr 1fr;gap:28px}
+.how p{color:var(--muted);font-size:14px;margin:10px 0 0}
+.how ol{margin:6px 0 0;padding-left:0;list-style:none;counter-reset:s}
+.how li{counter-increment:s;font-size:13.5px;padding:9px 0 9px 34px;position:relative;border-bottom:1px solid var(--line)}
+.how li:last-child{border-bottom:none}
+.how li::before{content:counter(s,decimal-leading-zero);position:absolute;left:0;top:9px;font-family:var(--mono);font-size:12px;color:var(--accent)}
+.role-gm .fin-only{display:none}.role-fin .gm-only{display:none}
+@media(max-width:620px){.how{grid-template-columns:1fr;gap:18px}}
+
+.view[hidden]{display:none!important}
+</style></head><body>
+<nav class="nav"><div class="nav-in"><a class="home" href="#home"><span class="dot"></span>전재원 · 포트폴리오</a><a class="t" data-v="payroll" href="#payroll">급여 자동화</a><a class="t" data-v="ehr" href="#ehr">e-HR 발령</a><a class="t" data-v="eval" href="#eval">인사평가</a><a class="t" data-v="crm" href="#crm">CRM 미수대사</a><a class="t" data-v="sales" href="#sales">Sales Hub</a></div></nav>
+<section class="view" data-view="home"><div id="page" class="role-fin">
+<header class="hero">
+  <div class="roletoggle" role="tablist">
+    <button id="bFin" class="on" onclick="setRole('fin')">재무팀장 관점</button>
+    <button id="bGm" onclick="setRole('gm')">경영지원 총괄 관점</button>
+  </div>
+  <div class="eyebrow">AI로 직접 만든 사내 운영 시스템</div>
+  <h1 style="margin-top:12px">숫자를 만드는 시간을<br><span class="accent" id="heroKey">판단하는 시간</span>으로 바꿉니다.</h1>
+  <p class="herolead" id="heroLead"></p>
+  <div class="statstrip">
+    <div class="s"><div class="v">2일 → 2시간</div><div class="l">급여 마감 소요 시간</div></div>
+    <div class="s"><div class="v">20년 · 0건</div><div class="l">세무조사 과세 지적</div></div>
+    <div class="s"><div class="v">IPO 3회</div><div class="l">코스닥 상장 재무 실무</div></div>
+    <div class="s"><div class="v">8종 · 1인</div><div class="l">AI로 구축한 사내 시스템</div></div>
+  </div>
+</header>
+
+<section class="sec">
+  <div class="sechead"><span class="eyebrow">Live Demos</span><h2 id="demoHead">바로 실행되는 데모</h2></div>
+  <p class="lead" style="margin:-8px 0 20px">카드를 누르면 <b style="color:var(--ink)">가상 데이터로 동작하는 실제 화면</b>이 열립니다. 상단 메뉴로 데모 사이를 자유롭게 오갈 수 있습니다.</p>
+  <div class="grid" id="sysgrid"></div>
+</section>
+
+<section class="sec">
+  <div class="sechead"><span class="eyebrow">Method</span><h2>어떻게 혼자서 8종을 만들었나</h2></div>
+  <div class="how">
+    <div>
+      <h3 style="font-size:18px">업무를 가장 잘 아는 사람이, 그 업무의 도구를 만든다</h3>
+      <p>20년간 재무·인사·총무 실무를 직접 해왔기에 무엇이 비효율인지 정확히 압니다. 그 현장 지식 위에 AI 코딩 도구를 얹어, 외주 없이 사내 시스템을 설계·구축·운영했습니다. 반복 업무를 시스템으로 옮긴 만큼, 사람은 판단과 커뮤니케이션에 더 집중합니다.</p>
+      <div class="stack"><span>React</span><span>Supabase</span><span>Google Apps Script</span><span>ChatGPT</span><span>Gemini</span><span>Claude</span></div>
+    </div>
+    <ol>
+      <li>현장의 반복 업무를 데이터 흐름으로 분해</li>
+      <li>AI 코딩 도구로 프로토타입을 빠르게 구축</li>
+      <li>실무에 적용하며 예외 케이스까지 다듬음</li>
+      <li>담당자 교육 후 운영 이관 — 사람에 종속되지 않는 시스템</li>
+    </ol>
+  </div>
+  <div style="margin-top:8px"><div class="foot">가상 데이터로 구성한 데모입니다. 실제 사내 시스템은 React · Supabase · Google Apps Script로 운영됩니다. · 전재원 · ganzzang888@naver.com</div>
+  <div class="foot">데모는 가상 데이터입니다. 실제 시스템은 사내 보안 환경에서 운영됩니다. · 전재원 · 010-3888-1317 · ganzzang888@naver.com</div>
+</section>
+</div></section><section class="view" data-view="payroll" hidden><div class="wrap"><div class="demo-banner"><h1>급여 자동화 시스템</h1><span class="pill">가상 데이터 · LIVE DEMO</span></div><p class="lead">기본급만 입력하면 국민연금·건강보험·장기요양·고용보험·소득세까지 자동 계산하고, 직원별 급여명세서를 생성합니다. 은행 이체확인증을 1인 1파일로 분리하는 도구까지 연결됩니다.</p></div>
+<div class="wrap">
+ <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:20px 0 16px">
+   <select class="sel" id="month"><option>2026-10</option><option>2026-09</option><option>2026-08</option></select>
+   <button class="btn" id="runBtn">급여 일괄 계산 실행</button>
+   <button class="btn ghost" id="resetBtn">초기화</button>
+   <span class="mono" id="timer" style="color:var(--muted);font-size:13px"></span>
+ </div>
+ <div class="tiles" style="margin-bottom:16px">
+   <div class="tile"><div class="k">대상 인원</div><div class="v" id="tCnt">10<small> 명</small></div></div>
+   <div class="tile"><div class="k">지급 총액</div><div class="v" id="tGross">—</div></div>
+   <div class="tile"><div class="k">공제 총액</div><div class="v" id="tDed">—</div></div>
+   <div class="tile"><div class="k">실지급액</div><div class="v" id="tNet">—</div></div>
+ </div>
+ <div class="tablebox"><table><thead><tr>
+   <th>사번</th><th>성명</th><th>부서</th><th class="num">기본급</th><th class="num">국민연금</th><th class="num">건강+장기</th><th class="num">고용</th><th class="num">소득세+지방</th><th class="num">공제계</th><th class="num">실수령</th><th></th>
+ </tr></thead><tbody id="rows"></tbody></table></div>
+ <p class="lead" style="margin-top:14px;font-size:13px">※ 4대보험료율은 2026년 기준 근사치, 소득세는 간이세액 근사 로직입니다. 실제 사내 시스템은 공제 대상·부양가족·비과세 항목을 반영합니다.</p>
+</div>
+<div id="payslip" hidden style="position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:18px;z-index:50"></div></section>
+<section class="view" data-view="ehr" hidden><div class="wrap"><div class="demo-banner"><h1>e-HR 조직·발령 시스템</h1><span class="pill">가상 데이터 · LIVE DEMO</span></div><p class="lead">조직도와 14종 인사발령을 관리합니다. 발령을 시행일 기준으로 "가상 적용"해 보면, 반영 후 조직도와 발령문을 미리 확인할 수 있습니다. 실제로는 발령 반영이 1~2주에서 당일로 단축됐습니다.</p></div>
+<div class="wrap">
+ <div class="card" style="padding:18px;margin:20px 0 18px">
+   <div class="eyebrow" style="margin-bottom:12px">발령 생성</div>
+   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px">
+     <select class="sel" id="who"></select>
+     <select class="sel" id="kind"></select>
+     <select class="sel" id="dept"></select>
+     <input class="sel" type="date" id="date" value="2026-11-01">
+   </div>
+   <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
+     <button class="btn" id="applyBtn">가상 발령 적용</button>
+     <button class="btn ghost" id="undoBtn">원래대로</button>
+   </div>
+ </div>
+ <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px" id="orgwrap">
+   <div class="card" style="padding:18px"><div class="eyebrow" style="margin-bottom:12px">현재 조직</div><div id="orgBefore"></div></div>
+   <div class="card" style="padding:18px"><div class="eyebrow" style="margin-bottom:12px;color:var(--accent)">발령 적용 후</div><div id="orgAfter"></div></div>
+ </div>
+ <div id="order"></div>
+</div></section>
+<section class="view" data-view="eval" hidden><div class="wrap"><div class="demo-banner"><h1>인사평가 시스템 (360° + KPI)</h1><span class="pill">가상 데이터 · LIVE DEMO</span></div><p class="lead">1차 평가·동료평가·하향평가·본인평가의 다면 점수와 KPI 달성률을 가중 합산해 종합점수를 산출하고, 상대평가 비율을 조정하면 등급 분포가 실시간으로 재계산됩니다.</p></div>
+<div class="wrap">
+ <div class="card" style="padding:18px;margin:20px 0 16px">
+   <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;align-items:center">
+     <div><div class="eyebrow">상대평가 보정 (Calibration)</div><div class="lead" style="font-size:13px;margin-top:4px">S·A 등급 상위 비율을 조정하면 분포가 재계산됩니다.</div></div>
+     <div style="display:flex;align-items:center;gap:10px"><span class="mono" style="font-size:12px">상위등급 비율</span><input type="range" id="cal" min="10" max="50" value="30" style="width:160px"><span class="mono" id="calv" style="font-size:13px;color:var(--accent)">30%</span></div>
+   </div>
+   <div id="dist" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px"></div>
+ </div>
+ <div class="tablebox"><table><thead><tr><th>성명</th><th>부서</th><th class="num">1차</th><th class="num">동료360</th><th class="num">하향</th><th class="num">본인</th><th class="num">KPI</th><th class="num">종합</th><th>등급</th></tr></thead><tbody id="erows"></tbody></table></div>
+ <div id="detail"></div>
+ <p class="lead" style="margin-top:14px;font-size:13px">※ 종합 = 1차 35% · 동료360 25% · 하향 15% · 본인 5% · KPI달성률 20%. 등급은 종합점수 순위에 상위비율을 적용한 상대평가입니다.</p>
+</div></section>
+<section class="view" data-view="crm" hidden><div class="wrap"><div class="demo-banner"><h1>CRM 매출·미수 대사</h1><span class="pill">가상 데이터 · LIVE DEMO</span></div><p class="lead">발행한 세금계산서와 은행 입금 내역을 자동 대사해 수금 상태를 분류하고, 미수채권을 연령별(aging)로 관리합니다. 대사는 금액·거래처 매칭으로 자동 처리됩니다.</p></div>
+<div class="wrap">
+ <div style="display:flex;gap:10px;flex-wrap:wrap;margin:20px 0 16px"><button class="btn" id="matchBtn">입금 자동 대사 실행</button><button class="btn ghost" id="rstBtn">초기화</button></div>
+ <div class="tiles" style="margin-bottom:16px">
+   <div class="tile"><div class="k">매출(계산서)</div><div class="v" id="mSales">—</div></div>
+   <div class="tile"><div class="k">수금액</div><div class="v" id="mPaid">—</div></div>
+   <div class="tile"><div class="k">미수 잔액</div><div class="v" id="mOut">—</div></div>
+   <div class="tile"><div class="k">연체(60일+)</div><div class="v" id="mLate">—</div></div>
+ </div>
+ <div class="card" style="padding:18px;margin-bottom:16px"><div class="eyebrow" style="margin-bottom:12px">미수채권 Aging</div><div id="aging" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px"></div></div>
+ <div class="tablebox"><table><thead><tr><th>거래처</th><th class="num">계산서금액</th><th>발행일</th><th class="num">입금액</th><th>경과일</th><th>상태</th></tr></thead><tbody id="crows"></tbody></table></div>
+</div></section>
+<section class="view" data-view="sales" hidden><div class="wrap"><div class="demo-banner"><h1>Sales Hub 영업관리</h1><span class="pill">가상 데이터 · LIVE DEMO</span></div><p class="lead">리드부터 계약까지 영업 파이프라인을 단계별로 관리합니다. 딜 카드를 누르면 다음 단계로 진행되고, 단계별 금액과 가중 예상매출, 전환율이 함께 갱신됩니다. (의료영상 AI 영업 맥락의 가상 데이터)</p></div>
+<div class="wrap">
+ <div class="tiles" style="margin:20px 0 16px">
+   <div class="tile"><div class="k">파이프라인 총액</div><div class="v" id="pTotal">—</div></div>
+   <div class="tile"><div class="k">가중 예상매출</div><div class="v" id="pWeighted">—</div></div>
+   <div class="tile"><div class="k">계약 성사</div><div class="v" id="pWon">—</div></div>
+   <div class="tile"><div class="k">전환율(리드→계약)</div><div class="v" id="pConv">—</div></div>
+ </div>
+ <p class="lead" style="margin:0 0 14px;font-size:13px">딜 카드를 클릭하면 다음 단계로 이동합니다.</p>
+ <div id="board" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px"></div>
+</div></section>
+<div class="wrap"><div class="foot">가상 데이터로 구성한 데모입니다. 실제 사내 시스템은 React · Supabase · Google Apps Script로 운영됩니다. · 전재원 · 010-3888-1317 · ganzzang888@naver.com</div></div>
+
+<script>
+function showView(v){
+  if(!v) v='home';
+  var secs=document.querySelectorAll('.view');
+  var found=false;
+  secs.forEach(function(s){var on=s.getAttribute('data-view')===v;s.hidden=!on;if(on)found=true;});
+  if(!found){v='home';document.querySelector('[data-view="home"]').hidden=false;}
+  document.querySelectorAll('.nav a.t').forEach(function(a){a.classList.toggle('on',a.getAttribute('data-v')===v);});
+  window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',function(){showView(location.hash.replace('#',''));});
+</script>
+<script>
+var SYS=[
+  {id:'payroll',cat:'인사·급여',t:'급여 자동화',d:'기본급만 넣으면 4대보험·소득세·실수령까지 일괄 계산하고 명세서를 생성합니다. 이체확인증 분리까지 연결.',m:'마감 2일 → 2시간',fin:2,gm:3,live:1},
+  {id:'crm',cat:'재무·채권',t:'CRM 매출·미수 대사',d:'세금계산서와 입금 내역을 자동 대사하고, 미수채권을 연령별로 관리합니다.',m:'대사·미수관리 자동화',fin:1,gm:5,live:1},
+  {id:'sales',cat:'영업·재무',t:'Sales Hub 영업관리',d:'리드부터 계약까지 파이프라인을 관리하고, 단계별 예상 매출을 집계합니다.',m:'파이프라인 → 매출 예측',fin:3,gm:6,live:1},
+  {id:'eval',cat:'인사·평가',t:'인사평가 (360+KPI)',d:'다면평가와 KPI 달성률을 합산해 종합등급을 산출하고, 상대평가 분포를 조정합니다.',m:'평가 → 등급 → 보상 연계',fin:6,gm:1,live:1},
+  {id:'ehr',cat:'인사·조직',t:'e-HR 조직·발령',d:'조직도와 14종 발령을 관리하고, 시행일 기준으로 발령을 미리 적용해 봅니다.',m:'발령 반영 1~2주 → 당일',fin:5,gm:2,live:1},
+  {id:'#',cat:'인사·퇴직',t:'퇴직연금 관리',d:'DB·DC 적립과 퇴직금 추계액을 관리합니다. (사내 운영 · 데모 준비 중)',m:'운영 중',fin:7,gm:4,live:0},
+  {id:'#',cat:'재무·자금',t:'자금 일일수지 자동화',d:'일일 입출금과 자금계획을 자동 집계합니다. (사내 운영 · 데모 준비 중)',m:'운영 중',fin:4,gm:7,live:0},
+  {id:'#',cat:'재무·정부과제',t:'정부과제 정산',d:'참여율 기반 인건비를 자동 계상하고 규정을 검증합니다. (사내 운영 · 데모 준비 중)',m:'정산 지적 0건',fin:8,gm:8,live:0},
+];
+var LEAD={
+  fin:'IPO 3회와 K-IFRS 결산·세무를 책임져 온 재무팀장입니다. 반복되는 <b>결산·급여·채권·자금 업무를 AI로 시스템화</b>해, 재무 조직이 숫자 생산이 아니라 판단에 집중하도록 만들었습니다.',
+  gm:'재무·인사·총무를 한 팀에서 운영해 온 경영지원 총괄입니다. <b>채용·평가·발령·급여부터 자금·채권까지</b> 백오피스 전 영역을 AI로 시스템화해, 구성원이 더 잘 일하는 환경을 만들었습니다.'
+};
+var KEY={fin:'판단하는 시간',gm:'사람을 키우는 일'};
+function render(role){
+  document.getElementById('heroLead').innerHTML=LEAD[role];
+  document.getElementById('heroKey').textContent=KEY[role];
+  var arr=SYS.slice().sort(function(a,b){return a[role]-b[role]});
+  document.getElementById('sysgrid').innerHTML=arr.map(function(s){
+    if(!s.live) return '<div class="syscard soon"><div class="cat">'+s.cat+'</div><h3>'+s.t+'</h3><p>'+s.d+'</p><div class="metric"><span>'+s.m+'</span><span class="go">사내 운영</span></div></div>';
+    return '<a class="syscard" href="#'+s.id+'"><div class="cat">'+s.cat+'</div><h3>'+s.t+'</h3><p>'+s.d+'</p><div class="metric"><span>'+s.m+'</span><span class="go">데모 열기 →</span></div></a>';
+  }).join('');
+}
+function setRole(r){
+  document.getElementById('page').className='role-'+r;
+  document.getElementById('bFin').classList.toggle('on',r==='fin');
+  document.getElementById('bGm').classList.toggle('on',r==='gm');
+  try{localStorage.setItem('jw-role',r)}catch(e){}
+  render(r);
+}
+var r0='fin';try{r0=localStorage.getItem('jw-role')||'fin'}catch(e){}
+setRole(r0);
+</script>
+<script>(function(){
+function w(v){return Math.round(v).toLocaleString('ko-KR')}
+var EMP=[
+ ['C-2101','김도현','경영지원팀',4200000],['C-2102','이서윤','임상개발팀',5600000],
+ ['C-2103','박준호','영업팀',3800000],['C-2104','최유진','개발팀',6100000],
+ ['C-2105','정민석','개발팀',4900000],['C-2106','한소희','경영지원팀',3500000],
+ ['C-2107','오세훈','임상개발팀',7200000],['C-2108','윤지아','영업팀',4400000],
+ ['C-2109','장현우','개발팀',5300000],['C-2110','임하늘','경영지원팀',3100000]
+];
+function tax(base){ // 간이세액 근사: 과세표준 구간별 누진 근사
+ var m=base; var t=0;
+ if(m<=1060000)t=0; else if(m<=3000000)t=(m-1060000)*0.035; else if(m<=5000000)t=67900+(m-3000000)*0.08;
+ else if(m<=7000000)t=227900+(m-5000000)*0.14; else t=507900+(m-7000000)*0.20;
+ return Math.floor(t/10)*10;
+}
+function calcRow(base){
+ var np=Math.min(base,6170000)*0.045;
+ var hi=base*0.03545; var ltc=hi*0.1295; var ei=base*0.009;
+ var it=tax(base); var lt=it*0.1;
+ var ded=np+hi+ltc+ei+it+lt;
+ return {np:np,hi:hi+ltc,ei:ei,it:it+lt,ded:ded,net:base-ded};
+}
+var calculated=false;
+function paint(withCalc){
+ var rows=document.getElementById('rows'); rows.innerHTML='';
+ var g=0,d=0,n=0;
+ EMP.forEach(function(e,i){
+   var base=e[3], tr=document.createElement('tr');
+   if(withCalc){var c=calcRow(base);g+=base;d+=c.ded;n+=c.net;
+     tr.innerHTML='<td class="mono">'+e[0]+'</td><td>'+e[1]+'</td><td>'+e[2]+'</td><td class="num">'+w(base)+'</td><td class="num">'+w(c.np)+'</td><td class="num">'+w(c.hi)+'</td><td class="num">'+w(c.ei)+'</td><td class="num">'+w(c.it)+'</td><td class="num">'+w(c.ded)+'</td><td class="num" style="font-weight:600;color:var(--accent)">'+w(c.net)+'</td><td><button class="btn ghost" style="padding:5px 10px;font-size:12px" onclick="PF_slip('+i+')">명세서</button></td>';
+   } else {
+     tr.innerHTML='<td class="mono">'+e[0]+'</td><td>'+e[1]+'</td><td>'+e[2]+'</td><td class="num">'+w(base)+'</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td></td>';
+   }
+   rows.appendChild(tr);
+ });
+ if(withCalc){document.getElementById('tGross').innerHTML=w(g)+'<small> 원</small>';document.getElementById('tDed').innerHTML=w(d)+'<small> 원</small>';document.getElementById('tNet').innerHTML=w(n)+'<small> 원</small>';}
+ else{['tGross','tDed','tNet'].forEach(function(id){document.getElementById(id).textContent='—'});}
+}
+paint(false);
+document.getElementById('runBtn').addEventListener('click',function(){
+ if(calculated)return; var btn=this; btn.disabled=true; var t0=performance.now();
+ document.getElementById('timer').textContent='계산 중...';
+ var i=0,rows=document.querySelectorAll('#rows tr');
+ var iv=setInterval(function(){
+   if(i>=EMP.length){clearInterval(iv);calculated=true;paint(true);
+     var sec=((performance.now()-t0)/1000).toFixed(1);
+     document.getElementById('timer').innerHTML='완료 — 10명 '+sec+'초 <span style="color:var(--accent)">(수작업 2일 → 자동 '+sec+'초)</span>';
+     btn.disabled=false;btn.textContent='다시 계산';return;}
+   var e=EMP[i],c=calcRow(e[3]),tr=rows[i];
+   tr.style.background='var(--accent-soft)';setTimeout(function(){tr.style.background=''},260);
+   tr.children[4].textContent=w(c.np);tr.children[5].textContent=w(c.hi);tr.children[6].textContent=w(c.ei);tr.children[7].textContent=w(c.it);tr.children[8].textContent=w(c.ded);tr.children[9].textContent=w(c.net);tr.children[9].style.color='var(--accent)';tr.children[9].style.fontWeight='600';
+   i++;
+ },120);
+});
+document.getElementById('resetBtn').addEventListener('click',function(){calculated=false;paint(false);document.getElementById('timer').textContent='';document.getElementById('runBtn').textContent='급여 일괄 계산 실행';});
+function PF_slip(i){
+ var e=EMP[i],c=calcRow(e[3]);
+ document.getElementById('payslip').innerHTML='<div class="card" style="max-width:420px;width:100%;padding:24px"><div style="display:flex;justify-content:space-between;align-items:baseline"><div><div class="eyebrow">급여명세서 · '+document.getElementById("month").value+'</div><h3 style="font-size:19px;margin-top:6px">'+e[1]+' <span class="mono" style="font-size:13px;color:var(--muted)">'+e[0]+'</span></h3><div style="color:var(--muted);font-size:13px">'+e[2]+'</div></div><button class="btn ghost" style="padding:6px 12px" onclick="document.getElementById(\'payslip\').hidden=true">닫기</button></div><table style="margin-top:16px"><tr><td>기본급</td><td class="num">'+w(e[3])+'</td></tr><tr><td>국민연금</td><td class="num">-'+w(c.np)+'</td></tr><tr><td>건강보험+장기요양</td><td class="num">-'+w(c.hi)+'</td></tr><tr><td>고용보험</td><td class="num">-'+w(c.ei)+'</td></tr><tr><td>소득세+지방소득세</td><td class="num">-'+w(c.it)+'</td></tr><tr><td style="font-weight:600">실수령액</td><td class="num" style="font-weight:600;color:var(--accent)">'+w(c.net)+'</td></tr></table></div>';
+ document.getElementById('payslip').hidden=false;
+}
+document.getElementById('payslip').addEventListener('click',function(e){if(e.target===this)this.hidden=true;});
+;try{window.PF_slip=PF_slip}catch(e){}
+})();</script>
+<script>(function(){
+var KINDS=['부서이동','승진','전보','겸직 발령','직책 부여','파견','직무 변경','보직 해임','복직','전환배치','대기발령','승격','직위 변경','해외 파견'];
+var DEPTS=['경영지원팀','임상개발팀','개발팀','영업팀','전략기획실'];
+var BASE={'경영지원팀':['한소희 과장','임하늘 사원'],'임상개발팀':['이서윤 책임','오세훈 수석'],'개발팀':['최유진 리드','정민석 선임','장현우 선임'],'영업팀':['박준호 팀장','윤지아 대리'],'전략기획실':['김도현 부장']};
+function clone(o){return JSON.parse(JSON.stringify(o));}
+var cur=clone(BASE);
+var whoSel=document.getElementById('who');
+Object.keys(BASE).forEach(function(d){BASE[d].forEach(function(p){var o=document.createElement('option');o.value=p+'|'+d;o.textContent=p+' ('+d+')';whoSel.appendChild(o);});});
+document.getElementById('kind').innerHTML=KINDS.map(function(k){return '<option>'+k+'</option>'}).join('');
+document.getElementById('dept').innerHTML=DEPTS.map(function(d){return '<option>'+d+'</option>'}).join('');
+function drawOrg(el,data,moved){
+ el.innerHTML='<div style="font-weight:600;padding:8px 12px;background:var(--accent-soft);border-radius:9px;display:inline-block;margin-bottom:12px">대표이사</div>'+
+ DEPTS.filter(function(d){return data[d]&&data[d].length}).map(function(d){
+   return '<div style="margin-bottom:12px"><div class="mono" style="font-size:12px;color:var(--muted);margin-bottom:6px">'+d+'</div>'+
+   data[d].map(function(p){var hl=(moved&&p===moved)?'background:var(--accent-soft);border-color:var(--accent);font-weight:600':'';return '<div style="border:1px solid var(--line);border-radius:8px;padding:7px 11px;margin:4px 0;font-size:13.5px;'+hl+'">'+p+'</div>';}).join('')+'</div>';
+ }).join('');
+}
+drawOrg(document.getElementById('orgBefore'),BASE);
+drawOrg(document.getElementById('orgAfter'),BASE);
+document.getElementById('applyBtn').addEventListener('click',function(){
+ var v=whoSel.value.split('|'),person=v[0],from=v[1],kind=document.getElementById('kind').value,to=document.getElementById('dept').value,dt=document.getElementById('date').value;
+ var after=clone(BASE);
+ // move person from 'from' to 'to' (부서이동/전보/전환배치/파견류) else keep dept but annotate
+ var moveKinds=['부서이동','전보','전환배치','파견','해외 파견'];
+ var name=person;
+ if(moveKinds.indexOf(kind)>=0 && from!==to){
+   after[from]=after[from].filter(function(x){return x!==person});
+   after[to]=after[to].concat([person]);
+ } else if(kind==='승진'||kind==='승격'){
+   after[from]=after[from].map(function(x){return x===person?person.replace(/(사원|대리|과장|선임|책임|수석|부장|대리)/,function(m){var up={'사원':'대리','대리':'과장','과장':'차장','선임':'책임','책임':'수석','수석':'부장'};return up[m]||m;}):x;});
+   name=after[from].find(function(x){return x.indexOf(person.split(' ')[0])>=0})||person;
+ }
+ drawOrg(document.getElementById('orgAfter'),after,name);
+ var typeLabel={'부서이동':'소속 변경','전보':'소속 변경','전환배치':'소속 변경','승진':'직급 상향','승격':'직급 상향'};
+ document.getElementById('order').innerHTML='<div class="card" style="padding:22px;margin-top:16px"><div class="eyebrow" style="color:var(--gold);margin-bottom:10px">발령문 미리보기</div><div style="font-family:var(--mono);font-size:13.5px;line-height:1.9"><div>발령구분 &nbsp;: '+kind+'</div><div>대상자 &nbsp;&nbsp;&nbsp;: '+person+'</div><div>현소속 &nbsp;&nbsp;&nbsp;: '+from+'</div><div>발령내용 &nbsp;: '+(moveKinds.indexOf(kind)>=0?(from+' → '+to):kind)+'</div><div>시행일 &nbsp;&nbsp;&nbsp;: '+dt+'</div></div><p class="lead" style="margin-top:12px;font-size:12.5px">상기 발령을 시행일 기준으로 적용합니다. 실제 시스템은 승인 → 통보 → 조직도·급여·권한에 당일 자동 반영됩니다.</p></div>';
+});
+document.getElementById('undoBtn').addEventListener('click',function(){drawOrg(document.getElementById('orgAfter'),BASE);document.getElementById('order').innerHTML='';});
+})();</script>
+<script>(function(){
+var E=[
+ ['이서윤','임상개발팀',92,88,90,95,96],['최유진','개발팀',95,91,93,90,99],
+ ['박준호','영업팀',80,85,82,88,91],['정민석','개발팀',84,80,83,85,78],
+ ['한소희','경영지원팀',88,90,86,82,89],['오세훈','임상개발팀',90,93,94,96,94],
+ ['윤지아','영업팀',76,79,78,84,72],['장현우','개발팀',82,78,80,80,85],
+ ['김도현','경영지원팀',94,92,95,90,97],['임하늘','경영지원팀',70,74,72,78,68]
+];
+function comp(r){return r[2]*0.35+r[3]*0.25+r[4]*0.15+r[5]*0.05+r[6]*0.20;}
+function grade(rankPct,topPct){
+ if(rankPct<=topPct*0.33)return 'S'; if(rankPct<=topPct)return 'A';
+ if(rankPct<=topPct+40)return 'B'; if(rankPct<=90)return 'C'; return 'D';
+}
+function render(){
+ var top=+document.getElementById('cal').value; document.getElementById('calv').textContent=top+'%';
+ var arr=E.map(function(r,i){return {r:r,c:comp(r),i:i}}).sort(function(a,b){return b.c-a.c});
+ var n=arr.length,counts={S:0,A:0,B:0,C:0,D:0};
+ arr.forEach(function(o,idx){o.g=grade((idx+1)/n*100,top);counts[o.g]++;});
+ var tb=document.getElementById('erows');tb.innerHTML='';
+ var gc={S:'b-good',A:'b-good',B:'b-mut',C:'b-warn',D:'b-bad'};
+ arr.forEach(function(o){var r=o.r;var tr=document.createElement('tr');tr.style.cursor='pointer';
+   tr.innerHTML='<td style="font-weight:600">'+r[0]+'</td><td>'+r[1]+'</td><td class="num">'+r[2]+'</td><td class="num">'+r[3]+'</td><td class="num">'+r[4]+'</td><td class="num">'+r[5]+'</td><td class="num">'+r[6]+'</td><td class="num" style="font-weight:600">'+o.c.toFixed(1)+'</td><td><span class="badge '+gc[o.g]+'">'+o.g+'</span></td>';
+   tr.onclick=function(){detail(o);};tb.appendChild(tr);});
+ var d=document.getElementById('dist');d.innerHTML=['S','A','B','C','D'].map(function(g){
+   return '<div class="tile" style="padding:12px"><div class="k">'+g+' 등급</div><div class="v" style="font-size:20px">'+counts[g]+'<small> 명</small></div><div style="height:5px;background:var(--surface-2);border-radius:3px;margin-top:8px;overflow:hidden"><div style="height:100%;width:'+(counts[g]/n*100)+'%;background:var(--accent)"></div></div></div>';
+ }).join('');
+}
+function detail(o){var r=o.r;var items=[['1차 평가',r[2]],['동료 360',r[3]],['하향 평가',r[4]],['본인 평가',r[5]],['KPI 달성률',r[6]]];
+ document.getElementById('detail').innerHTML='<div class="card" style="padding:22px;margin-top:16px"><div style="display:flex;justify-content:space-between;align-items:baseline"><h3 style="font-size:18px">'+r[0]+' <span class="mono" style="font-size:13px;color:var(--muted)">'+r[1]+' · 종합 '+o.c.toFixed(1)+' · '+o.g+'등급</span></h3></div><div style="margin-top:14px;display:flex;flex-direction:column;gap:9px">'+items.map(function(it){return '<div style="display:flex;align-items:center;gap:12px"><div class="mono" style="font-size:12px;width:92px;color:var(--muted)">'+it[0]+'</div><div style="flex:1;height:9px;background:var(--surface-2);border-radius:5px;overflow:hidden"><div style="height:100%;width:'+it[1]+'%;background:var(--accent)"></div></div><div class="mono" style="font-size:12px;width:34px;text-align:right">'+it[1]+'</div></div>';}).join('')+'</div></div>';
+}
+document.getElementById('cal').addEventListener('input',render);
+render();
+})();</script>
+<script>(function(){
+function w(v){return Math.round(v).toLocaleString('ko-KR')}
+var D=[
+ ['서울대학교병원',44000000,'2026-08-12',44000000,71],['강남세브란스',28600000,'2026-09-03',28600000,49],
+ ['분당차병원',15400000,'2026-09-20',0,32],['한국건강관리협회',9900000,'2026-07-28',5000000,86],
+ ['아산검진센터',22000000,'2026-09-28',22000000,24],['부산백병원',18700000,'2026-08-30',0,53],
+ ['대구가톨릭병원',13200000,'2026-10-05',13200000,17],['제주한라병원',7700000,'2026-06-30',0,114],
+ ['영상의학의원 네트워크',5500000,'2026-10-10',5500000,12]
+];
+var matched=false;
+function rowStatus(d){ if(!matched){return d[3]>0?['대사대기','b-mut']:['미입금','b-mut'];}
+ if(d[3]>=d[1])return['대사완료','b-good']; if(d[3]>0)return['부분입금','b-warn'];
+ return d[4]>60?['연체','b-bad']:['미수','b-warn'];}
+function render(){
+ var tb=document.getElementById('crows');tb.innerHTML='';var sales=0,paid=0,out=0,late=0;var buckets=[0,0,0,0];
+ D.forEach(function(d){sales+=d[1];var pay=matched?d[3]:0;paid+=pay;var bal=d[1]-pay;out+=bal;
+   if(bal>0){var b=d[4]<=30?0:d[4]<=60?1:d[4]<=90?2:3;buckets[b]+=bal;if(d[4]>60)late+=bal;}
+   var st=rowStatus(d);
+   tb.innerHTML+='<tr><td style="font-weight:500">'+d[0]+'</td><td class="num">'+w(d[1])+'</td><td class="mono" style="font-size:12px">'+d[2]+'</td><td class="num">'+(matched?w(d[3]):'—')+'</td><td class="num">'+d[4]+'일</td><td><span class="badge '+st[1]+'">'+st[0]+'</span></td></tr>';
+ });
+ document.getElementById('mSales').innerHTML=w(sales)+'<small> 원</small>';
+ document.getElementById('mPaid').innerHTML=(matched?w(paid):'—')+(matched?'<small> 원</small>':'');
+ document.getElementById('mOut').innerHTML=(matched?w(out):'—')+(matched?'<small> 원</small>':'');
+ document.getElementById('mLate').innerHTML=(matched?w(late):'—')+(matched?'<small> 원</small>':'');
+ var labels=['0~30일','31~60일','61~90일','90일+'];var mx=Math.max.apply(null,buckets.concat([1]));
+ document.getElementById('aging').innerHTML=buckets.map(function(v,i){var col=i<2?'var(--accent)':i<3?'var(--warn)':'var(--bad)';
+   return '<div><div class="mono" style="font-size:11px;color:var(--muted)">'+labels[i]+'</div><div class="mono" style="font-size:15px;margin:4px 0;font-weight:600">'+(matched?w(v):'—')+'</div><div style="height:7px;background:var(--surface-2);border-radius:4px;overflow:hidden"><div style="height:100%;width:'+(matched?v/mx*100:0)+'%;background:'+col+'"></div></div></div>';}).join('');
+}
+document.getElementById('matchBtn').addEventListener('click',function(){matched=true;render();this.textContent='대사 완료 ✓';this.disabled=true;});
+document.getElementById('rstBtn').addEventListener('click',function(){matched=false;render();var b=document.getElementById('matchBtn');b.textContent='입금 자동 대사 실행';b.disabled=false;});
+render();
+})();</script>
+<script>(function(){
+function w(v){return Math.round(v).toLocaleString('ko-KR')}
+var STAGES=[['리드',0.1],['상담',0.3],['견적',0.6],['계약',1.0]];
+var DEALS=[
+ {n:'서울아산병원 영상AI',a:120000000,s:2},{n:'삼성서울 검진센터',a:85000000,s:3},
+ {n:'분당서울대 판독',a:64000000,s:1},{n:'건강관리협회 전국',a:210000000,s:0},
+ {n:'대구파티마병원',a:38000000,s:2},{n:'부산 메디컬센터',a:52000000,s:1},
+ {n:'제주 영상의학',a:29000000,s:0},{n:'인천 검진네트워크',a:47000000,s:3}
+];
+function render(){
+ var board=document.getElementById('board');board.innerHTML='';
+ var total=0,weighted=0,won=0,wonCnt=0;
+ STAGES.forEach(function(st,si){
+   var col=DEALS.filter(function(d){return d.s===si;});
+   var sum=col.reduce(function(a,d){return a+d.a},0);
+   var el=document.createElement('div');el.className='card';el.style.padding='14px';el.style.minWidth='0';
+   el.innerHTML='<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px"><div class="mono" style="font-size:12px;font-weight:600">'+st[0]+'</div><div class="mono" style="font-size:11px;color:var(--muted)">'+col.length+'건</div></div><div class="mono" style="font-size:12px;color:var(--accent);margin-bottom:10px">'+w(sum)+'</div>'+
+   col.map(function(d){var gi=DEALS.indexOf(d);return '<div onclick="SV_adv('+gi+')" style="border:1px solid var(--line);border-radius:9px;padding:9px 10px;margin-bottom:8px;cursor:'+(si<3?'pointer':'default')+';font-size:12.5px;'+(si===3?'background:var(--accent-soft);border-color:var(--accent)':'')+'"><div style="font-weight:500;line-height:1.3">'+d.n+'</div><div class="mono" style="font-size:11px;color:var(--muted);margin-top:3px">'+w(d.a)+(si<3?' · 클릭→진행':' · 성사 ✓')+'</div></div>';}).join('')||'<div style="color:var(--muted);font-size:12px;padding:8px 0">딜 없음</div>';
+   board.appendChild(el);
+ });
+ DEALS.forEach(function(d){total+=d.a;weighted+=d.a*STAGES[d.s][1];if(d.s===3){won+=d.a;wonCnt++;}});
+ document.getElementById('pTotal').innerHTML=w(total)+'<small> 원</small>';
+ document.getElementById('pWeighted').innerHTML=w(weighted)+'<small> 원</small>';
+ document.getElementById('pWon').innerHTML=w(won)+'<small> 원</small>';
+ document.getElementById('pConv').innerHTML=Math.round(wonCnt/DEALS.length*100)+'<small> %</small>';
+}
+function SV_adv(i){if(DEALS[i].s<3){DEALS[i].s++;render();}}
+render();
+;try{window.SV_adv=SV_adv}catch(e){}
+})();</script>
+<script>showView(location.hash.replace('#','')||'home');</script>
+</body></html>
