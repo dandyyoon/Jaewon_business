@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>e-HR 시스템 · CRESCOM</title>
+<title>e-HR 시스템 · DEMO</title>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/@babel/standalone@7.23.6/babel.min.js"></script>
-<script>window.__SEED__={"org_groups":[{"id":"g1","name":"경영지원팀","parent_id":null,"sort_order":1,"sort":1,"level":1},{"id":"g2","name":"임상개발팀","parent_id":null,"sort_order":2,"sort":2,"level":1},{"id":"g3","name":"개발팀","parent_id":null,"sort_order":3,"sort":3,"level":1},{"id":"g4","name":"영업팀","parent_id":null,"sort_order":4,"sort":4,"level":1},{"id":"g5","name":"전략기획실","parent_id":null,"sort_order":5,"sort":5,"level":1}],"employees":[{"id":1,"emp_no":"C-2101","name":"김도현","group_id":"g1","team":"경영지원팀","position":"부장","rank":"부장","status":"재직","email":"c-2101@crescom.ai","join_date":"2021-03-02","gender":"M"},{"id":2,"emp_no":"C-2102","name":"이서윤","group_id":"g2","team":"임상개발팀","position":"책임","rank":"책임","status":"재직","email":"c-2102@crescom.ai","join_date":"2021-03-02","gender":"F"},{"id":3,"emp_no":"C-2103","name":"박준호","group_id":"g4","team":"영업팀","position":"팀장","rank":"팀장","status":"재직","email":"c-2103@crescom.ai","join_date":"2021-03-02","gender":"M"},{"id":4,"emp_no":"C-2104","name":"최유진","group_id":"g3","team":"개발팀","position":"리드","rank":"리드","status":"재직","email":"c-2104@crescom.ai","join_date":"2021-03-02","gender":"F"},{"id":5,"emp_no":"C-2105","name":"정민석","group_id":"g3","team":"개발팀","position":"선임","rank":"선임","status":"재직","email":"c-2105@crescom.ai","join_date":"2021-03-02","gender":"M"},{"id":6,"emp_no":"C-2106","name":"한소희","group_id":"g1","team":"경영지원팀","position":"과장","rank":"과장","status":"재직","email":"c-2106@crescom.ai","join_date":"2021-03-02","gender":"F"},{"id":7,"emp_no":"C-2107","name":"오세훈","group_id":"g2","team":"임상개발팀","position":"수석","rank":"수석","status":"재직","email":"c-2107@crescom.ai","join_date":"2021-03-02","gender":"M"},{"id":8,"emp_no":"C-2108","name":"윤지아","group_id":"g4","team":"영업팀","position":"대리","rank":"대리","status":"재직","email":"c-2108@crescom.ai","join_date":"2021-03-02","gender":"F"},{"id":9,"emp_no":"C-2109","name":"장현우","group_id":"g3","team":"개발팀","position":"선임","rank":"선임","status":"재직","email":"c-2109@crescom.ai","join_date":"2021-03-02","gender":"M"},{"id":10,"emp_no":"C-2110","name":"임하늘","group_id":"g1","team":"경영지원팀","position":"사원","rank":"사원","status":"재직","email":"c-2110@crescom.ai","join_date":"2021-03-02","gender":"F"}],"employee_pay_base":[{"id":1,"emp_no":"C-2101","base_pay":3000000,"eff_date":"2026-01-01"},{"id":2,"emp_no":"C-2102","base_pay":3300000,"eff_date":"2026-01-01"},{"id":3,"emp_no":"C-2103","base_pay":3600000,"eff_date":"2026-01-01"},{"id":4,"emp_no":"C-2104","base_pay":3900000,"eff_date":"2026-01-01"},{"id":5,"emp_no":"C-2105","base_pay":4200000,"eff_date":"2026-01-01"},{"id":6,"emp_no":"C-2106","base_pay":4500000,"eff_date":"2026-01-01"},{"id":7,"emp_no":"C-2107","base_pay":4800000,"eff_date":"2026-01-01"},{"id":8,"emp_no":"C-2108","base_pay":5100000,"eff_date":"2026-01-01"},{"id":9,"emp_no":"C-2109","base_pay":5400000,"eff_date":"2026-01-01"},{"id":10,"emp_no":"C-2110","base_pay":5700000,"eff_date":"2026-01-01"}],"hr_orders":[{"id":1,"emp_no":"C-2103","name":"박준호","kind":"승진","from_group":"g4","to_group":"g4","eff_date":"2026-07-01","status":"완료","created_at":"2026-06-20"},{"id":2,"emp_no":"C-2105","name":"정민석","kind":"부서이동","from_group":"g3","to_group":"g2","eff_date":"2026-09-01","status":"완료","created_at":"2026-08-18"},{"id":3,"emp_no":"C-2108","name":"윤지아","kind":"직책 부여","from_group":"g4","to_group":"g4","eff_date":"2026-11-01","status":"예정","created_at":"2026-10-15"}],"employee_assignments":[{"id":1,"emp_no":"C-2101","group_id":"g1","eff_date":"2021-03-02","is_current":true},{"id":2,"emp_no":"C-2102","group_id":"g2","eff_date":"2021-03-02","is_current":true},{"id":3,"emp_no":"C-2103","group_id":"g4","eff_date":"2021-03-02","is_current":true},{"id":4,"emp_no":"C-2104","group_id":"g3","eff_date":"2021-03-02","is_current":true},{"id":5,"emp_no":"C-2105","group_id":"g3","eff_date":"2021-03-02","is_current":true},{"id":6,"emp_no":"C-2106","group_id":"g1","eff_date":"2021-03-02","is_current":true},{"id":7,"emp_no":"C-2107","group_id":"g2","eff_date":"2021-03-02","is_current":true},{"id":8,"emp_no":"C-2108","group_id":"g4","eff_date":"2021-03-02","is_current":true},{"id":9,"emp_no":"C-2109","group_id":"g3","eff_date":"2021-03-02","is_current":true},{"id":10,"emp_no":"C-2110","group_id":"g1","eff_date":"2021-03-02","is_current":true}],"employee_contracts":[],"role_change_log":[],"sensitive_access_log":[],"private_reveal_grants":[]};</script>
+<script>window.__SEED__={"org_groups":[{"id":"g1","name":"경영지원팀","parent_id":null,"sort_order":1,"sort":1,"level":1},{"id":"g2","name":"임상개발팀","parent_id":null,"sort_order":2,"sort":2,"level":1},{"id":"g3","name":"개발팀","parent_id":null,"sort_order":3,"sort":3,"level":1},{"id":"g4","name":"영업팀","parent_id":null,"sort_order":4,"sort":4,"level":1},{"id":"g5","name":"전략기획실","parent_id":null,"sort_order":5,"sort":5,"level":1}],"employees":[{"id":1,"emp_no":"C-2101","name":"김도현","group_id":"g1","team":"경영지원팀","position":"부장","rank":"부장","status":"재직","email":"c-2101@demo.sample","join_date":"2021-03-02","gender":"M"},{"id":2,"emp_no":"C-2102","name":"이서윤","group_id":"g2","team":"임상개발팀","position":"책임","rank":"책임","status":"재직","email":"c-2102@demo.sample","join_date":"2021-03-02","gender":"F"},{"id":3,"emp_no":"C-2103","name":"박준호","group_id":"g4","team":"영업팀","position":"팀장","rank":"팀장","status":"재직","email":"c-2103@demo.sample","join_date":"2021-03-02","gender":"M"},{"id":4,"emp_no":"C-2104","name":"최유진","group_id":"g3","team":"개발팀","position":"리드","rank":"리드","status":"재직","email":"c-2104@demo.sample","join_date":"2021-03-02","gender":"F"},{"id":5,"emp_no":"C-2105","name":"정민석","group_id":"g3","team":"개발팀","position":"선임","rank":"선임","status":"재직","email":"c-2105@demo.sample","join_date":"2021-03-02","gender":"M"},{"id":6,"emp_no":"C-2106","name":"한소희","group_id":"g1","team":"경영지원팀","position":"과장","rank":"과장","status":"재직","email":"c-2106@demo.sample","join_date":"2021-03-02","gender":"F"},{"id":7,"emp_no":"C-2107","name":"오세훈","group_id":"g2","team":"임상개발팀","position":"수석","rank":"수석","status":"재직","email":"c-2107@demo.sample","join_date":"2021-03-02","gender":"M"},{"id":8,"emp_no":"C-2108","name":"윤지아","group_id":"g4","team":"영업팀","position":"대리","rank":"대리","status":"재직","email":"c-2108@demo.sample","join_date":"2021-03-02","gender":"F"},{"id":9,"emp_no":"C-2109","name":"장현우","group_id":"g3","team":"개발팀","position":"선임","rank":"선임","status":"재직","email":"c-2109@demo.sample","join_date":"2021-03-02","gender":"M"},{"id":10,"emp_no":"C-2110","name":"임하늘","group_id":"g1","team":"경영지원팀","position":"사원","rank":"사원","status":"재직","email":"c-2110@demo.sample","join_date":"2021-03-02","gender":"F"}],"employee_pay_base":[{"id":1,"emp_no":"C-2101","base_pay":3000000,"eff_date":"2026-01-01"},{"id":2,"emp_no":"C-2102","base_pay":3300000,"eff_date":"2026-01-01"},{"id":3,"emp_no":"C-2103","base_pay":3600000,"eff_date":"2026-01-01"},{"id":4,"emp_no":"C-2104","base_pay":3900000,"eff_date":"2026-01-01"},{"id":5,"emp_no":"C-2105","base_pay":4200000,"eff_date":"2026-01-01"},{"id":6,"emp_no":"C-2106","base_pay":4500000,"eff_date":"2026-01-01"},{"id":7,"emp_no":"C-2107","base_pay":4800000,"eff_date":"2026-01-01"},{"id":8,"emp_no":"C-2108","base_pay":5100000,"eff_date":"2026-01-01"},{"id":9,"emp_no":"C-2109","base_pay":5400000,"eff_date":"2026-01-01"},{"id":10,"emp_no":"C-2110","base_pay":5700000,"eff_date":"2026-01-01"}],"hr_orders":[{"id":1,"emp_no":"C-2103","name":"박준호","kind":"승진","from_group":"g4","to_group":"g4","eff_date":"2026-07-01","status":"완료","created_at":"2026-06-20"},{"id":2,"emp_no":"C-2105","name":"정민석","kind":"부서이동","from_group":"g3","to_group":"g2","eff_date":"2026-09-01","status":"완료","created_at":"2026-08-18"},{"id":3,"emp_no":"C-2108","name":"윤지아","kind":"직책 부여","from_group":"g4","to_group":"g4","eff_date":"2026-11-01","status":"예정","created_at":"2026-10-15"}],"employee_assignments":[{"id":1,"emp_no":"C-2101","group_id":"g1","eff_date":"2021-03-02","is_current":true},{"id":2,"emp_no":"C-2102","group_id":"g2","eff_date":"2021-03-02","is_current":true},{"id":3,"emp_no":"C-2103","group_id":"g4","eff_date":"2021-03-02","is_current":true},{"id":4,"emp_no":"C-2104","group_id":"g3","eff_date":"2021-03-02","is_current":true},{"id":5,"emp_no":"C-2105","group_id":"g3","eff_date":"2021-03-02","is_current":true},{"id":6,"emp_no":"C-2106","group_id":"g1","eff_date":"2021-03-02","is_current":true},{"id":7,"emp_no":"C-2107","group_id":"g2","eff_date":"2021-03-02","is_current":true},{"id":8,"emp_no":"C-2108","group_id":"g4","eff_date":"2021-03-02","is_current":true},{"id":9,"emp_no":"C-2109","group_id":"g3","eff_date":"2021-03-02","is_current":true},{"id":10,"emp_no":"C-2110","group_id":"g1","eff_date":"2021-03-02","is_current":true}],"employee_contracts":[],"role_change_log":[],"sensitive_access_log":[],"private_reveal_grants":[]};</script>
 <script>(function(){
- var EM='demo@crescom.ai';
+ var EM='demo@demo.sample';
  var SEED=window.__SEED__||{};
  function build(t){
    var filters=[],single=null,mode='select',payload=null;var b={};
@@ -63,7 +63,7 @@
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config={darkMode:'class'}</script>
-<script>(function(){try{var t=localStorage.getItem('crescom-theme')||'system';var el=document.documentElement;el.classList.toggle('dark',t==='dark');el.classList.toggle('claude',t==='system');}catch(e){}})();</script>
+<script>(function(){try{var t=localStorage.getItem('demo-theme')||'system';var el=document.documentElement;el.classList.toggle('dark',t==='dark');el.classList.toggle('claude',t==='system');}catch(e){}})();</script>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" />
 <style>
   body { font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
@@ -389,12 +389,12 @@ async function autoApplyDueOrders(orders, emps, groups){
 //  루트
 // ════════════════════════════════════════════════════════
 function useTheme(){
-  const [theme,setTheme]=useState(()=>{ try{ return localStorage.getItem('crescom-theme')||'system'; }catch(e){ return 'system'; } });
+  const [theme,setTheme]=useState(()=>{ try{ return localStorage.getItem('demo-theme')||'system'; }catch(e){ return 'system'; } });
   useEffect(()=>{
     const el=document.documentElement;
     el.classList.toggle('dark', theme==='dark');
     el.classList.toggle('claude', theme==='system');
-    try{ localStorage.setItem('crescom-theme',theme); }catch(e){}
+    try{ localStorage.setItem('demo-theme',theme); }catch(e){}
   },[theme]);
   return [theme,setTheme];
 }
@@ -508,7 +508,7 @@ function App(){
 
   useEffect(()=>{ (async()=>{
     const { data:{ session } } = await sb.auth.getSession();
-    if(!session){ window.location.href='demo-index.html'; return; }
+    if(!session){ window.location.href='index.html'; return; }
     setSession(session);
     const { data:roles } = await sb.from('user_roles').select('app,role').eq('email',session.user.email).in('app',['hr','payroll']);
     const _can=!!(roles||[]).find(r=>r.app==='hr'      && (r.role==='SUPER'||r.role==='ADMIN'));
@@ -548,7 +548,7 @@ function App(){
       <header className="sticky top-0 z-30 bg-white/90 dark:bg-slate-900/90 backdrop-blur border-b border-slate-200 dark:border-slate-700 no-print">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-3">
-            <a href="demo-index.html" className="w-9 h-9 rounded-lg bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center" title="포털로">
+            <a href="index.html" className="w-9 h-9 rounded-lg bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center" title="포털로">
               <Icon path="M3 21h18M5 21V7l7-4 7 4v14" className="w-5 h-5 text-white" />
             </a>
             <div>
@@ -560,11 +560,11 @@ function App(){
             {busy && <span className="text-xs text-blue-600">저장 중…</span>}
             {notice && <span className="text-xs text-emerald-600 bg-emerald-50 dark:bg-emerald-950 px-3 py-1.5 rounded-md">{notice}</span>}
             <ThemeToggle />
-            <a href="demo-index.html" className="text-xs font-bold px-3.5 py-2 rounded-lg bg-rose-600 text-white border border-rose-700 shadow-md hover:bg-rose-700 transition">CRESCOM 인사시스템</a>
+            <a href="index.html" className="text-xs font-bold px-3.5 py-2 rounded-lg bg-rose-600 text-white border border-rose-700 shadow-md hover:bg-rose-700 transition">DEMO 인사시스템</a>
             <a href="demo-eval.html" className="text-xs font-bold px-3.5 py-2 rounded-lg bg-indigo-600 text-white border border-indigo-700 shadow-md hover:bg-indigo-700 hover:shadow-lg active:translate-y-px transition">인사평가시스템</a>
             <a href="demo-payroll.html" className="text-xs font-bold px-3.5 py-2 rounded-lg bg-emerald-600 text-white border border-emerald-700 shadow-md hover:bg-emerald-700 hover:shadow-lg active:translate-y-px transition">급여자동화</a>
             <span className="text-sm text-slate-500 dark:text-slate-400 hidden sm:inline">{session.user.email}</span>
-            <button onClick={()=>sb.auth.signOut().then(()=>window.location.href='demo-index.html')} className="text-sm text-slate-600 dark:text-slate-300 hover:text-slate-900 px-3 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">로그아웃</button>
+            <button onClick={()=>sb.auth.signOut().then(()=>window.location.href='index.html')} className="text-sm text-slate-600 dark:text-slate-300 hover:text-slate-900 px-3 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700">로그아웃</button>
           </div>
         </div>
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 flex gap-2 pt-1 pb-3">
@@ -1287,7 +1287,7 @@ function OrgTab({ emps, groups, assigns, orders, canEdit, reload, setBusy, flash
       +'<div class="badge">Internal Use Only<br>[외부 반출 금지]</div></div>'
       +'<div class="chartwrap">'+svgHtml+'</div>'
       +'<div class="foot"><div class="summary">'+sumRows
-      +'<div class="srow grand"><span>CRESCOM</span><span>'+printSummary.grand+'명</span></div>'
+      +'<div class="srow grand"><span>DEMO</span><span>'+printSummary.grand+'명</span></div>'
       +'</div></div>'
       +'</div>'
       // 레이아웃이 완전히 끝난 다음 프레임에 인쇄 → 인쇄 대화상자에서 재배치가 반복되지 않게
@@ -1353,7 +1353,7 @@ function OrgTab({ emps, groups, assigns, orders, canEdit, reload, setBusy, flash
             {printSummary.rows.length>0 && <div className="flex justify-end mt-4" style={{ width:(layout.W*zoom)+'px' }}>
               <div className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg shadow-sm px-4 py-2.5 text-xs min-w-[180px]">
                 {printSummary.rows.map(function(r,i){ return <div key={i} className="flex items-center justify-between gap-6 py-0.5"><span className="text-slate-600 dark:text-slate-300">· {r.name}</span><span className="text-slate-800 dark:text-slate-100 font-medium tabular-nums">{r.n}명</span></div>; })}
-                <div className="flex items-center justify-between gap-6 mt-1.5 pt-1.5 border-t border-slate-200 dark:border-slate-600"><span className="font-bold text-slate-800 dark:text-slate-100">CRESCOM</span><span className="font-bold text-slate-900 dark:text-white tabular-nums">{printSummary.grand}명</span></div>
+                <div className="flex items-center justify-between gap-6 mt-1.5 pt-1.5 border-t border-slate-200 dark:border-slate-600"><span className="font-bold text-slate-800 dark:text-slate-100">DEMO</span><span className="font-bold text-slate-900 dark:text-white tabular-nums">{printSummary.grand}명</span></div>
               </div>
             </div>}
           </div>
@@ -1771,7 +1771,7 @@ function OrderDocModal({ orders, groups, emps, assigns, reload, setBusy, setErr,
   const [notice,setNotice]=useState('');
   const [hidePurpose,setHidePurpose]=useState(false);
   const [hideExpected,setHideExpected]=useState(false);
-  const [signer,setSigner]=useState('주식회사 크레스콤  대표이사');
+  const [signer,setSigner]=useState('주식회사 데모  대표이사');
   const [sel,setSel]=useState({});
   const DEFAULT_SEC_ORDER=['org','posduty','posscheme','title','hire','transfer','concurrent','resign','misc'];
   const ENUM=['가','나','다','라','마','바','사','아','자','차'];
@@ -1783,7 +1783,7 @@ function OrderDocModal({ orders, groups, emps, assigns, reload, setBusy, setErr,
   const chosen=sortedOrders.filter(o=>sel[o.id]);
   function toggle(id){ setSel(s=>Object.assign({},s,{[id]:!s[id]})); }
   function selAll(v){ const s={}; sortedOrders.forEach(o=>{ s[o.id]=v; }); setSel(s); }
-  const DDKEY='crescom_hr_doc_draft';
+  const DDKEY='demo_hr_doc_draft';
   const [ddraft,setDDraft]=useState(null);
   useEffect(function(){ var d=draftGet(DDKEY); if(d) setDDraft(d); },[]);
   function saveTemp(){ if(draftSet(DDKEY,{ orderDate, effDate, title, docNo, background, purpose, notice, hidePurpose, hideExpected, signer, sel, secOrder })) uiAlert('임시저장되었습니다.\n다음에 이 창을 열면 「불러오기」로 이어서 작성할 수 있습니다.'); else uiAlert('이 브라우저에서는 임시저장을 지원하지 않습니다.'); }
@@ -2415,7 +2415,7 @@ function OrderNewModal({ emps, groups, orders, assigns, reload, setBusy, flash, 
   const [newName,setNewName]=useState('');
   const [itemName,setItemName]=useState('');
   const [itemScope,setItemScope]=useState('');
-  const ODKEY='crescom_hr_order_draft';
+  const ODKEY='demo_hr_order_draft';
   const [odraft,setODraft]=useState(null);
   useEffect(function(){ var d=draftGet(ODKEY); if(d && (d.empId||d.reason||d.orgName||d.newName||d.scope||(d.type&&d.type!=='move'))) setODraft(d); },[]);
   function saveTemp(){ if(draftSet(ODKEY,{ empId, type, effDate, groupId, position, rank, assignId, reason, scope, beforePos, afterPos, orgName, orgSub, orgParent, orgTeam, orgStaff, orgSide, newName, itemName, itemScope })) uiAlert('임시저장되었습니다.\n다음에 이 창을 열면 「불러오기」로 이어서 작성할 수 있습니다.'); else uiAlert('이 브라우저에서는 임시저장을 지원하지 않습니다.'); }
@@ -2837,7 +2837,7 @@ function BatchOrderModal({ emps, groups, assigns, reload, setBusy, flash, setErr
   const issues=filled.map(function(r){ return { i:rows.indexOf(r)+1, r:r, msg:issueOf(r) }; }).filter(function(x){ return !!x.msg; });
   const ready=filled.filter(function(r){ return !issueOf(r); });
 
-  const DKEY='crescom_hr_batch_draft';
+  const DKEY='demo_hr_batch_draft';
   const [draft,setDraft]=useState(null);
   useEffect(function(){ var d=draftGet(DKEY); if(d && d.rows && d.rows.length) setDraft(d); },[]);
   function saveTemp(){ if(draftSet(DKEY,{ date, effDate, rows })) uiAlert('임시저장되었습니다.\n다음에 이 창을 열면 「불러오기」로 이어서 작성할 수 있습니다.'); else uiAlert('이 브라우저에서는 임시저장을 지원하지 않습니다.'); }
@@ -3331,7 +3331,7 @@ function addMonthsEnd(d, m){
 }
 
 // ── 월급여 → 임금 항목 분해 ──────────────────────────────────────────
-//  ⚠ 엑셀 「크레스콤 급여계산본」 임금대장과 1원 단위로 일치하도록 맞춘 식이다.
+//  ⚠ 엑셀 「데모 급여계산본」 임금대장과 1원 단위로 일치하도록 맞춘 식이다.
 //    GAS calcWageFromMonthly 는 최저시급을 (과세대상 ÷ 총시간) 으로 계산했는데
 //    엑셀은 (기본급 ÷ 기본근로시간) 이다. 엑셀을 정답으로 삼는다.
 //    · 통상시급 = (월급여 − 차량유지비 − 출산보육수당) ÷ (기본 + 연장×1.5 + 야간×0.5 + 휴일×1.5)

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" class="t-light">
 <head>
-<script>(function(){var p='system';try{p=localStorage.getItem('PB_THEME')||localStorage.getItem('crescom-theme')||'system';}catch(e){}
+<script>(function(){var p='system';try{p=localStorage.getItem('PB_THEME')||localStorage.getItem('demo-theme')||'system';}catch(e){}
 var sys=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
 var eff=(p==='system')?(sys?'dark':'light'):p;
 document.documentElement.className='t-'+eff;})();</script>
@@ -9,11 +9,11 @@ document.documentElement.className='t-'+eff;})();</script>
 <base target="_top">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>퇴직연금 관리 — CRESCOM</title>
+<title>퇴직연금 관리 — DEMO</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
 <script>window.__SEED__={"retire_config":[{"key":"rate","value":"8.33"}],"retire_enrollment":[{"id":1,"emp_no":"C-2101","name":"김도현","type":"DB","status":"가입","join_date":"2021-03-02","amount":24000000},{"id":2,"emp_no":"C-2102","name":"이서윤","type":"DC","status":"가입","join_date":"2021-03-02","amount":26400000},{"id":3,"emp_no":"C-2103","name":"박준호","type":"DB","status":"가입","join_date":"2021-03-02","amount":28800000},{"id":4,"emp_no":"C-2104","name":"최유진","type":"DC","status":"가입","join_date":"2021-03-02","amount":31200000},{"id":5,"emp_no":"C-2105","name":"정민석","type":"DB","status":"가입","join_date":"2021-03-02","amount":33600000},{"id":6,"emp_no":"C-2106","name":"한소희","type":"DC","status":"가입","join_date":"2021-03-02","amount":36000000},{"id":7,"emp_no":"C-2107","name":"오세훈","type":"DB","status":"가입","join_date":"2021-03-02","amount":38400000},{"id":8,"emp_no":"C-2108","name":"윤지아","type":"DC","status":"가입","join_date":"2021-03-02","amount":40800000},{"id":9,"emp_no":"C-2109","name":"장현우","type":"DB","status":"가입","join_date":"2021-03-02","amount":43200000},{"id":10,"emp_no":"C-2110","name":"임하늘","type":"DC","status":"가입","join_date":"2021-03-02","amount":45600000}],"retire_payment":[{"id":1,"emp_no":"C-2103","name":"박준호","amount":28400000,"pay_date":"2026-05-30","status":"지급완료"}],"retire_wage_items":[],"retire_officer_calc":[],"retire_target_v":[{"emp_no":"C-2101","name":"김도현","type":"DB","join_date":"2021-03-02","est_amount":24000000,"status":"재직"},{"emp_no":"C-2102","name":"이서윤","type":"DC","join_date":"2021-03-02","est_amount":26400000,"status":"재직"},{"emp_no":"C-2103","name":"박준호","type":"DB","join_date":"2021-03-02","est_amount":28800000,"status":"재직"},{"emp_no":"C-2104","name":"최유진","type":"DC","join_date":"2021-03-02","est_amount":31200000,"status":"재직"},{"emp_no":"C-2105","name":"정민석","type":"DB","join_date":"2021-03-02","est_amount":33600000,"status":"재직"},{"emp_no":"C-2106","name":"한소희","type":"DC","join_date":"2021-03-02","est_amount":36000000,"status":"재직"},{"emp_no":"C-2107","name":"오세훈","type":"DB","join_date":"2021-03-02","est_amount":38400000,"status":"재직"},{"emp_no":"C-2108","name":"윤지아","type":"DC","join_date":"2021-03-02","est_amount":40800000,"status":"재직"},{"emp_no":"C-2109","name":"장현우","type":"DB","join_date":"2021-03-02","est_amount":43200000,"status":"재직"},{"emp_no":"C-2110","name":"임하늘","type":"DC","join_date":"2021-03-02","est_amount":45600000,"status":"재직"}],"retire_status_v":[{"emp_no":"C-2101","name":"김도현","status":"가입","type":"DB","balance":12000000},{"emp_no":"C-2102","name":"이서윤","status":"가입","type":"DC","balance":13200000},{"emp_no":"C-2103","name":"박준호","status":"가입","type":"DB","balance":14400000},{"emp_no":"C-2104","name":"최유진","status":"가입","type":"DC","balance":15600000},{"emp_no":"C-2105","name":"정민석","status":"가입","type":"DB","balance":16800000},{"emp_no":"C-2106","name":"한소희","status":"가입","type":"DC","balance":18000000},{"emp_no":"C-2107","name":"오세훈","status":"가입","type":"DB","balance":19200000},{"emp_no":"C-2108","name":"윤지아","status":"가입","type":"DC","balance":20400000},{"emp_no":"C-2109","name":"장현우","status":"가입","type":"DB","balance":21600000},{"emp_no":"C-2110","name":"임하늘","status":"가입","type":"DC","balance":22800000}],"retire_settlement_v":[{"emp_no":"C-2103","name":"박준호","settle_amount":28400000,"status":"완료"}]};</script>
 <script>(function(){
- var EM='demo@crescom.ai';
+ var EM='demo@demo.sample';
  var SEED=window.__SEED__||{};
  function build(t){
    var filters=[],single=null,mode='select',payload=null;var b={};
@@ -296,7 +296,7 @@ a:hover{text-decoration:underline;}
   <select class="hsel" id="ysel" onchange="onYear()" title="귀속연도"></select>
   <span class="badge" id="hb">—</span>
   <span class="sp"></span>
-  <button class="gobtn crm" onclick="location.href='demo-index.html'">CRESCOM 인사시스템</button>
+  <button class="gobtn crm" onclick="location.href='index.html'">DEMO 인사시스템</button>
   <button class="gobtn pay" onclick="location.href='demo-payroll.html'">급여 자동화</button>
   <button class="gobtn ehr" onclick="location.href='demo-hr.html'">e-HR</button>
   <button class="gobtn ev"  onclick="location.href='demo-eval.html'">인사평가시스템</button>
@@ -527,7 +527,7 @@ a:hover{text-decoration:underline;}
 
 <script>
 /* ══════════════════════════════════════════════════════════
-   CRESCOM 퇴직연금 관리
+   DEMO 퇴직연금 관리
    DB : retire_* 테이블·함수·뷰 (retire_전체설치 SQL 로 생성)
    ══════════════════════════════════════════════════════════ */
 var BUILD='v2 · 2026-08-04';
@@ -577,13 +577,13 @@ function smp(v, key){
 
 /* ── 테마 ── */
 function setTh(t){
-  try{ localStorage.setItem('PB_THEME',t); localStorage.setItem('crescom-theme',t); }catch(e){}
+  try{ localStorage.setItem('PB_THEME',t); localStorage.setItem('demo-theme',t); }catch(e){}
   var sys=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
   document.documentElement.className='t-'+(t==='system'?(sys?'dark':'light'):t);
   document.querySelectorAll('.thbtn').forEach(function(b){
     b.classList.toggle('on', b.getAttribute('data-th')===t); });
 }
-function initTh(){ var t='system'; try{ t=localStorage.getItem('PB_THEME')||localStorage.getItem('crescom-theme')||'system'; }catch(e){} setTh(t); }
+function initTh(){ var t='system'; try{ t=localStorage.getItem('PB_THEME')||localStorage.getItem('demo-theme')||'system'; }catch(e){} setTh(t); }
 if(window.matchMedia) try{
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){
     var t='system'; try{ t=localStorage.getItem('PB_THEME')||'system'; }catch(e){}
@@ -591,8 +591,8 @@ if(window.matchMedia) try{
 }catch(e){}
 
 function doLogout(){
-  SB.auth.signOut().then(function(){ location.href='demo-index.html'; })
-    .catch(function(){ location.href='demo-index.html'; });
+  SB.auth.signOut().then(function(){ location.href='index.html'; })
+    .catch(function(){ location.href='index.html'; });
 }
 
 /* ── 접근 차단 화면 ── */
@@ -611,7 +611,7 @@ async function boot(){
   $('fver').textContent='RETIREMENT · '+BUILD;
   try{
     var sess=await SB.auth.getSession();
-    if(!sess.data.session){ location.href='demo-index.html'; return; }
+    if(!sess.data.session){ location.href='index.html'; return; }
     G.email=sess.data.session.user.email;
     var rr=await SB.from('user_roles').select('role').eq('email',G.email).eq('app','payroll');
     var roles=rr.data||[];
@@ -1158,7 +1158,7 @@ async function dlStatus(){ var wb=new ExcelJS.Workbook();
   await saveWb(wb,'퇴직연금_납입현황_'+G.year+'.xlsx'); }
 async function dlAll(){
   var wb=new ExcelJS.Workbook();
-  wb.creator='CRESCOM 퇴직연금 관리';
+  wb.creator='DEMO 퇴직연금 관리';
   sheetFrom(wb,'대상 판정',T_COLS(),G.target.map(function(t){
     return Object.assign({},t,{join_date:ymd(t.join_date),last_work_day:ymd(t.last_work_day)}); }));
   sheetFrom(wb,'임금총액·추계',W_COLS(),G.wage.map(function(w){
