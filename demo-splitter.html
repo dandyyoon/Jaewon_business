@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CRESCOM 이체확인증 분리 도구</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+:root{
+  --paper:#faf8f3; --ink:#1c2230; --ink-soft:#5c6680; --ink-faint:#9aa3b5;
+  --line:#e2ddd2; --line-strong:#c9c2b2;
+  --seal:#b5402f; --seal-deep:#8f3022;
+  --ok:#2f7d5b; --ok-bg:#e6f3ec; --err:#b5402f; --err-bg:#fbecea;
+  --band:#2b3347;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Pretendard Variable',Pretendard,-apple-system,system-ui,sans-serif;
+  background:var(--paper);
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(181,64,47,.025) 27px,rgba(181,64,47,.025) 28px);
+  color:var(--ink); line-height:1.5; min-height:100vh; padding:32px 20px 80px;
+}
+.wrap{max-width:760px;margin:0 auto;}
+
+/* 헤더 — 도장 모티프 */
+.masthead{display:flex;align-items:flex-start;gap:18px;margin-bottom:8px;}
+.seal{
+  width:62px;height:62px;border-radius:8px;flex-shrink:0;
+  border:2.5px solid var(--seal);color:var(--seal);
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  font-weight:800;font-size:12px;letter-spacing:1px;line-height:1.15;
+  transform:rotate(-4deg);position:relative;
+  background:rgba(181,64,47,.04);
+}
+.seal::after{content:'';position:absolute;inset:3px;border:1px solid var(--seal);border-radius:5px;opacity:.4;}
+.title-block h1{font-size:23px;font-weight:800;letter-spacing:-.4px;}
+.title-block .sub{font-size:13px;color:var(--ink-soft);margin-top:3px;font-weight:500;}
+.rule{height:2px;background:var(--ink);margin:18px 0 4px;}
+.rule-thin{height:1px;background:var(--line-strong);margin-bottom:26px;}
+
+/* 단계 안내 */
+.steps{display:flex;gap:0;margin-bottom:24px;border:1px solid var(--line-strong);border-radius:10px;overflow:hidden;background:#fff;}
+.step{flex:1;padding:13px 14px;border-right:1px solid var(--line);font-size:12.5px;color:var(--ink-soft);}
+.step:last-child{border-right:none;}
+.step b{display:block;color:var(--ink);font-size:13px;font-weight:700;margin-bottom:2px;}
+.step .n{color:var(--seal);font-weight:800;margin-right:5px;}
+
+/* 드롭존 */
+.drop{
+  border:2px dashed var(--line-strong);border-radius:14px;background:#fff;
+  padding:46px 28px;text-align:center;cursor:pointer;transition:.18s;
+}
+.drop:hover,.drop.over{border-color:var(--seal);background:#fffdfa;}
+.drop.has{border-style:solid;border-color:var(--ok);background:var(--ok-bg);}
+.drop .icon{font-size:34px;margin-bottom:12px;}
+.drop .big{font-size:16px;font-weight:700;margin-bottom:5px;}
+.drop .small{font-size:13px;color:var(--ink-soft);}
+.drop input{display:none;}
+
+/* 진행 */
+.panel{margin-top:24px;}
+.bar-wrap{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin:14px 0 8px;display:none;}
+.bar{height:100%;width:0;background:var(--seal);transition:width .2s;}
+.status{font-size:13px;color:var(--ink-soft);min-height:20px;}
+.status.ok{color:var(--ok);font-weight:600;}
+.status.err{color:var(--err);font-weight:600;}
+
+/* 결과 목록 */
+.results{margin-top:22px;display:none;}
+.results h2{font-size:14px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.results h2 .cnt{background:var(--band);color:#fff;font-size:12px;padding:2px 10px;border-radius:20px;font-weight:700;}
+.namelist{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:20px;}
+.chip{font-size:12.5px;padding:5px 12px;border:1px solid var(--line-strong);border-radius:7px;background:#fff;color:var(--ink);font-weight:600;}
+.chip .y{color:var(--ink-faint);font-weight:500;margin-right:6px;}
+
+.dl{
+  display:inline-flex;align-items:center;gap:9px;
+  background:var(--seal);color:#fff;border:none;border-radius:10px;
+  padding:15px 26px;font-size:15px;font-weight:700;cursor:pointer;
+  font-family:inherit;transition:.15s;box-shadow:0 4px 16px rgba(181,64,47,.28);
+}
+.dl:hover{background:var(--seal-deep);}
+.dl:disabled{opacity:.45;cursor:default;box-shadow:none;}
+.dl .fn{font-size:12px;font-weight:500;opacity:.85;}
+
+.note{margin-top:28px;padding:16px 18px;background:#fff;border:1px solid var(--line);border-radius:10px;font-size:12.5px;color:var(--ink-soft);line-height:1.7;}
+.note b{color:var(--ink);}
+.foot{margin-top:30px;text-align:center;font-size:11.5px;color:var(--ink-faint);}
+
+canvas{display:none;}
+@media(max-width:600px){.steps{flex-direction:column;}.step{border-right:none;border-bottom:1px solid var(--line);}.step:last-child{border-bottom:none;}}
+</style>
+<script>window.__SEED__={};</script>
+<script>(function(){
+ var EM='demo@crescom.ai';
+ var SEED=window.__SEED__||{};
+ function build(t){
+   var filters=[],single=null,mode='select',payload=null;var b={};
+   ['select','order','limit','range','csv','abortSignal','returns','throwOnError'].forEach(function(m){b[m]=function(){return b;};});
+   ['neq','in','gt','gte','lt','lte','is','not','like','ilike','or','filter','contains','containedBy','overlaps','match','textSearch','rangeGt','rangeLt'].forEach(function(m){b[m]=function(){return b;};});
+   b.eq=function(k,v){filters.push([k,v]);return b;};
+   b.insert=function(p){mode='insert';payload=p;return b;};
+   b.update=function(p){mode='update';payload=p;return b;};
+   b.upsert=function(p){mode='upsert';payload=p;return b;};
+   b.delete=function(){mode='delete';return b;};
+   b.single=function(){single='one';return b;};
+   b.maybeSingle=function(){single='maybe';return b;};
+   function resolve(){
+     if(t==='user_roles'){var apps=['*','ehr','hr','payroll','eval','retire','finance','index','splitter'];return {data:apps.map(function(a){return {role:'SUPER',email:EM,app:a};}),error:null};}
+     if(mode!=='select'){var d=Array.isArray(payload)?payload:[payload];return {data:d,error:null};}
+     var rows=(SEED[t]||[]).slice();
+     filters.forEach(function(f){var k=f[0],v=f[1];rows=rows.filter(function(r){return r[k]==null?true:String(r[k])===String(v);});});
+     if(single==='one')return {data:rows[0]||null,error:rows[0]?null:{message:'0 rows',code:'PGRST116'}};
+     if(single==='maybe')return {data:rows[0]||null,error:null};
+     return {data:rows,error:null};
+   }
+   b.then=function(res,rej){var r;try{r=resolve();}catch(e){r={data:null,error:{message:String(e)}};}return Promise.resolve(r).then(res,rej);};
+   return b;
+ }
+ var USER={id:'demo-uid',email:EM,user_metadata:{name:'데모 관리자'}};
+ var SESSION={access_token:'demo',token_type:'bearer',user:USER};
+ var auth={
+   getSession:function(){return Promise.resolve({data:{session:SESSION},error:null});},
+   getUser:function(){return Promise.resolve({data:{user:USER},error:null});},
+   onAuthStateChange:function(cb){setTimeout(function(){try{cb('SIGNED_IN',SESSION);}catch(e){}},0);return {data:{subscription:{unsubscribe:function(){}}}};},
+   signInWithPassword:function(){return Promise.resolve({data:{session:SESSION,user:USER},error:null});},
+   signInWithOtp:function(){return Promise.resolve({data:{},error:null});},
+   signUp:function(){return Promise.resolve({data:{session:SESSION,user:USER},error:null});},
+   signOut:function(){return Promise.resolve({error:null});},
+   setSession:function(){return Promise.resolve({data:{session:SESSION},error:null});},
+   refreshSession:function(){return Promise.resolve({data:{session:SESSION},error:null});},
+   resetPasswordForEmail:function(){return Promise.resolve({data:{},error:null});},
+ };
+ var client={
+   from:function(t){return build(t);},
+   rpc:function(n){return Promise.resolve({data:(SEED['rpc:'+n]||[]),error:null});},
+   auth:auth,
+   channel:function(){var ch={on:function(){return ch;},subscribe:function(cb){if(cb)setTimeout(function(){cb('SUBSCRIBED');},0);return ch;},unsubscribe:function(){return Promise.resolve('ok');}};return ch;},
+   removeChannel:function(){return Promise.resolve('ok');},removeAllChannels:function(){return Promise.resolve('ok');},
+   getChannels:function(){return [];},
+   storage:{from:function(){return {upload:function(){return Promise.resolve({data:{path:'demo'},error:null});},download:function(){return Promise.resolve({data:new Blob(),error:null});},getPublicUrl:function(){return {data:{publicUrl:'#'}};},createSignedUrl:function(){return Promise.resolve({data:{signedUrl:'#'},error:null});},list:function(){return Promise.resolve({data:[],error:null});},remove:function(){return Promise.resolve({data:[],error:null});}};}},
+   functions:{invoke:function(){return Promise.resolve({data:{},error:null});}},
+ };
+ window.supabase={createClient:function(){return client;}};
+})();</script>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <div class="seal">이체<br>확인</div>
+    <div class="title-block">
+      <h1>이체확인증 분리 도구</h1>
+      <div class="sub">은행에서 받은 급여이체 확인증 PDF를 직원별 개별 파일로 나눕니다.</div>
+    </div>
+  </div>
+  <div class="rule"></div>
+  <div class="rule-thin"></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px">
+    <a href="demo-payroll.html" style="text-decoration:none;font-size:12px;font-weight:700;padding:6px 12px;
+      border-radius:8px;background:#4d9fff;color:#fff">← 급여 자동화로 돌아가기</a>
+    <a href="demo-index.html" style="text-decoration:none;font-size:12px;font-weight:700;padding:6px 12px;
+      border-radius:8px;background:#e5e9f0;color:#334">CRESCOM 인사시스템</a>
+  </div>
+
+  <div class="steps">
+    <div class="step"><b><span class="n">1</span>올리기</b>은행 이체확인증 PDF를 끌어다 놓습니다</div>
+    <div class="step"><b><span class="n">2</span>나누기</b>받는분 이름으로 1인 1파일 자동 분리</div>
+    <div class="step"><b><span class="n">3</span>받기</b>ZIP으로 한 번에 내려받아 폴더에 올립니다</div>
+  </div>
+
+  <label class="drop" id="drop">
+    <div class="icon">📄</div>
+    <div class="big" id="dropBig">PDF를 끌어다 놓거나 클릭해서 선택</div>
+    <div class="small" id="dropSmall">은행 급여이체 확인증 (여러 명이 한 파일에 묶인 PDF)</div>
+    <input type="file" id="file" accept="application/pdf">
+  </label>
+
+  <div class="panel">
+    <div class="bar-wrap" id="barWrap"><div class="bar" id="bar"></div></div>
+    <div class="status" id="status"></div>
+  </div>
+
+  <div class="results" id="results">
+    <h2>분리 완료 <span class="cnt" id="cnt">0명</span></h2>
+    <div class="namelist" id="namelist"></div>
+    <button class="dl" id="dlBtn" disabled>
+      <span>⬇ ZIP으로 모두 내려받기</span>
+      <span class="fn" id="zipName"></span>
+    </button>
+  </div>
+
+  <div class="note">
+    <b>사용 안내.</b> 이 도구는 PDF를 브라우저 안에서만 처리하며, 어떤 정보도 외부로 전송하지 않습니다.
+    분리된 파일명은 <b>「YY.MM 이체확인증_이름.pdf」</b> 형식이며, 받는분 이름과 입금일시는 PDF에서 자동으로 읽습니다.
+    내려받은 ZIP을 풀어 드라이브의 해당 월 <b>이체확인증 폴더</b>에 올리면 됩니다.
+  </div>
+
+  <div class="foot">CRESCOM 경영지원 · 이체확인증 분리 도구</div>
+</div>
+
+<canvas id="cv"></canvas>
+
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+const { jsPDF } = window.jspdf;
+
+const drop=document.getElementById('drop');
+const fileInput=document.getElementById('file');
+const statusEl=document.getElementById('status');
+const barWrap=document.getElementById('barWrap');
+const bar=document.getElementById('bar');
+const results=document.getElementById('results');
+const namelist=document.getElementById('namelist');
+const cntEl=document.getElementById('cnt');
+const dlBtn=document.getElementById('dlBtn');
+const zipName=document.getElementById('zipName');
+const dropBig=document.getElementById('dropBig');
+const dropSmall=document.getElementById('dropSmall');
+
+let zipBlob=null, zipFileName='';
+
+function setStatus(msg,type){ statusEl.textContent=msg; statusEl.className='status'+(type?' '+type:''); }
+function setBar(p){ barWrap.style.display='block'; bar.style.width=Math.round(p*100)+'%'; }
+
+['dragover','dragenter'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('over');}));
+['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('over');}));
+drop.addEventListener('drop',e=>{ const f=e.dataTransfer.files[0]; if(f) handleFile(f); });
+fileInput.addEventListener('change',e=>{ const f=e.target.files[0]; if(f) handleFile(f); });
+
+// 한 확인증 블록의 세로 범위(72pt 기준, 페이지 위에서부터)
+// 제목 top: 53.7 / 266.1 / 478.5, 표 bottom: 216.7 / 429.1 / 641.4
+// 블록 = 제목 위 16pt ~ 표 아래 40pt(로고·주의문구·절취선 포함)
+const BANDS=[ {t0:38, t1:257}, {t0:250, t1:469}, {t0:462, t1:681} ];
+
+async function handleFile(file){
+  if(file.type!=='application/pdf' && !file.name.toLowerCase().endsWith('.pdf')){
+    setStatus('PDF 파일만 올릴 수 있습니다.','err'); return;
+  }
+  drop.classList.add('has');
+  dropBig.textContent='✓ '+file.name;
+  dropSmall.textContent='('+(file.size/1024/1024).toFixed(1)+' MB)';
+  results.style.display='none'; dlBtn.disabled=true; zipBlob=null;
+  namelist.innerHTML='';
+  setStatus('PDF 읽는 중...'); setBar(0.02);
+
+  try{
+    const buf=await file.arrayBuffer();
+    const data=new Uint8Array(buf);
+    const doc=await pdfjsLib.getDocument({data}).promise;
+    const nPages=doc.numPages;
+
+    const items=[]; // {name, ym, pageIndex, bandIndex}
+    let detectedYM='';
+
+    // 1차: 각 페이지에서 받는분 이름 + 입금일시(년월) 추출
+    for(let pi=1; pi<=nPages; pi++){
+      const page=await doc.getPage(pi);
+      const vp=page.getViewport({scale:1.0}); // 72dpi 기준
+      const pageH=vp.height;
+      const tc=await page.getTextContent();
+
+      // 텍스트 조각: {str, x, yTop}
+      const toks=tc.items.map(it=>{
+        const tx=it.transform; // [a,b,c,d,e,f] e=x, f=y(아래기준)
+        const x=tx[4];
+        const yTop=pageH - tx[5]; // 위에서부터 좌표로 변환
+        return {str:(it.str||'').trim(), x, yTop};
+      }).filter(t=>t.str.length>0);
+
+      // 년월: "2026-05-27" 형태에서 추출 (최초 1회)
+      if(!detectedYM){
+        for(const t of toks){
+          const m=t.str.match(/(20\d{2})-(\d{2})-\d{2}/);
+          if(m){ detectedYM=m[1].slice(2)+'.'+m[2]; break; }
+        }
+      }
+
+      // 각 밴드(확인증 슬롯)에서 "받는분" 다음 이름 찾기
+      BANDS.forEach((b,bi)=>{
+        // 받는분 라벨: x약 343, 해당 밴드 범위 내
+        const label=toks.find(t=>t.str==='받는분' && t.x>338 && t.x<348 && t.yTop>=b.t0 && t.yTop<=b.t1);
+        if(!label) return;
+        // 같은 줄(yTop 비슷) + 더 오른쪽(x>400) = 이름
+        const name=toks.find(t=>Math.abs(t.yTop-label.yTop)<4 && t.x>400 && t.str!=='받는분');
+        if(name && name.str){
+          items.push({name:name.str, pageIndex:pi, bandIndex:bi});
+        }
+      });
+    }
+
+    if(!items.length){ setStatus('확인증을 찾지 못했습니다. 은행 이체확인증 PDF가 맞는지 확인해 주세요.','err'); return; }
+    const ym = detectedYM || '';
+
+    setStatus(items.length+'명 확인. 개별 PDF 생성 중...');
+
+    // 2차: 각 페이지를 고해상도로 렌더 → 밴드별로 크롭 → 개별 PDF
+    const zip=new JSZip();
+    const RENDER_SCALE=2.5; // 고해상도
+    const cv=document.getElementById('cv');
+    const ctx=cv.getContext('2d');
+    const usedNames={};
+    const chips=[];
+
+    // 페이지별로 한 번만 렌더링하도록 그룹화
+    const byPage={};
+    items.forEach(it=>{ (byPage[it.pageIndex]=byPage[it.pageIndex]||[]).push(it); });
+
+    let done=0;
+    const pageNums=Object.keys(byPage).map(Number).sort((a,b)=>a-b);
+    for(const pi of pageNums){
+      const page=await doc.getPage(pi);
+      const vp=page.getViewport({scale:RENDER_SCALE});
+      cv.width=Math.ceil(vp.width); cv.height=Math.ceil(vp.height);
+      await page.render({canvasContext:ctx, viewport:vp}).promise;
+
+      for(const it of byPage[pi]){
+        const b=BANDS[it.bandIndex];
+        const y0=Math.round(b.t0*RENDER_SCALE);
+        const y1=Math.round(b.t1*RENDER_SCALE);
+        const h=y1-y0;
+        const w=cv.width;
+
+        // 밴드 영역만 잘라 새 캔버스 (전체 가로폭 유지)
+        const slice=document.createElement('canvas');
+        slice.width=w; slice.height=h;
+        const sctx=slice.getContext('2d');
+        sctx.fillStyle='#ffffff'; sctx.fillRect(0,0,w,h);
+        sctx.drawImage(cv, 0,y0,w,h, 0,0,w,h);
+        const imgData=slice.toDataURL('image/jpeg',0.92);
+
+        // 개별 PDF: A4 세로(595×842pt) 한 장에 확인증을 가로 전체폭으로 상단 배치
+        // → jsPDF 방향 자동보정 문제 없음, 5월 폴더 형식과 동일
+        const A4W=595.28, A4H=841.89;
+        const pdf=new jsPDF({orientation:'portrait', unit:'pt', format:'a4'});
+        const imgW=A4W;                 // 가로 전체폭에 맞춤
+        const imgH=A4W * (h/w);         // 원본 비율 유지
+        pdf.addImage(imgData,'JPEG', 0, 40, imgW, imgH, undefined,'FAST'); // 상단 40pt 여백
+        const blob=pdf.output('blob');
+
+        // 파일명: YY.MM 이체확인증_이름.pdf  (중복 이름 방지)
+        let base=(ym?ym+' ':'')+'이체확인증_'+it.name;
+        let fname=base+'.pdf';
+        if(usedNames[fname]){ usedNames[fname]++; fname=base+'('+usedNames[fname]+').pdf'; }
+        else usedNames[fname]=1;
+
+        zip.file(fname, blob);
+        chips.push({name:it.name, ym});
+        done++;
+        setBar(0.1+0.85*(done/items.length));
+        setStatus(done+'/'+items.length+'명 처리 중... ('+it.name+')');
+      }
+    }
+
+    // 이름 칩 표시
+    namelist.innerHTML='';
+    chips.forEach(c=>{
+      const d=document.createElement('div'); d.className='chip';
+      d.innerHTML=(c.ym?'<span class="y">'+c.ym+'</span>':'')+c.name;
+      namelist.appendChild(d);
+    });
+    cntEl.textContent=items.length+'명';
+
+    setStatus('ZIP 압축 중...');
+    zipBlob=await zip.generateAsync({type:'blob'});
+    zipFileName=(ym?ym+' ':'')+'이체확인증_'+items.length+'명.zip';
+    zipName.textContent=zipFileName;
+
+    results.style.display='block';
+    dlBtn.disabled=false;
+    setBar(1);
+    setStatus('완료 — '+items.length+'명 분리됨. 아래 버튼으로 내려받으세요.','ok');
+
+  }catch(err){
+    console.error(err);
+    setStatus('처리 중 오류: '+(err.message||err),'err');
+  }
+}
+
+dlBtn.addEventListener('click',()=>{
+  if(!zipBlob) return;
+  const url=URL.createObjectURL(zipBlob);
+  const a=document.createElement('a');
+  a.href=url; a.download=zipFileName;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),2000);
+});
+</script>
+</body>
+</html>

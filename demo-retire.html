@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="ko" class="t-light">
+<head>
+<script>(function(){var p='system';try{p=localStorage.getItem('PB_THEME')||localStorage.getItem('crescom-theme')||'system';}catch(e){}
+var sys=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
+var eff=(p==='system')?(sys?'dark':'light'):p;
+document.documentElement.className='t-'+eff;})();</script>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css" />
+<base target="_top">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>퇴직연금 관리 — CRESCOM</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<script>window.__SEED__={"retire_config":[{"key":"rate","value":"8.33"}],"retire_enrollment":[{"id":1,"emp_no":"C-2101","name":"김도현","type":"DB","status":"가입","join_date":"2021-03-02","amount":24000000},{"id":2,"emp_no":"C-2102","name":"이서윤","type":"DC","status":"가입","join_date":"2021-03-02","amount":26400000},{"id":3,"emp_no":"C-2103","name":"박준호","type":"DB","status":"가입","join_date":"2021-03-02","amount":28800000},{"id":4,"emp_no":"C-2104","name":"최유진","type":"DC","status":"가입","join_date":"2021-03-02","amount":31200000},{"id":5,"emp_no":"C-2105","name":"정민석","type":"DB","status":"가입","join_date":"2021-03-02","amount":33600000},{"id":6,"emp_no":"C-2106","name":"한소희","type":"DC","status":"가입","join_date":"2021-03-02","amount":36000000},{"id":7,"emp_no":"C-2107","name":"오세훈","type":"DB","status":"가입","join_date":"2021-03-02","amount":38400000},{"id":8,"emp_no":"C-2108","name":"윤지아","type":"DC","status":"가입","join_date":"2021-03-02","amount":40800000},{"id":9,"emp_no":"C-2109","name":"장현우","type":"DB","status":"가입","join_date":"2021-03-02","amount":43200000},{"id":10,"emp_no":"C-2110","name":"임하늘","type":"DC","status":"가입","join_date":"2021-03-02","amount":45600000}],"retire_payment":[{"id":1,"emp_no":"C-2103","name":"박준호","amount":28400000,"pay_date":"2026-05-30","status":"지급완료"}],"retire_wage_items":[],"retire_officer_calc":[],"retire_target_v":[{"emp_no":"C-2101","name":"김도현","type":"DB","join_date":"2021-03-02","est_amount":24000000,"status":"재직"},{"emp_no":"C-2102","name":"이서윤","type":"DC","join_date":"2021-03-02","est_amount":26400000,"status":"재직"},{"emp_no":"C-2103","name":"박준호","type":"DB","join_date":"2021-03-02","est_amount":28800000,"status":"재직"},{"emp_no":"C-2104","name":"최유진","type":"DC","join_date":"2021-03-02","est_amount":31200000,"status":"재직"},{"emp_no":"C-2105","name":"정민석","type":"DB","join_date":"2021-03-02","est_amount":33600000,"status":"재직"},{"emp_no":"C-2106","name":"한소희","type":"DC","join_date":"2021-03-02","est_amount":36000000,"status":"재직"},{"emp_no":"C-2107","name":"오세훈","type":"DB","join_date":"2021-03-02","est_amount":38400000,"status":"재직"},{"emp_no":"C-2108","name":"윤지아","type":"DC","join_date":"2021-03-02","est_amount":40800000,"status":"재직"},{"emp_no":"C-2109","name":"장현우","type":"DB","join_date":"2021-03-02","est_amount":43200000,"status":"재직"},{"emp_no":"C-2110","name":"임하늘","type":"DC","join_date":"2021-03-02","est_amount":45600000,"status":"재직"}],"retire_status_v":[{"emp_no":"C-2101","name":"김도현","status":"가입","type":"DB","balance":12000000},{"emp_no":"C-2102","name":"이서윤","status":"가입","type":"DC","balance":13200000},{"emp_no":"C-2103","name":"박준호","status":"가입","type":"DB","balance":14400000},{"emp_no":"C-2104","name":"최유진","status":"가입","type":"DC","balance":15600000},{"emp_no":"C-2105","name":"정민석","status":"가입","type":"DB","balance":16800000},{"emp_no":"C-2106","name":"한소희","status":"가입","type":"DC","balance":18000000},{"emp_no":"C-2107","name":"오세훈","status":"가입","type":"DB","balance":19200000},{"emp_no":"C-2108","name":"윤지아","status":"가입","type":"DC","balance":20400000},{"emp_no":"C-2109","name":"장현우","status":"가입","type":"DB","balance":21600000},{"emp_no":"C-2110","name":"임하늘","status":"가입","type":"DC","balance":22800000}],"retire_settlement_v":[{"emp_no":"C-2103","name":"박준호","settle_amount":28400000,"status":"완료"}]};</script>
+<script>(function(){
+ var EM='demo@crescom.ai';
+ var SEED=window.__SEED__||{};
+ function build(t){
+   var filters=[],single=null,mode='select',payload=null;var b={};
+   ['select','order','limit','range','csv','abortSignal','returns','throwOnError'].forEach(function(m){b[m]=function(){return b;};});
+   ['neq','in','gt','gte','lt','lte','is','not','like','ilike','or','filter','contains','containedBy','overlaps','match','textSearch','rangeGt','rangeLt'].forEach(function(m){b[m]=function(){return b;};});
+   b.eq=function(k,v){filters.push([k,v]);return b;};
+   b.insert=function(p){mode='insert';payload=p;return b;};
+   b.update=function(p){mode='update';payload=p;return b;};
+   b.upsert=function(p){mode='upsert';payload=p;return b;};
+   b.delete=function(){mode='delete';return b;};
+   b.single=function(){single='one';return b;};
+   b.maybeSingle=function(){single='maybe';return b;};
+   function resolve(){
+     if(t==='user_roles'){var apps=['*','ehr','hr','payroll','eval','retire','finance','index','splitter'];return {data:apps.map(function(a){return {role:'SUPER',email:EM,app:a};}),error:null};}
+     if(mode!=='select'){var d=Array.isArray(payload)?payload:[payload];return {data:d,error:null};}
+     var rows=(SEED[t]||[]).slice();
+     filters.forEach(function(f){var k=f[0],v=f[1];rows=rows.filter(function(r){return r[k]==null?true:String(r[k])===String(v);});});
+     if(single==='one')return {data:rows[0]||null,error:rows[0]?null:{message:'0 rows',code:'PGRST116'}};
+     if(single==='maybe')return {data:rows[0]||null,error:null};
+     return {data:rows,error:null};
+   }
+   b.then=function(res,rej){var r;try{r=resolve();}catch(e){r={data:null,error:{message:String(e)}};}return Promise.resolve(r).then(res,rej);};
+   return b;
+ }
+ var USER={id:'demo-uid',email:EM,user_metadata:{name:'데모 관리자'}};
+ var SESSION={access_token:'demo',token_type:'bearer',user:USER};
+ var auth={
+   getSession:function(){return Promise.resolve({data:{session:SESSION},error:null});},
+   getUser:function(){return Promise.resolve({data:{user:USER},error:null});},
+   onAuthStateChange:function(cb){setTimeout(function(){try{cb('SIGNED_IN',SESSION);}catch(e){}},0);return {data:{subscription:{unsubscribe:function(){}}}};},
+   signInWithPassword:function(){return Promise.resolve({data:{session:SESSION,user:USER},error:null});},
+   signInWithOtp:function(){return Promise.resolve({data:{},error:null});},
+   signUp:function(){return Promise.resolve({data:{session:SESSION,user:USER},error:null});},
+   signOut:function(){return Promise.resolve({error:null});},
+   setSession:function(){return Promise.resolve({data:{session:SESSION},error:null});},
+   refreshSession:function(){return Promise.resolve({data:{session:SESSION},error:null});},
+   resetPasswordForEmail:function(){return Promise.resolve({data:{},error:null});},
+ };
+ var client={
+   from:function(t){return build(t);},
+   rpc:function(n){return Promise.resolve({data:(SEED['rpc:'+n]||[]),error:null});},
+   auth:auth,
+   channel:function(){var ch={on:function(){return ch;},subscribe:function(cb){if(cb)setTimeout(function(){cb('SUBSCRIBED');},0);return ch;},unsubscribe:function(){return Promise.resolve('ok');}};return ch;},
+   removeChannel:function(){return Promise.resolve('ok');},removeAllChannels:function(){return Promise.resolve('ok');},
+   getChannels:function(){return [];},
+   storage:{from:function(){return {upload:function(){return Promise.resolve({data:{path:'demo'},error:null});},download:function(){return Promise.resolve({data:new Blob(),error:null});},getPublicUrl:function(){return {data:{publicUrl:'#'}};},createSignedUrl:function(){return Promise.resolve({data:{signedUrl:'#'},error:null});},list:function(){return Promise.resolve({data:[],error:null});},remove:function(){return Promise.resolve({data:[],error:null});}};}},
+   functions:{invoke:function(){return Promise.resolve({data:{},error:null});}},
+ };
+ window.supabase={createClient:function(){return client;}};
+})();</script>
+<style>
+:root{
+  --navy-900:#0f1c33; --navy-800:#16263f; --navy-700:#1f3556; --navy-600:#2b4670;
+  --accent:#4d9fff; --accent-d:#2f7fe0; --gas:#ef9f27;
+}
+html.t-light{--surface:#ffffff;--surface-2:#f4f6fb;--line:#dde3ee;
+  --ink:#1a2436;--ink-soft:#5a6680;--ink-faint:#67728a;--page:#eef1f7;--chipbg:#e7ecf5;
+  --rowalt:#fafbfe;--hoverbg:#e8f0ff;--shadow:rgba(15,28,51,.10);
+  --ok-tx:#0a7a58;--ok-bg:#e6f7f0;--warn-tx:#8a5606;--warn-bg:#fdf2e0;
+  --err-tx:#b3261e;--err-bg:#fdecec;--blue-tx:#1445a0;--blue-bg:#e8f0fd;}
+html.t-dark{--surface:#1b2942;--surface-2:#16233a;--line:#2c3d5c;
+  --ink:#e8eefb;--ink-soft:#a8b6d1;--ink-faint:#93a3c0;--page:#0f1c33;--chipbg:#22314e;
+  --rowalt:#1e2d47;--hoverbg:#2a3b5c;--shadow:rgba(0,0,0,.34);
+  --ok-tx:#5fe0ac;--ok-bg:#0c3b30;--warn-tx:#f7d094;--warn-bg:#3a2a10;
+  --err-tx:#fca5a5;--err-bg:#3a1d1d;--blue-tx:#a9d1ff;--blue-bg:#17304f;}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+/* 폰트는 인사평가시스템(eval.html)과 동일한 스택을 쓴다.
+   eval 은 -webkit-font-smoothing 을 쓰지 않으므로 여기서도 넣지 않는다 — 글자 굵기가 같아진다. */
+body{font-family:'Pretendard Variable',Pretendard,-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+  background:var(--page);color:var(--ink);font-size:13.5px;line-height:1.6;
+  padding-bottom:50px;}
+html.t-light body{background-image:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(77,159,255,.1),transparent);}
+.app{max-width:1400px;margin:0 auto;padding:0 20px;}
+
+/* ── 헤더 ── */
+.hdr{display:flex;align-items:center;gap:9px;padding:10px 16px;margin:0 -20px 12px;
+  background:linear-gradient(100deg,var(--navy-900),var(--navy-700));color:#eaf0fb;
+  border-bottom:3px solid var(--gas);flex-wrap:wrap;}
+.hdr-logo{width:32px;height:32px;border-radius:9px;background:#e11d48;color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;flex-shrink:0;}
+.hdr h1{font-size:16px;font-weight:800;letter-spacing:-.4px;white-space:nowrap;}
+.hdr .sub{font-size:10px;color:#9db2d4;font-weight:700;letter-spacing:.5px;}
+.hsel{height:29px;border-radius:8px;border:1px solid rgba(255,255,255,.24);
+  background:rgba(255,255,255,.14);color:#fff;font-size:12.5px;font-weight:700;padding:0 8px;
+  cursor:pointer;font-family:inherit;flex-shrink:0;}
+.hsel option{background:var(--navy-800);color:#fff;}
+.badge{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);
+  border-radius:8px;padding:4px 9px;font-size:11.5px;font-weight:800;white-space:nowrap;}
+.gobtn{height:29px;padding:0 11px;border-radius:8px;font-size:11.5px;font-weight:700;cursor:pointer;
+  border:1px solid transparent;white-space:nowrap;flex-shrink:0;transition:.15s;font-family:inherit;
+  box-shadow:0 2px 5px rgba(0,0,0,.22);}
+.gobtn:hover{transform:translateY(-2px);box-shadow:0 5px 12px rgba(0,0,0,.32);}
+.gobtn.crm{background:#e11d48;color:#fff;}
+.gobtn.pay{background:#0f766e;color:#fff;}
+.gobtn.ehr{background:#2b3a53;color:#dbe5f5;}
+.gobtn.ev{background:#6d4de6;color:#fff;}
+.gobtn.gs{background:#ef9f27;color:#412402;}
+
+/* ── 서브 내비 ── */
+.snav{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px;
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:6px;
+  box-shadow:0 2px 8px var(--shadow);}
+.snav button{flex:1;min-width:112px;height:36px;border-radius:9px;border:1px solid transparent;
+  background:transparent;color:var(--ink-soft);font-size:12.5px;font-weight:800;cursor:pointer;
+  font-family:inherit;transition:.14s;display:flex;align-items:center;justify-content:center;gap:5px;}
+.snav button:hover{background:var(--hoverbg);color:var(--ink);}
+.snav button.on{background:var(--accent);color:#fff;border-color:var(--accent-d);}
+.snav .sn{font-size:10.5px;opacity:.85;font-weight:900;}
+.pnl{display:none;} .pnl.on{display:block;}
+
+/* ── 카드 ── */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  padding:16px 18px;margin-bottom:14px;box-shadow:0 2px 8px var(--shadow);}
+.card-hd{display:flex;align-items:center;gap:9px;margin-bottom:12px;flex-wrap:wrap;}
+.card-hd h2{font-size:14.5px;font-weight:800;letter-spacing:-.3px;}
+.card-hd .cs{font-size:11.5px;color:var(--ink-faint);font-weight:700;}
+.sp{flex:1;}
+
+/* ── KPI ── */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(188px,1fr));gap:11px;margin-bottom:14px;}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:14px 16px;
+  box-shadow:0 2px 8px var(--shadow);border-left:4px solid var(--accent);}
+.kpi.k-ok{border-left-color:#10b981;} .kpi.k-warn{border-left-color:var(--gas);}
+.kpi.k-err{border-left-color:#ef4444;}
+.kpi .kl{font-size:11px;font-weight:800;color:var(--ink-faint);margin-bottom:4px;}
+.kpi .kv{font-size:21px;font-weight:900;letter-spacing:-.7px;font-variant-numeric:tabular-nums;}
+.kpi .kv small{font-size:12px;font-weight:800;color:var(--ink-soft);margin-left:2px;letter-spacing:0;}
+.kpi .kd{font-size:11px;color:var(--ink-soft);margin-top:3px;font-weight:600;}
+.kpi.k-err .kv{color:var(--err-tx);} .kpi.k-ok .kv{color:var(--ok-tx);}
+.kpi.k-warn .kv{color:var(--warn-tx);}
+
+/* ── 표 ── */
+.tw{border:1px solid var(--line);border-radius:12px;overflow:auto;max-height:560px;background:var(--surface);}
+table{width:100%;border-collapse:collapse;font-size:12.5px;}
+th{position:sticky;top:0;z-index:2;background:var(--surface-2);padding:8px 9px;
+  border-bottom:1.5px solid var(--line);text-align:center;font-weight:800;white-space:nowrap;
+  color:var(--ink-soft);font-size:11.5px;}
+td{padding:7px 9px;border-bottom:1px solid var(--line);white-space:nowrap;}
+tbody tr:nth-child(even){background:var(--rowalt);}
+tbody tr:hover{background:var(--hoverbg);}
+tbody tr:last-child td{border-bottom:none;}
+.num{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;}
+/* 모든 금액 입력칸도 자릿수가 흐트러지지 않게 */
+.fld input{font-variant-numeric:tabular-nums;}
+input.money{text-align:right;letter-spacing:.2px;}
+.ctr{text-align:center;}
+tr.sum{background:var(--chipbg)!important;font-weight:900;}
+tr.sum td{border-top:2px solid var(--line);}
+tr.dim td{color:var(--ink-faint);}
+
+/* ── 칩 ── */
+.chip{display:inline-block;font-size:10.5px;font-weight:800;padding:3px 7px;border-radius:6px;
+  white-space:nowrap;letter-spacing:-.2px;}
+.chip.keep{background:var(--ok-bg);color:var(--ok-tx);}
+.chip.new{background:var(--warn-bg);color:var(--warn-tx);}
+.chip.wait{background:var(--chipbg);color:var(--ink-soft);}
+.chip.out{background:var(--err-bg);color:var(--err-tx);}
+.chip.off{background:var(--blue-bg);color:var(--blue-tx);}
+.chip.exc{background:var(--chipbg);color:var(--ink-faint);}
+
+/* ── 알림 ── */
+.alerts{display:flex;flex-direction:column;gap:8px;}
+.al{display:flex;gap:10px;align-items:flex-start;padding:10px 13px;border-radius:11px;
+  border:1px solid var(--line);background:var(--surface-2);}
+.al.a-err{background:var(--err-bg);border-color:#ef4444;}
+.al.a-warn{background:var(--warn-bg);border-color:var(--gas);}
+.al.a-ok{background:var(--ok-bg);border-color:#10b981;}
+.al .ai{font-size:15px;line-height:1.4;flex-shrink:0;}
+.al .at{font-size:12.5px;font-weight:800;margin-bottom:2px;}
+.al.a-err .at{color:var(--err-tx);} .al.a-warn .at{color:var(--warn-tx);}
+.al.a-ok .at{color:var(--ok-tx);}
+.al .ad{font-size:11.5px;color:var(--ink-soft);line-height:1.65;font-weight:600;}
+.al .ad b{color:var(--ink);}
+
+/* ── 버튼 ── */
+.btn{height:32px;padding:0 13px;border-radius:9px;border:1px solid var(--line);cursor:pointer;
+  background:var(--surface-2);color:var(--ink);font-size:12.5px;font-weight:700;
+  font-family:inherit;transition:.15s;white-space:nowrap;}
+.btn:hover{border-color:var(--accent);transform:translateY(-1px);}
+.btn.p{background:var(--accent);color:#fff;border-color:var(--accent-d);}
+.btn.p:hover{background:var(--accent-d);}
+.btn.g{background:#0f766e;color:#fff;border-color:#0f766e;}
+.btn.d{color:var(--err-tx);border-color:#e07777;}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap;}
+
+/* ── 계산식 상자 ── */
+.fx{background:var(--surface-2);border:1px dashed var(--line);border-radius:10px;
+  padding:11px 14px;font-size:12.5px;line-height:1.8;margin-bottom:12px;}
+.fx code{background:var(--chipbg);border-radius:5px;padding:2px 6px;font-size:12px;
+  font-weight:800;font-family:'SF Mono',Menlo,Consolas,monospace;color:var(--blue-tx);}
+.fx .fl{font-size:11px;font-weight:900;color:var(--ink-faint);letter-spacing:.3px;margin-bottom:3px;}
+
+/* ── 입력 ── */
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:12px;}
+.fld{display:flex;flex-direction:column;gap:3px;}
+.fld label{font-size:11px;font-weight:800;color:var(--ink-faint);}
+.fld input,.fld select{height:33px;border:1.5px solid var(--line);border-radius:9px;padding:0 10px;
+  background:var(--surface);color:var(--ink);font-size:12.5px;font-weight:700;font-family:inherit;
+  outline:none;font-variant-numeric:tabular-nums;}
+.fld input:focus,.fld select:focus{border-color:var(--accent);}
+.fld input[readonly]{background:var(--surface-2);color:var(--ink-soft);}
+
+/* ── 결과 상자 ── */
+.res{background:var(--blue-bg);border:1.5px solid var(--accent);border-radius:12px;
+  padding:13px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.res .rl{font-size:12px;font-weight:800;color:var(--blue-tx);}
+.res .rv{font-size:22px;font-weight:900;letter-spacing:-.8px;font-variant-numeric:tabular-nums;
+  color:var(--blue-tx);}
+
+/* ── 하단 ── */
+.sysfoot{display:flex;align-items:center;gap:9px;flex-wrap:wrap;max-width:620px;
+  padding:10px 13px;border-radius:11px;background:var(--surface);border:1px solid var(--line);
+  box-shadow:0 2px 8px var(--shadow);margin:18px 0 8px;}
+.rolebadge{font-size:10.5px;font-weight:800;padding:4px 9px;border-radius:7px;white-space:nowrap;
+  background:var(--chipbg);color:var(--ink-soft);}
+.rolebadge.admin{background:#facc15;color:#3d2b00;}
+.hacct{font-size:12.5px;color:var(--ink);white-space:nowrap;font-weight:700;}
+.fbtn{height:29px;padding:0 11px;border-radius:8px;font-size:11.5px;font-weight:700;cursor:pointer;
+  white-space:nowrap;background:var(--surface-2);color:var(--ink);border:1px solid var(--line);
+  transition:.15s;font-family:inherit;}
+.fbtn:hover{border-color:var(--accent);}
+.fbtn.out{border-color:#e07777;}
+html.t-light .fbtn.out{color:#b91c1c;} html.t-dark .fbtn.out{color:#fca5a5;}
+.fver{font-size:10.5px;color:var(--ink-faint);white-space:nowrap;}
+.thseg{display:flex;background:var(--chipbg);border:1px solid var(--line);border-radius:8px;
+  padding:2px;gap:2px;flex-shrink:0;}
+.thbtn{width:26px;height:23px;border:none;background:transparent;color:var(--ink-faint);
+  font-size:12px;border-radius:6px;cursor:pointer;font-family:inherit;}
+.thbtn:hover{background:var(--surface);color:var(--ink);}
+.thbtn.on{background:var(--accent);color:#fff;}
+
+/* ── 흐름 ── */
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:9px;}
+.fstep{background:var(--surface-2);border:1px solid var(--line);border-radius:11px;padding:11px 12px;position:relative;}
+.fstep .fn{width:20px;height:20px;border-radius:50%;background:var(--accent);color:#fff;
+  font-size:10.5px;font-weight:900;display:flex;align-items:center;justify-content:center;margin-bottom:6px;}
+.fstep .ft{font-size:12.5px;font-weight:800;margin-bottom:2px;}
+.fstep .fd{font-size:11px;color:var(--ink-soft);line-height:1.55;font-weight:600;}
+.fstep.done{border-color:#10b981;} .fstep.done .fn{background:#10b981;color:#04291f;}
+.fstep .fb{position:absolute;top:10px;right:10px;font-size:9.5px;font-weight:900;
+  padding:2px 5px;border-radius:5px;background:var(--ok-bg);color:var(--ok-tx);}
+
+.note{font-size:11.5px;color:var(--ink-soft);line-height:1.75;font-weight:600;}
+.note b{color:var(--ink);}
+h3{font-size:13px;font-weight:800;margin:14px 0 7px;}
+h3:first-child{margin-top:0;}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media (max-width:900px){ .two{grid-template-columns:1fr;} }
+
+/* ── 로딩 · 토스트 ── */
+#load{position:fixed;inset:0;background:var(--page);display:flex;align-items:center;
+  justify-content:center;flex-direction:column;gap:12px;z-index:9999;}
+.spin{width:30px;height:30px;border:3px solid var(--line);border-top-color:var(--accent);
+  border-radius:50%;animation:sp .7s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg);}}
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--navy-700);color:#fff;padding:11px 20px;border-radius:11px;font-size:13px;
+  font-weight:600;z-index:9999;opacity:0;transition:.3s;pointer-events:none;
+  box-shadow:0 8px 28px rgba(0,0,0,.4);max-width:88vw;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+#deny{max-width:560px;margin:60px auto;text-align:center;background:var(--surface);
+  border:2px solid #ef4444;border-radius:14px;padding:28px 24px;box-shadow:0 4px 14px var(--shadow);}
+#deny .di{font-size:34px;margin-bottom:10px;}
+#deny .dh{font-size:17px;font-weight:800;color:var(--err-tx);margin-bottom:8px;}
+a{color:var(--accent);font-weight:600;text-decoration:none;}
+a:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<div id="load"><div class="spin"></div><div class="note">퇴직연금 자료를 불러오는 중…</div></div>
+
+<div class="app" id="app" style="display:none">
+
+<div class="hdr">
+  <div class="hdr-logo">C</div>
+  <div><h1>퇴직연금 관리</h1><div class="sub">RETIREMENT <span id="build">v1</span></div></div>
+  <select class="hsel" id="ysel" onchange="onYear()" title="귀속연도"></select>
+  <span class="badge" id="hb">—</span>
+  <span class="sp"></span>
+  <button class="gobtn crm" onclick="location.href='demo-index.html'">CRESCOM 인사시스템</button>
+  <button class="gobtn pay" onclick="location.href='demo-payroll.html'">급여 자동화</button>
+  <button class="gobtn ehr" onclick="location.href='demo-hr.html'">e-HR</button>
+  <button class="gobtn ev"  onclick="location.href='demo-eval.html'">인사평가시스템</button>
+</div>
+
+<div class="snav">
+  <button class="on" onclick="go(0,this)"><span class="sn">①</span>적립 현황</button>
+  <button onclick="go(1,this)"><span class="sn">②</span>대상 판정</button>
+  <button onclick="go(2,this)"><span class="sn">③</span>임금총액·추계</button>
+  <button onclick="go(3,this)"><span class="sn">④</span>납입 관리</button>
+  <button onclick="go(4,this)"><span class="sn">⑤</span>퇴사자 정산</button>
+  <button onclick="go(5,this)"><span class="sn">⑥</span>임원퇴직금</button>
+  <button onclick="go(6,this)"><span class="sn">⑦</span>설정·자료</button>
+</div>
+
+<!-- ══ ① 적립 현황 ══ -->
+<div class="pnl on" id="p0">
+  <div class="kpis" id="kpis"></div>
+  <div class="card">
+    <div class="card-hd"><h2>지금 챙겨야 할 것</h2><span class="sp"></span>
+      <button class="btn" onclick="reloadAll()">↻ 새로 불러오기</button></div>
+    <div class="alerts" id="alerts"></div>
+  </div>
+  <div class="card">
+    <div class="card-hd"><h2>12월 마감 흐름</h2><span class="cs">초록 = 시스템이 자동으로 하는 일</span></div>
+    <div class="flow" id="flow"></div>
+  </div>
+</div>
+
+<!-- ══ ② 대상 판정 ══ -->
+<div class="pnl" id="p1">
+  <div class="card">
+    <div class="card-hd"><h2>적립 대상 판정</h2><span class="cs">e-HR employees 원천 · 자동 판정</span>
+      <span class="sp"></span>
+      <button class="btn p" onclick="syncEhr()">⟳ e-HR 과 맞추기</button>
+      <button class="btn" onclick="dlTarget()">⤓ 엑셀</button></div>
+    <div class="fx">
+      <div class="fl">판정 규칙 (규약 제8조 · 제16조②)</div>
+      입사 후 <code>1년이 초과하는 시점이 속하는 해</code>의 12월에 첫 적립하고 그때 <code>전년도분을 소급</code>합니다.
+      계속근로 1년 미만 퇴사자는 급여 지급사유가 아니고 적립금이 사용자에게 귀속됩니다.
+    </div>
+    <div class="row" style="margin-bottom:10px" id="jfilter"></div>
+    <div class="tw"><table>
+      <thead><tr><th>사번</th><th>성명</th><th>유형</th><th>상태</th><th>입사일</th><th>퇴사일</th>
+        <th>근속</th><th>첫 적립</th><th>판정</th><th>비고</th></tr></thead>
+      <tbody id="t-judge"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ══ ③ 임금총액·추계 ══ -->
+<div class="pnl" id="p2">
+  <div class="card">
+    <div class="card-hd"><h2>임금총액 집계 · 추계액</h2><span class="cs" id="wg-src"></span>
+      <span class="sp"></span>
+      <button class="btn p" onclick="applyWages()">⤓ retire_annual 에 저장</button>
+      <button class="btn" onclick="dlWage()">⤓ 엑셀</button></div>
+    <div class="fx">
+      <div class="fl">산식 (규약 제12조①②)</div>
+      <code>임금총액 = 지급합계 − 제외항목</code> → <code>추계액 = 임금총액 ÷ 12</code> → <code>10원 올림</code><br>
+      「지급합계」가 급여대장의 실제 지급액과 같음을 검증했습니다. 항목을 하나씩 고르지 않으므로 새 수당이 생겨도 자동 반영됩니다.
+    </div>
+    <div class="tw"><table>
+      <thead><tr><th>사번</th><th>성명</th><th>유형</th><th>지급합계</th><th>제외</th><th>임금총액</th>
+        <th>개월</th><th>급여DB</th><th>보조표</th><th>포함 월</th><th>추계액</th></tr></thead>
+      <tbody id="t-wage"></tbody>
+    </table></div>
+  </div>
+  <div class="card">
+    <div class="card-hd"><h2>귀속월별 요약</h2><span class="cs">급여 시스템 지급합계와 대조</span></div>
+    <div class="tw" style="max-height:none"><table>
+      <thead><tr><th>귀속월</th><th>인원</th><th>지급합계</th><th>제외</th><th>임금총액</th></tr></thead>
+      <tbody id="t-mon"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ══ ④ 납입 관리 ══ -->
+<div class="pnl" id="p3">
+  <div class="card">
+    <div class="card-hd"><h2>납입 현황</h2><span class="cs" id="due-txt"></span>
+      <span class="sp"></span><button class="btn" onclick="dlStatus()">⤓ 엑셀</button></div>
+    <div class="tw"><table>
+      <thead><tr><th>사번</th><th>유형</th><th>임금총액</th><th>추계액</th><th>소급</th>
+        <th>납입 예정</th><th>기납입</th><th>미납</th><th>상태</th></tr></thead>
+      <tbody id="t-status"></tbody>
+    </table></div>
+    <div class="note" style="margin-top:10px" id="status-note"></div>
+  </div>
+  <div class="card">
+    <div class="card-hd"><h2>납입 기록 추가</h2><span class="cs">실제 이체한 금액을 남깁니다</span></div>
+    <div class="fgrid">
+      <div class="fld"><label>대상</label><select id="pay-emp"></select></div>
+      <div class="fld"><label>금액</label>
+        <input id="pay-amt" class="money" inputmode="numeric" placeholder="0" oninput="fmtMoney(this)"></div>
+      <div class="fld"><label>납입일</label><input id="pay-on" type="date"></div>
+      <div class="fld"><label>구분</label><select id="pay-method">
+        <option>DC정기</option><option>DC퇴사정산</option><option>사내적립(임원)</option><option>IRP직접지급</option>
+      </select></div>
+      <div class="fld"><label>메모</label><input id="pay-memo" placeholder="이체확인증 번호 등"></div>
+    </div>
+    <div class="row"><button class="btn p" onclick="addPayment()">납입 기록 저장</button>
+      <span class="note" id="pay-msg"></span></div>
+  </div>
+  <div class="card">
+    <div class="card-hd"><h2>납입 이력</h2></div>
+    <div class="tw" style="max-height:320px"><table>
+      <thead><tr><th>납입일</th><th>사번</th><th>성명</th><th>금액</th><th>구분</th><th>메모</th><th></th></tr></thead>
+      <tbody id="t-pay"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ══ ⑤ 퇴사자 정산 ══ -->
+<div class="pnl" id="p4">
+  <div class="card">
+    <div class="card-hd"><h2>퇴사자 정산</h2>
+      <span class="cs">규약 제17조① — 급여 지급 사유 발생일부터 14일 이내</span></div>
+    <div class="fx">
+      <div class="fl">주의</div>
+      계속근로 <b>1년 이상</b>이면 1년차분까지 포함해 퇴직급여를 지급해야 합니다.
+      <b>1년 미만</b>이면 규약 제16조②에 따라 적립금이 사용자에게 귀속되어 지급 의무가 없습니다.<br>
+      기한을 넘기면 근퇴법 시행령 제11조·규약 제14조③에 따라 <code>연 10%</code> → <code>연 20%</code> 지연이자가 붙습니다.
+    </div>
+    <div class="tw" style="max-height:none"><table>
+      <thead><tr><th>사번</th><th>성명</th><th>입사일</th><th>퇴사일</th><th>근속</th><th>지급 의무</th>
+        <th>임금총액</th><th>개월</th><th>추계액</th><th>기한</th><th>상태</th><th>정산</th></tr></thead>
+      <tbody id="t-settle"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ══ ⑥ 임원퇴직금 ══ -->
+<div class="pnl" id="p5">
+  <div class="card">
+    <div class="card-hd"><h2>임원 퇴직금 산정</h2><span class="cs">별도 퇴직금 규정 · 근로자와 산식이 다릅니다</span></div>
+    <div class="fx">
+      <div class="fl">산식</div>
+      <code>(퇴직 전 3년간 연평균급여 × 1/10) × 근속연수 × 지급률</code><br>
+      <div class="fl" style="margin-top:7px">법정 손금 한도 (법인세법 시행령 제44조④2호)</div>
+      <code>퇴직 직전 1년 총급여 × 1/10 × 근속연수</code> — 정관에 정해진 금액이 없으면 이 한도까지만 손금 인정
+    </div>
+    <div class="tw" style="max-height:none;margin-bottom:14px"><table>
+      <thead><tr><th>사번</th><th>성명</th><th>취임일</th><th>지급률</th><th>3년 연평균</th>
+        <th>근속</th><th>산정액</th><th>법정한도</th><th>초과액</th><th>판정</th></tr></thead>
+      <tbody id="t-officer"></tbody>
+    </table></div>
+    <h3>계산기</h3>
+    <div class="fgrid">
+      <div class="fld"><label>대상</label><select id="o-emp" onchange="loadOfficer()"></select></div>
+      <div class="fld"><label>기준연월</label><input id="o-base" type="date"></div>
+      <div class="fld"><label>근속연수</label><input id="o-yr" oninput="calcO()"></div>
+      <div class="fld"><label>지급률</label><input id="o-rt" oninput="calcO()"></div>
+    </div>
+    <div class="fgrid">
+      <div class="fld"><label>3년 전 총급여</label>
+        <input id="o-y1" class="money" inputmode="numeric" oninput="fmtMoney(this);calcO()"></div>
+      <div class="fld"><label>2년 전 총급여</label>
+        <input id="o-y2" class="money" inputmode="numeric" oninput="fmtMoney(this);calcO()"></div>
+      <div class="fld"><label>직전 1년 총급여</label>
+        <input id="o-y3" class="money" inputmode="numeric" oninput="fmtMoney(this);calcO()"></div>
+      <div class="fld"><label>연평균 환산액</label><input id="o-av" class="money" readonly></div>
+    </div>
+    <div class="res">
+      <span class="rl">임원 퇴직금</span><span class="rv" id="o-res">—</span>
+      <span class="note" id="o-fx" style="margin-left:auto"></span>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <button class="btn p" onclick="saveOfficer()">저장</button>
+      <span class="note" id="o-msg"></span>
+    </div>
+    <div class="note" style="margin-top:12px" id="o-warn"></div>
+  </div>
+</div>
+
+<!-- ══ ⑦ 설정·자료 ══ -->
+<div class="pnl" id="p6">
+  <div class="card">
+    <div class="card-hd"><h2>제도 설정</h2><span class="cs">확정기여형퇴직연금 규약 근거</span></div>
+    <div class="tw" style="max-height:none"><table><tbody id="t-cfg"></tbody></table></div>
+  </div>
+  <div class="card">
+    <div class="card-hd"><h2>임금총액에서 뺄 항목</h2>
+      <span class="cs">규약 제12조② — 근로기준법상 임금이 아닌 것만 체크</span></div>
+    <div class="note" style="margin-bottom:10px">
+      판단이 어려우면 <b>체크하지 않는 편이 안전</b>합니다 — 부담금을 더 넣는 방향이라 법적 위험이 없습니다.
+    </div>
+    <div class="tw" style="max-height:340px"><table>
+      <thead><tr><th>뺀다</th><th>항목</th><th>판단 근거</th></tr></thead>
+      <tbody id="t-items"></tbody>
+    </table></div>
+  </div>
+  <div class="card">
+    <div class="card-hd"><h2>급여 항목 진단</h2><span class="cs">급여대장에 실제로 있는 항목과 금액</span>
+      <span class="sp"></span><button class="btn" onclick="loadKeys()">불러오기</button></div>
+    <div class="tw" style="max-height:400px"><table>
+      <thead><tr><th>항목</th><th>금액 항목</th><th>0 아닌 행</th><th>연간 합계</th><th>예시값</th><th>제외</th></tr></thead>
+      <tbody id="t-keys"><tr><td colspan="6" class="ctr note">「불러오기」를 누르세요</td></tr></tbody>
+    </table></div>
+  </div>
+  <div class="card">
+    <div class="card-hd"><h2>내려받기</h2></div>
+    <div class="row">
+      <button class="btn g" onclick="dlAll()">⤓ 퇴직연금 종합 (엑셀 · 5시트)</button>
+      <button class="btn" onclick="dlTarget()">대상 판정</button>
+      <button class="btn" onclick="dlWage()">임금총액</button>
+      <button class="btn" onclick="dlStatus()">납입 현황</button>
+    </div>
+  </div>
+</div>
+
+<div class="sysfoot">
+  <span class="rolebadge admin" id="f-role">ADMIN</span>
+  <span class="hacct" id="f-acct"></span>
+  <div class="thseg">
+    <button class="thbtn" data-th="light"  onclick="setTh('light')"  title="화이트 모드">☀</button>
+    <button class="thbtn" data-th="system" onclick="setTh('system')" title="시스템 모드">🖥</button>
+    <button class="thbtn" data-th="dark"   onclick="setTh('dark')"   title="다크 모드">🌙</button>
+  </div>
+  <button class="fbtn out" onclick="doLogout()">로그아웃</button>
+  <span class="sp"></span>
+  <span class="fver" id="fver"></span>
+</div>
+
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   CRESCOM 퇴직연금 관리
+   DB : retire_* 테이블·함수·뷰 (retire_전체설치 SQL 로 생성)
+   ══════════════════════════════════════════════════════════ */
+var BUILD='v2 · 2026-08-04';
+var SUPABASE_URL="https://nszhlbujlfaiesdgvzrg.supabase.co";
+var SUPABASE_ANON_KEY="sb_publishable_9fF3gPccOgnviL9q6DK6ag_iYpwM_-h";
+var SB=window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+var G={ email:'', role:'', isAdmin:false, year:0,
+        cfg:null, target:[], wage:[], mon:[], status:[], settle:[],
+        officer:[], items:[], pay:[], jf:'전체' };
+
+/* ── 유틸 ── */
+function won(n){ return (n===null||n===undefined||n==='')?'—':Number(n).toLocaleString('ko-KR'); }
+/* 금액을 3자리 콤마로 (표시용) */
+function comma(n){ var v=Number(n); return isFinite(v)? v.toLocaleString('ko-KR') : ''; }
+/* 금액 입력칸 : 입력하는 동안 3자리 콤마를 붙이고 커서 위치를 유지한다 */
+function fmtMoney(el){
+  if(!el) return;
+  var raw=String(el.value||''), caret=el.selectionStart;
+  var before=(raw.slice(0,caret).match(/[0-9]/g)||[]).length;
+  var digits=raw.replace(/[^0-9]/g,'');
+  if(!digits){ el.value=''; return; }
+  var out=Number(digits).toLocaleString('ko-KR');
+  el.value=out;
+  var n=0, pos=(before===0?0:out.length);
+  if(before>0) for(var i=0;i<out.length;i++){
+    if(/[0-9]/.test(out.charAt(i))) n++;
+    if(n===before){ pos=i+1; break; }
+  }
+  try{ el.setSelectionRange(pos,pos); }catch(e){}
+}
+function num(v){ var s=String(v==null?'':v).replace(/[^0-9.\-]/g,''); var n=Number(s); return isFinite(n)?n:0; }
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function $(id){ return document.getElementById(id); }
+function toast(m){ var t=$('toast'); t.textContent=m; t.classList.add('show');
+  clearTimeout(t._t); t._t=setTimeout(function(){t.classList.remove('show');},2600); }
+function ymd(d){ if(!d) return '—'; return String(d).slice(0,10); }
+/* 예시값 서식 — 금액이면 3자리 콤마, 사번·날짜·문자는 그대로 둔다.
+   「사원번호」처럼 식별용 숫자에 콤마를 붙이면 금액처럼 보여 오해를 부른다. */
+function smp(v, key){
+  var t=String(v==null?'':v).trim();
+  var k=String(key||'');
+  var idLike = /번호|사번|코드|ID/i.test(k);
+  if(!idLike && /^-?[0-9]+(\.[0-9]+)?$/.test(t)) return Number(t).toLocaleString('ko-KR');
+  return t.slice(0,20);
+}
+
+/* ── 테마 ── */
+function setTh(t){
+  try{ localStorage.setItem('PB_THEME',t); localStorage.setItem('crescom-theme',t); }catch(e){}
+  var sys=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
+  document.documentElement.className='t-'+(t==='system'?(sys?'dark':'light'):t);
+  document.querySelectorAll('.thbtn').forEach(function(b){
+    b.classList.toggle('on', b.getAttribute('data-th')===t); });
+}
+function initTh(){ var t='system'; try{ t=localStorage.getItem('PB_THEME')||localStorage.getItem('crescom-theme')||'system'; }catch(e){} setTh(t); }
+if(window.matchMedia) try{
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){
+    var t='system'; try{ t=localStorage.getItem('PB_THEME')||'system'; }catch(e){}
+    if(t==='system') setTh('system'); });
+}catch(e){}
+
+function doLogout(){
+  SB.auth.signOut().then(function(){ location.href='demo-index.html'; })
+    .catch(function(){ location.href='demo-index.html'; });
+}
+
+/* ── 접근 차단 화면 ── */
+function deny(msg){
+  document.body.innerHTML='<div id="deny"><div class="di">🔒</div>'
+    +'<div class="dh">퇴직연금 자료 열람 권한이 없습니다</div>'
+    +'<div class="note" style="font-size:13px">'+esc(msg)+'</div>'
+    +'<div style="margin-top:16px"><button class="btn p" onclick="location.href=\'index.html\'">'
+    +'← 인사시스템으로</button></div></div>';
+}
+
+/* ══ 초기화 ══ */
+async function boot(){
+  initTh();
+  $('build').textContent=BUILD.split(' ')[0];
+  $('fver').textContent='RETIREMENT · '+BUILD;
+  try{
+    var sess=await SB.auth.getSession();
+    if(!sess.data.session){ location.href='demo-index.html'; return; }
+    G.email=sess.data.session.user.email;
+    var rr=await SB.from('user_roles').select('role').eq('email',G.email).eq('app','payroll');
+    var roles=rr.data||[];
+    if(!roles.length){ $('load').style.display='none'; deny(G.email+' 계정에 급여 권한이 없습니다. 경영지원팀에 요청해 주세요.'); return; }
+    G.isAdmin=!!roles.find(function(x){return x.role==='SUPER'||x.role==='ADMIN';});
+    G.role=G.isAdmin?'ADMIN':'USER';
+    $('f-acct').textContent=G.email;
+    $('f-role').textContent=G.role;
+    $('f-role').className='rolebadge'+(G.isAdmin?' admin':'');
+
+    var cf=await SB.from('retire_config').select('*').order('year',{ascending:false});
+    if(cf.error) throw cf.error;
+    var years=(cf.data||[]).map(function(c){return c.year;});
+    if(!years.length){ $('load').style.display='none';
+      deny('retire_config 에 연도 설정이 없습니다. 설치 SQL(retire_전체설치)을 먼저 실행해 주세요.'); return; }
+    G.allCfg=cf.data;
+    G.year=Math.max.apply(null,years);
+    $('ysel').innerHTML=years.map(function(y){return '<option value="'+y+'">'+y+'년</option>';}).join('');
+    $('ysel').value=G.year;
+
+    await loadAll();
+    $('load').style.display='none';
+    $('app').style.display='';
+  }catch(e){
+    $('load').style.display='none';
+    deny('불러오기 중 오류가 발생했습니다 — '+(e.message||e));
+  }
+}
+
+function onYear(){ G.year=Number($('ysel').value); reloadAll(); }
+function reloadAll(){
+  $('load').style.display='';
+  loadAll().then(function(){ $('load').style.display='none'; toast(G.year+'년 자료를 불러왔습니다.'); })
+    .catch(function(e){ $('load').style.display='none'; toast('오류: '+(e.message||e)); });
+}
+
+async function loadAll(){
+  G.cfg=(G.allCfg||[]).find(function(c){return c.year===G.year;})||{};
+  var q=await Promise.all([
+    SB.from('retire_target_v').select('*'),
+    SB.rpc('retire_collect_wages',{p_year:G.year}),
+    SB.rpc('retire_month_summary',{p_year:G.year}),
+    SB.from('retire_status_v').select('*').eq('year',G.year),
+    SB.from('retire_settlement_v').select('*'),
+    SB.from('retire_officer_calc').select('*').eq('year',G.year),
+    SB.from('retire_wage_items').select('*').eq('year',G.year).order('sort_no'),
+    SB.from('retire_payment').select('*').eq('year',G.year).order('paid_on',{ascending:false}),
+    SB.from('retire_enrollment').select('*')
+  ]);
+  var names=['대상판정','임금총액','월별요약','납입현황','퇴사정산','임원','제외항목','납입이력','가입정보'];
+  q.forEach(function(r,i){ if(r.error) throw new Error(names[i]+' 조회 실패 — '+r.error.message); });
+  G.target=q[0].data||[]; G.wage=q[1].data||[]; G.mon=q[2].data||[];
+  G.status=q[3].data||[]; G.settle=q[4].data||[]; G.officer=q[5].data||[];
+  G.items=q[6].data||[];  G.pay=q[7].data||[];   G.enroll=q[8].data||[];
+  G.nameOf={}; G.target.forEach(function(t){ G.nameOf[t.emp_no]=t.name; });
+
+  drawKpi(); drawAlerts(); drawFlow(); drawJudge(); drawWage(); drawMon();
+  drawStatus(); drawPay(); drawSettle(); drawOfficer(); drawCfg(); drawItems();
+  fillSelects();
+}
+
+/* ══ ① 적립 현황 ══ */
+function targets(){ return G.target.filter(function(t){
+  return t.judgement==='계속 적립' || t.judgement==='첫 적립 + 전년분 소급' || t.judgement==='임원 별도규정'; }); }
+
+function drawKpi(){
+  var tg=targets();
+  var wgTarget=G.wage.filter(function(w){ return w.worker_type==='근로자'; });
+  var payable=wgTarget.reduce(function(s,w){ return s+Number(w.estimate||0); },0);
+  var off=G.officer.reduce(function(s,o){ return s+Number(o.amount||0); },0);
+  var paid=G.pay.reduce(function(s,p){ return s+Number(p.amount||0); },0);
+  var over=G.settle.filter(function(s){ return !s.settled && s.pay_required && s.days_over>0; });
+  var soon=G.settle.filter(function(s){ return !s.settled && s.pay_required && s.days_over===0; });
+  var due=dueDates();
+  $('hb').textContent='대상 '+tg.length+'명 / 전체 '+G.target.length+'명';
+  $('kpis').innerHTML=
+    kpi(G.year+'년 적립 대상', tg.length+'<small>명</small>',
+        '대기 '+cnt('대기')+'명 · 제외 '+cnt('제외')+'명','')
+   +kpi('근로자 납입 예정액', won(payable)+'<small>원</small>',
+        wgTarget.length+'명 · 임금총액 ÷ 12','k-warn')
+   +kpi('임원 퇴직금', won(off)+'<small>원</small>','별도 규정 산식','')
+   +kpi('올해 납입 기록', won(paid)+'<small>원</small>', G.pay.length+'건','k-ok')
+   +kpi('납입 기한', due.grace? ('D-'+due.left) : '—',
+        due.due? (ymd(due.due)+' → 유예 '+ymd(due.grace)) : '설정 없음',
+        due.left!=null && due.left<30 ? 'k-err':'')
+   +kpi('퇴사자 정산 대기', (over.length+soon.length)+'<small>건</small>',
+        over.length? (over.length+'건 기한 초과') : '기한 내','k'+(over.length?'-err':'-ok'));
+}
+function cnt(kw){ return G.target.filter(function(t){ return String(t.judgement).indexOf(kw)===0; }).length; }
+function kpi(l,v,d,c){ return '<div class="kpi '+(c||'')+'"><div class="kl">'+l+'</div>'
+  +'<div class="kv">'+v+'</div><div class="kd">'+d+'</div></div>'; }
+function dueDates(){
+  var c=G.cfg||{}; if(!c.due_month) return {};
+  var d=new Date(G.year, c.due_month, 0);
+  var g=new Date(d.getTime()); g.setDate(g.getDate()+(c.grace_days||60));
+  var left=Math.round((g-new Date())/864e5);
+  return {due:d, grace:g, left:left};
+}
+
+function drawAlerts(){
+  var a=[];
+  var over=G.settle.filter(function(s){ return !s.settled && s.pay_required && s.days_over>0; });
+  if(over.length) a.push(al('a-err','⚠','퇴사자 '+over.length+'명 정산 기한이 지났습니다',
+    over.map(function(s){ return '<b>'+esc(s.name)+'</b> '+ymd(s.last_work_day)+' 퇴사 · 기한 '
+      +ymd(s.settle_due)+' · '+s.days_over+'일 초과 · 추계액 '+won(s.estimate_ytd)+'원'; }).join('<br>')
+      +'<br>규약 제17조① 은 급여 지급 사유 발생일부터 14일 이내 납입을 정합니다. '
+      +'⑤ 퇴사자 정산 탭에서 처리 여부를 확인해 주세요.'));
+  var soon=G.settle.filter(function(s){ return !s.settled && s.pay_required && s.days_over===0 && s.days_left<=14; });
+  if(soon.length) a.push(al('a-warn','⏰','퇴사자 '+soon.length+'명 정산 기한이 임박했습니다',
+    soon.map(function(s){ return '<b>'+esc(s.name)+'</b> 기한 '+ymd(s.settle_due)+' · D-'+s.days_left
+      +' · 추계액 '+won(s.estimate_ytd)+'원'; }).join('<br>')));
+
+  var due=dueDates();
+  if(due.left!=null && due.left<60 && due.left>=0)
+    a.push(al('a-warn','📅','정기 납입 기한이 다가옵니다',
+      '정기 납입일 <b>'+ymd(due.due)+'</b> · 60일 유예 종료 <b>'+ymd(due.grace)+'</b> (D-'+due.left+').<br>'
+      +'유예 후에는 규약 제14조③ 에 따라 연 10% → 연 20% 지연이자가 붙습니다.'));
+
+  var short=G.wage.filter(function(w){ return w.worker_type==='근로자' && w.months_counted>0 && w.months_counted<12; });
+  if(short.length){
+    var mm=Math.max.apply(null,G.wage.map(function(w){return Number(w.months_counted||0);}));
+    a.push(al('a-warn','📊','임금총액이 아직 '+mm+'개월분입니다',
+      '연간 총액이 확정되기 전이므로 추계액은 잠정값입니다. 12월 급여 마감 후 다시 집계해 주세요.<br>'
+      +'급여대장에 없는 월은 <b>보조표(retire_wage_manual)</b>에서 보충하고 있습니다 — ③ 탭의 「보조표」 열에서 확인할 수 있습니다.'));
+  }
+  var unreg=G.target.filter(function(t){ return t.worker_type==='미등록'; });
+  if(unreg.length) a.push(al('a-warn','👤','근로자 유형이 정해지지 않은 사람이 '+unreg.length+'명 있습니다',
+    unreg.map(function(t){return esc(t.name||t.emp_no);}).join(', ')
+    +'<br>② 대상 판정 탭에서 유형을 지정해 주세요. 「근로자」·「임원」만 퇴직급여 대상입니다.'));
+
+  var oc=G.officer.filter(function(o){ return Number(o.over_limit||0)>0; });
+  if(oc.length) a.push(al('a-err','💰','임원 퇴직금이 법정 손금 한도를 넘었습니다',
+    oc.map(function(o){ return '<b>'+esc(G.nameOf[o.emp_no]||o.emp_no)+'</b> 산정 '+won(o.amount)
+      +'원 · 한도 '+won(o.tax_limit)+'원 · 초과 '+won(o.over_limit)+'원'; }).join('<br>')
+    +'<br>초과분은 손금불산입 대상입니다.'));
+  if(G.cfg && (G.cfg.officer_in_dc===null || G.cfg.officer_in_dc===undefined) && G.officer.length)
+    a.push(al('a-warn','☐','임원을 DC 대상으로 볼지 아직 정해지지 않았습니다',
+      '규약 제8조③ 「대표이사를 포함한 임원을 포함한다 / 제외한다」가 신고본에 <b>체크되지 않은</b> 상태입니다.<br>'
+      +'· <b>포함</b>이면 임원도 부담금이 <b>임금총액의 1/12</b>이어야 하고, 별도 규정 산식 금액은 DC 에 넣을 수 없습니다.<br>'
+      +'· <b>제외</b>이면 임원은 <b>퇴직금제도(사내적립)</b> 대상이고 추계액 전액이 퇴직급여충당부채가 됩니다.<br>'
+      +'IBK 담당자에게 신고본을 확인한 뒤 정해 주세요. 그때까지 ④ 납입현황의 임원 행은 참고값입니다.'));
+  var noreg=G.officer.filter(function(o){ return !o.regulation_ref; });
+  if(noreg.length) a.push(al('a-warn','📌','임원퇴직금 규정 문서가 등록되지 않았습니다',
+    '현행 산식(3년 연평균 × 1/10 × 근속 × 지급률)은 별도 퇴직금규정을 전제합니다. '
+    +'정관 또는 주주총회 결의로 정한 규정을 만들고 ⑥ 탭에 근거를 기록해 주세요.'));
+
+  if(!a.length) a.push(al('a-ok','✅','지금 급한 일은 없습니다',
+    '정기 납입 기한과 퇴사자 정산 기한 모두 여유가 있습니다.'));
+  $('alerts').innerHTML=a.join('');
+}
+function al(c,i,t,d){ return '<div class="al '+c+'"><div class="ai">'+i+'</div><div>'
+  +'<div class="at">'+t+'</div><div class="ad">'+d+'</div></div></div>'; }
+
+function drawFlow(){
+  var mm=Math.max.apply(null,[0].concat(G.wage.map(function(w){return Number(w.months_counted||0);})));
+  var f=[
+    ['1','대상 판정','e-HR 입사일·퇴사일·재직상태로 자동 판정', G.target.length>0],
+    ['2','임금총액 집계','급여대장 지급합계에서 자동 합산 ('+mm+'개월)', mm>0],
+    ['3','추계액 산정','÷12 후 10원 올림 · 첫 적립자는 전년분 소급', G.wage.length>0],
+    ['4','임원 퇴직금','3년 연평균 × 1/10 × 근속 × 지급률', G.officer.length>0],
+    ['5','검토·확정','사람이 확인하고 retire_annual 에 저장', G.status.length>0],
+    ['6','납입·기록','이체 후 납입 이력에 기록', G.pay.length>0]
+  ];
+  $('flow').innerHTML=f.map(function(x){
+    return '<div class="fstep'+(x[3]?' done':'')+'">'+(x[3]?'<div class="fb">완료</div>':'')
+      +'<div class="fn">'+x[0]+'</div><div class="ft">'+x[1]+'</div><div class="fd">'+x[2]+'</div></div>';
+  }).join('');
+}
+
+/* ══ ② 대상 판정 ══ */
+var JKIND={'계속 적립':'keep','첫 적립 + 전년분 소급':'new','임원 별도규정':'off',
+  '퇴사 정산 · 지급 의무':'out','퇴사 · 1년 미만 (적립금 사용자 귀속)':'out',
+  '확인 필요 · 입사일 없음':'new'};
+function jcls(j){ if(JKIND[j]) return JKIND[j];
+  if(String(j).indexOf('대기')===0) return 'wait';
+  if(String(j).indexOf('제외')===0) return 'exc'; return 'wait'; }
+
+function drawJudge(){
+  var kinds={}; G.target.forEach(function(t){ kinds[t.judgement]=(kinds[t.judgement]||0)+1; });
+  var ks=['전체'].concat(Object.keys(kinds).sort());
+  $('jfilter').innerHTML=ks.map(function(k){
+    var n=(k==='전체')?G.target.length:kinds[k];
+    return '<button class="btn'+(G.jf===k?' p':'')+'" onclick="setJf('+JSON.stringify(k).replace(/"/g,'&quot;')+')">'
+      +esc(k)+' '+n+'</button>'; }).join('');
+  var rows=G.target.filter(function(t){ return G.jf==='전체'||t.judgement===G.jf; })
+    .sort(function(a,b){ return (a.judgement+a.emp_no)<(b.judgement+b.emp_no)?-1:1; });
+  $('t-judge').innerHTML=rows.map(function(t){
+    return '<tr'+(t.status==='퇴사'?' class="dim"':'')+'>'
+      +'<td class="ctr">'+esc(t.emp_no)+'</td><td><b>'+esc(t.name||'—')+'</b></td>'
+      +'<td class="ctr">'+wtSel(t)+'</td>'
+      +'<td class="ctr">'+esc(t.status||'—')+'</td>'
+      +'<td class="ctr">'+ymd(t.join_date)+'</td><td class="ctr">'+ymd(t.last_work_day)+'</td>'
+      +'<td class="ctr">'+esc(t.service_text||'—')+'</td>'
+      +'<td class="ctr">'+(t.first_accrual_year||'—')+'</td>'
+      +'<td class="ctr"><span class="chip '+jcls(t.judgement)+'">'+esc(t.judgement)+'</span></td>'
+      +'<td style="white-space:normal;font-size:11px;color:var(--ink-faint)">'+esc(t.exclude_reason||'')+'</td></tr>';
+  }).join('') || '<tr><td colspan="10" class="ctr note">해당 인원이 없습니다</td></tr>';
+}
+function setJf(k){ G.jf=k; drawJudge(); }
+var WT=['근로자','임원','사업소득','자문','인턴'];
+function wtSel(t){
+  if(!G.isAdmin) return esc(t.worker_type);
+  return '<select onchange="setWt(this,'+JSON.stringify(t.emp_no).replace(/"/g,'&quot;')+')" '
+    +'style="height:26px;font-size:11px;border-radius:6px;border:1px solid var(--line);'
+    +'background:var(--surface);color:var(--ink);font-family:inherit;font-weight:700">'
+    +WT.map(function(w){ return '<option'+(w===t.worker_type?' selected':'')+'>'+w+'</option>'; }).join('')
+    +(WT.indexOf(t.worker_type)<0?'<option selected>'+esc(t.worker_type)+'</option>':'')
+    +'</select>';
+}
+async function setWt(sel,no){
+  var v=sel.value;
+  var r=await SB.from('retire_enrollment').update({worker_type:v,
+    is_officer:(v==='임원'), first_accrual_year:(v==='임원'?null:undefined),
+    updated_at:new Date().toISOString(), updated_by:G.email}).eq('emp_no',no);
+  if(r.error){ toast('저장 실패: '+r.error.message); return; }
+  toast(no+' → '+v+' 로 변경했습니다.');
+  reloadAll();
+}
+async function syncEhr(){
+  $('load').style.display='';
+  var r=await SB.rpc('retire_sync_employees');
+  $('load').style.display='none';
+  if(r.error){ toast('실패: '+r.error.message); return; }
+  var d=(r.data&&r.data[0])||{};
+  toast('e-HR 동기화 — 신규 '+(d.inserted||0)+'명 · 갱신 '+(d.updated||0)+'명 · 퇴사 '
+    +(d.retired_found||0)+'명 · e-HR 없음 '+(d.not_in_ehr||0)+'명');
+  reloadAll();
+}
+
+/* ══ ③ 임금총액 ══ */
+function drawWage(){
+  var rows=G.wage.slice().sort(function(a,b){
+    var wa=(a.worker_type==='근로자'?'0':a.worker_type==='임원'?'1':'2');
+    var wb=(b.worker_type==='근로자'?'0':b.worker_type==='임원'?'1':'2');
+    return (wa+a.emp_no)<(wb+b.emp_no)?-1:1; });
+  var s={g:0,e:0,w:0,est:0};
+  var html=rows.map(function(w){
+    var tg=(w.worker_type==='근로자');
+    if(tg){ s.g+=Number(w.gross_total||0); s.e+=Number(w.excluded_total||0);
+            s.w+=Number(w.wage_total||0); s.est+=Number(w.estimate||0); }
+    return '<tr'+(tg?'':' class="dim"')+'>'
+      +'<td class="ctr">'+esc(w.emp_no)+'</td><td><b>'+esc(G.nameOf[w.emp_no]||w.name||'—')+'</b></td>'
+      +'<td class="ctr"><span class="chip '+(tg?'keep':w.worker_type==='임원'?'off':'exc')+'">'
+        +esc(w.worker_type)+'</span></td>'
+      +'<td class="num">'+won(w.gross_total)+'</td>'
+      +'<td class="num">'+(Number(w.excluded_total)?won(w.excluded_total):'—')+'</td>'
+      +'<td class="num"><b>'+won(w.wage_total)+'</b></td>'
+      +'<td class="ctr">'+w.months_counted+'</td>'
+      +'<td class="ctr">'+w.from_payroll+'</td>'
+      +'<td class="ctr">'+(w.from_manual?('<span class="chip new">'+w.from_manual+'</span>'):'0')+'</td>'
+      +'<td class="ctr" style="font-size:11px;color:var(--ink-faint)">'+esc(w.month_list||'')+'</td>'
+      +'<td class="num">'+(w.worker_type==='근로자'?won(w.estimate)
+        :'<span style="color:var(--ink-faint)">대상 아님</span>')+'</td></tr>';
+  }).join('');
+  html+='<tr class="sum"><td colspan="3" class="ctr">근로자 합계</td>'
+    +'<td class="num">'+won(s.g)+'</td><td class="num">'+won(s.e)+'</td>'
+    +'<td class="num">'+won(s.w)+'</td><td colspan="4"></td>'
+    +'<td class="num">'+won(s.est)+'</td></tr>';
+  $('t-wage').innerHTML=html;
+  var man=G.wage.reduce(function(a,w){return a+Number(w.from_manual||0);},0);
+  $('wg-src').textContent=G.year+'년 · 급여대장 + 보조표 '+man+'개월분 보충';
+}
+function drawMon(){
+  $('t-mon').innerHTML=(G.mon||[]).map(function(m){
+    return '<tr><td class="ctr"><b>'+esc(m.ym)+'</b></td><td class="ctr">'+m.headcount+'</td>'
+      +'<td class="num">'+won(m.gross_sum)+'</td><td class="num">'+won(m.excluded_sum)+'</td>'
+      +'<td class="num"><b>'+won(m.wage_sum)+'</b></td></tr>'; }).join('')
+    || '<tr><td colspan="5" class="ctr note">급여대장에 '+G.year+'년 자료가 없습니다</td></tr>';
+}
+async function applyWages(){
+  if(!confirm(G.year+'년 임금총액·추계액을 retire_annual 에 저장합니다.\n확정(locked) 된 행은 건드리지 않습니다.\n계속할까요?')) return;
+  $('load').style.display='';
+  var r=await SB.rpc('retire_apply_wages',{p_year:G.year});
+  $('load').style.display='none';
+  if(r.error){ toast('실패: '+r.error.message); return; }
+  var d=(r.data&&r.data[0])||{};
+  toast('저장 '+(d.applied||0)+'건 · 확정건 제외 '+(d.skipped_locked||0)+' · 대상아님 제외 '+(d.skipped_nonworker||0));
+  reloadAll();
+}
+
+/* ══ ④ 납입 관리 ══ */
+function drawStatus(){
+  var due=dueDates();
+  $('due-txt').textContent=due.due? ('정기 납입일 '+ymd(due.due)+' · 유예 종료 '+ymd(due.grace)) : '';
+  $('t-status').innerHTML=G.status.map(function(s){
+    var st=s.pay_status;
+    var c=st==='납입완료'?'keep':st==='기한내'?'wait':st==='유예중'?'new':'out';
+    return '<tr><td class="ctr">'+esc(s.emp_no)+' <b>'+esc(G.nameOf[s.emp_no]||'')+'</b></td>'
+      +'<td class="ctr"><span class="chip '+(s.worker_type==='임원'?'off':'keep')+'">'+esc(s.worker_type||'')+'</span></td>'
+      +'<td class="num">'+won(s.wage_total)+'</td><td class="num">'+won(s.estimate)+'</td>'
+      +'<td class="num">'+(Number(s.carry_estimate)?won(s.carry_estimate):'—')+'</td>'
+      +'<td class="num"><b>'+won(s.payable)+'</b></td>'
+      +'<td class="num">'+won(s.paid_sum)+'</td>'
+      +'<td class="num" style="color:'+(Number(s.unpaid)>0?'var(--err-tx)':'var(--ink-faint)')+'">'
+        +won(s.unpaid)+'</td>'
+      +'<td class="ctr"><span class="chip '+c+'">'+esc(st)+'</span></td></tr>';
+  }).join('') || '<tr><td colspan="9" class="ctr note">③ 탭에서 「retire_annual 에 저장」을 먼저 실행해 주세요</td></tr>';
+  var noff=G.status.filter(function(x){return x.worker_type==='임원';}).length;
+  $('status-note').innerHTML = noff
+    ? '⚠ <b>임원 행의 추계액은 임금총액 1/12 로 계산한 참고값입니다.</b> 임원 퇴직금은 별도 규정 산식'
+      +'(3년 연평균 × 1/10 × 근속 × 지급률)으로 산정하며 그 금액은 ⑥ 임원퇴직금 탭에 있습니다. '
+      +'규약 제8조③ 「임원 포함/제외」가 확정되면 어느 쪽을 쓸지 정해집니다.'
+    : '';
+}
+function drawPay(){
+  $('t-pay').innerHTML=G.pay.map(function(p){
+    return '<tr><td class="ctr">'+ymd(p.paid_on)+'</td><td class="ctr">'+esc(p.emp_no)+'</td>'
+      +'<td>'+esc(G.nameOf[p.emp_no]||'')+'</td><td class="num">'+won(p.amount)+'</td>'
+      +'<td class="ctr">'+esc(p.method)+'</td>'
+      +'<td style="white-space:normal;font-size:11px">'+esc(p.memo||'')+'</td>'
+      +'<td class="ctr">'+(G.isAdmin?'<button class="btn d" style="height:24px;padding:0 8px;font-size:11px" '
+        +'onclick="delPay('+p.id+')">삭제</button>':'')+'</td></tr>'; }).join('')
+    || '<tr><td colspan="7" class="ctr note">납입 기록이 없습니다</td></tr>';
+}
+function fillSelects(){
+  var opts=G.target.filter(function(t){ return t.worker_type==='근로자'||t.worker_type==='임원'; })
+    .map(function(t){ return '<option value="'+esc(t.emp_no)+'">'+esc(t.emp_no)+' '+esc(t.name||'')+'</option>'; }).join('');
+  $('pay-emp').innerHTML=opts;
+  var offs=G.target.filter(function(t){ return t.worker_type==='임원'; })
+    .map(function(t){ return '<option value="'+esc(t.emp_no)+'">'+esc(t.emp_no)+' '+esc(t.name||'')+'</option>'; }).join('');
+  $('o-emp').innerHTML=offs || '<option value="">임원 없음</option>';
+  if(offs) loadOfficer();
+  if(!$('pay-on').value) $('pay-on').value=new Date().toISOString().slice(0,10);
+}
+async function addPayment(){
+  var no=$('pay-emp').value, amt=num($('pay-amt').value), on=$('pay-on').value;
+  if(!no||!amt||!on){ $('pay-msg').textContent='대상·금액·납입일을 모두 입력해 주세요.'; return; }
+  var due=dueDates();
+  var late = due.grace && new Date(on) > due.grace;
+  var r=await SB.from('retire_payment').insert({ year:G.year, emp_no:no, amount:amt, paid_on:on,
+    method:$('pay-method').value, due_on: due.due? ymd(due.due.toISOString()):null,
+    is_late:!!late, memo:$('pay-memo').value||null, created_by:G.email });
+  if(r.error){ $('pay-msg').textContent='저장 실패: '+r.error.message; return; }
+  $('pay-amt').value=''; $('pay-memo').value=''; $('pay-msg').textContent='';
+  toast('납입 기록을 저장했습니다.'+(late?' (유예 기한 초과 — 지연이자 확인 필요)':''));
+  reloadAll();
+}
+async function delPay(id){
+  if(!confirm('이 납입 기록을 지웁니다. 계속할까요?')) return;
+  var r=await SB.from('retire_payment').delete().eq('id',id);
+  if(r.error){ toast('삭제 실패: '+r.error.message); return; }
+  toast('삭제했습니다.'); reloadAll();
+}
+
+/* ══ ⑤ 퇴사자 정산 ══ */
+function drawSettle(){
+  $('t-settle').innerHTML=G.settle.map(function(s){
+    var c = s.settled? 'keep' : !s.pay_required? 'exc' : s.days_over>0? 'out' : 'new';
+    return '<tr><td class="ctr">'+esc(s.emp_no)+'</td><td><b>'+esc(s.name||'')+'</b></td>'
+      +'<td class="ctr">'+ymd(s.join_date)+'</td><td class="ctr">'+ymd(s.last_work_day)+'</td>'
+      +'<td class="ctr">'+esc(s.service_text||'')+'</td>'
+      +'<td class="ctr">'+(s.pay_required?'<span class="chip out">있음</span>'
+        :'<span class="chip exc">없음</span>')+'</td>'
+      +'<td class="num">'+won(s.wage_total_ytd)+'</td>'
+      +'<td class="ctr">'+s.months_counted+'</td>'
+      +'<td class="num"><b>'+won(s.estimate_ytd)+'</b></td>'
+      +'<td class="ctr">'+ymd(s.settle_due)+'</td>'
+      +'<td class="ctr"><span class="chip '+c+'">'+esc(s.status_text)+'</span></td>'
+      +'<td class="ctr">'+(G.isAdmin
+        ? '<input type="checkbox" '+(s.settled?'checked':'')+' onchange="setSettled(this,'
+          +JSON.stringify(s.emp_no).replace(/"/g,'&quot;')+')" title="정산 완료">'
+        : (s.settled?'✅':''))+'</td></tr>';
+  }).join('') || '<tr><td colspan="12" class="ctr note">퇴사자가 없습니다</td></tr>';
+}
+async function setSettled(cb,no){
+  var on=cb.checked;
+  var d = on ? (prompt('납입한 날짜를 입력해 주세요 (YYYY-MM-DD)', new Date().toISOString().slice(0,10)) ) : null;
+  if(on && !d){ cb.checked=false; return; }
+  var r=await SB.from('retire_enrollment').update({ settled:on, settled_on:(on?d:null),
+    updated_at:new Date().toISOString(), updated_by:G.email }).eq('emp_no',no);
+  if(r.error){ toast('저장 실패: '+r.error.message); cb.checked=!on; return; }
+  toast(on? (no+' 정산 완료로 기록했습니다.') : (no+' 정산 기록을 해제했습니다.'));
+  reloadAll();
+}
+
+/* ══ ⑥ 임원퇴직금 ══ */
+function drawOfficer(){
+  $('t-officer').innerHTML=G.officer.map(function(o){
+    var en=(G.enroll||[]).find(function(e){return e.emp_no===o.emp_no;})||{};
+    var over=Number(o.over_limit||0)>0;
+    return '<tr><td class="ctr">'+esc(o.emp_no)+'</td><td><b>'+esc(G.nameOf[o.emp_no]||'')+'</b></td>'
+      +'<td class="ctr">'+ymd(en.officer_start)+'</td>'
+      +'<td class="num">'+Number(o.pay_rate).toFixed(2)+'</td>'
+      +'<td class="num">'+won(o.avg3)+'</td>'
+      +'<td class="ctr">'+(Number(o.service_years)%1===0?Number(o.service_years):Number(o.service_years).toFixed(2))+'년</td>'
+      +'<td class="num"><b>'+won(o.amount)+'</b></td>'
+      +'<td class="num">'+won(o.tax_limit)+'</td>'
+      +'<td class="num" style="color:'+(over?'var(--err-tx)':'var(--ink-faint)')+'">'+won(o.over_limit)+'</td>'
+      +'<td class="ctr"><span class="chip '+(over?'out':'keep')+'">'
+        +(over?'한도 초과':'한도 내 · 전액 손금')+'</span></td></tr>';
+  }).join('') || '<tr><td colspan="10" class="ctr note">임원으로 지정된 사람이 없습니다</td></tr>';
+  var noreg=G.officer.filter(function(o){return !o.regulation_ref;}).length;
+  $('o-warn').innerHTML=
+    '<b>확인해 주실 것</b><br>'
+    +'· 임원 퇴직금은 <b>정관 또는 주주총회 결의로 정한 퇴직금 규정</b>이 있어야 손금으로 인정됩니다(법인세법 시행령 제44조).'
+    +(noreg?' <span style="color:var(--err-tx)">현재 규정 근거가 등록되지 않았습니다.</span>':'')+'<br>'
+    +'· 지급률은 <b>불특정 다수를 대상으로 일반적·구체적 기준</b>으로 정해야 정관 위임 규정으로 인정됩니다.<br>'
+    +'· 근속연수 계산 방법(역년 / 월수 반영)도 규정에 명시해 두는 것이 안전합니다.<br>'
+    +'· 사용인에서 임원이 될 때 퇴직금을 지급하지 않았다면 <b>사용인 근무기간을 근속연수에 합산</b>합니다.';
+}
+function loadOfficer(){
+  var no=$('o-emp').value;
+  var o=G.officer.find(function(x){return x.emp_no===no;});
+  var en=(G.enroll||[]).find(function(e){return e.emp_no===no;})||{};
+  if(o){
+    $('o-base').value=ymd(o.base_date);
+    $('o-yr').value=String(Number(o.service_years));      // 9.0000 → 9
+    $('o-rt').value=Number(o.pay_rate).toFixed(2);
+    $('o-y1').value=comma(o.y1_total); $('o-y2').value=comma(o.y2_total); $('o-y3').value=comma(o.y3_total);
+  }else{
+    $('o-base').value=G.year-1+'-12-31'; $('o-yr').value=''; 
+    $('o-rt').value=Number(en.officer_pay_rate||1).toFixed(2);
+    $('o-y1').value=''; $('o-y2').value=''; $('o-y3').value='';
+  }
+  calcO();
+}
+function calcO(){
+  var y1=num($('o-y1').value), y2=num($('o-y2').value), y3=num($('o-y3').value);
+  var yr=num($('o-yr').value), rt=num($('o-rt').value)||1;
+  var avg=Math.floor((y1+y2+y3)/3);
+  var amt=Math.floor(avg/10*yr*rt);
+  var lim=Math.floor(y3/10*yr);
+  $('o-av').value=won(avg);
+  $('o-res').textContent=won(amt)+' 원';
+  var over=amt-lim;
+  $('o-fx').innerHTML='('+won(avg)+' × 1/10) × '+yr+'년 × '+rt.toFixed(2)
+    +' &nbsp;│&nbsp; 법정한도 '+won(lim)
+    +(over>0? ' &nbsp;<b style="color:var(--err-tx)">초과 '+won(over)+'원</b>'
+            : ' &nbsp;<b style="color:var(--ok-tx)">한도 내 · 전액 손금</b>');
+}
+async function saveOfficer(){
+  var no=$('o-emp').value; if(!no){ toast('임원을 먼저 지정해 주세요.'); return; }
+  var y1=num($('o-y1').value), y2=num($('o-y2').value), y3=num($('o-y3').value);
+  var yr=num($('o-yr').value), rt=num($('o-rt').value)||1;
+  var avg=Math.floor((y1+y2+y3)/3);
+  var r=await SB.from('retire_officer_calc').upsert({ year:G.year, emp_no:no,
+    base_date:$('o-base').value||null, y1_total:y1, y2_total:y2, y3_total:y3, avg3:avg,
+    service_years:yr, pay_rate:rt, amount:Math.floor(avg/10*yr*rt),
+    tax_limit:Math.floor(y3/10*yr), updated_at:new Date().toISOString(), updated_by:G.email },
+    {onConflict:'year,emp_no'});
+  if(r.error){ $('o-msg').textContent='저장 실패: '+r.error.message; return; }
+  $('o-msg').textContent=''; toast('임원 퇴직금 산정을 저장했습니다.'); reloadAll();
+}
+
+/* ══ ⑦ 설정·자료 ══ */
+function drawCfg(){
+  var c=G.cfg||{};
+  var rows=[
+    ['제도 유형', c.plan_type, '규약 제2조'],
+    ['퇴직연금사업자', c.provider, '규약 제6·7조'],
+    ['규약 시행일', ymd(c.regulation_date), '부칙 제1조'],
+    ['임금총액 기준 항목', c.base_item, '급여대장 항목 (검증 완료)'],
+    ['부담금', '연간 임금총액의 '+c.contrib_divisor+'분의 1', '규약 제12조①'],
+    ['반올림', c.round_unit+'원 단위 '+(c.round_mode==='ceil'?'올림':c.round_mode), '근로자 유리 방향'],
+    ['정기 납입 기한', c.due_month+'월 '+(c.due_day==='last'?'말일':c.due_day), '규약 제13조②'],
+    ['미납 유예', c.grace_days+'일', '규약 제14조①'],
+    ['지연이자', '연 '+(c.late_rate1*100).toFixed(0)+'% → 연 '+(c.late_rate2*100).toFixed(0)+'%', '규약 제14조③'],
+    ['퇴사 시 납입 기한', c.leave_days+'일', '규약 제17조①'],
+    ['첫 적립 규칙', c.first_accrual_rule==='after_1y_dec'?'1년 초과 시점이 속하는 해의 12월 (전년분 소급)':c.first_accrual_rule, '실무 확인'],
+    ['임원 DC 포함', c.officer_in_dc===null||c.officer_in_dc===undefined?'미확인 — 규약 신고본 체크박스 공란':(c.officer_in_dc?'포함':'제외'), '규약 제8조③'],
+    ['회계 결산월', c.fiscal_close_month+'월', '규약 제37조']
+  ];
+  $('t-cfg').innerHTML=rows.map(function(r){
+    var warn=(String(r[1]).indexOf('미확인')>=0);
+    return '<tr><td style="width:190px;font-weight:800">'+esc(r[0])+'</td>'
+      +'<td'+(warn?' style="color:var(--err-tx);font-weight:800"':'')+'>'+esc(r[1]==null?'—':r[1])+'</td>'
+      +'<td class="ctr" style="width:170px;font-size:11px;color:var(--ink-faint)">'+esc(r[2])+'</td></tr>';
+  }).join('');
+}
+function drawItems(){
+  $('t-items').innerHTML=G.items.map(function(i){
+    return '<tr><td class="ctr">'+(G.isAdmin
+      ? '<input type="checkbox" '+(i.active?'checked':'')+' onchange="setItem(this,'
+        +JSON.stringify(i.item_key).replace(/"/g,'&quot;')+')">'
+      : (i.active?'✅':''))+'</td>'
+      +'<td><b>'+esc(i.item_key)+'</b></td>'
+      +'<td style="white-space:normal;font-size:11.5px;color:var(--ink-soft)">'+esc(i.reason||'')+'</td></tr>';
+  }).join('') || '<tr><td colspan="3" class="ctr note">등록된 항목이 없습니다</td></tr>';
+}
+async function setItem(cb,key){
+  var on=cb.checked;
+  if(on && !confirm('「'+key+'」를 임금총액에서 뺍니다.\n근로기준법상 임금이 아닌 것만 빼야 합니다. 계속할까요?')){
+    cb.checked=false; return; }
+  var r=await SB.from('retire_wage_items').update({active:on}).eq('year',G.year).eq('item_key',key);
+  if(r.error){ toast('저장 실패: '+r.error.message); cb.checked=!on; return; }
+  toast('「'+key+'」'+(on?' 제외로 변경했습니다.':' 포함으로 되돌렸습니다.'));
+  reloadAll();
+}
+async function loadKeys(){
+  var r=await SB.rpc('retire_debug_keys',{p_year:G.year});
+  if(r.error){ toast('실패: '+r.error.message); return; }
+  $('t-keys').innerHTML=(r.data||[]).map(function(k){
+    return '<tr><td><b>'+esc(k.item_key)+'</b></td>'
+      +'<td class="ctr">'+(k.is_numeric?'금액':'—')+'</td>'
+      +'<td class="ctr">'+k.nonzero_rows+'</td>'
+      +'<td class="num">'+won(k.total_amount)+'</td>'
+      +'<td class="ctr" style="font-size:11px;color:var(--ink-faint)">'+esc(smp(k.sample_value, k.item_key))+'</td>'
+      +'<td class="ctr">'+(k.active_exclude?'<span class="chip out">제외</span>':'')+'</td></tr>';
+  }).join('') || '<tr><td colspan="6" class="ctr note">자료가 없습니다</td></tr>';
+}
+
+/* ══ 엑셀 내려받기 ══ */
+function sheetFrom(wb,name,cols,rows){
+  var ws=wb.addWorksheet(name);
+  ws.columns=cols.map(function(c){ return {header:c.h, key:c.k, width:c.w||14}; });
+  rows.forEach(function(r){ ws.addRow(r); });
+  ws.getRow(1).font={bold:true};
+  ws.getRow(1).fill={type:'pattern',pattern:'solid',fgColor:{argb:'FFEEF2F8'}};
+  ws.views=[{state:'frozen',ySplit:1}];
+  return ws;
+}
+async function saveWb(wb,fn){
+  var buf=await wb.xlsx.writeBuffer();
+  var url=URL.createObjectURL(new Blob([buf],
+    {type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}));
+  var a=document.createElement('a'); a.href=url; a.download=fn; a.click();
+  setTimeout(function(){URL.revokeObjectURL(url);},1500);
+  toast(fn+' 을 내려받았습니다.');
+}
+function T_COLS(){ return [{h:'사번',k:'emp_no',w:10},{h:'성명',k:'name',w:12},
+  {h:'유형',k:'worker_type',w:10},{h:'상태',k:'status',w:8},{h:'입사일',k:'join_date',w:12},
+  {h:'퇴사일',k:'last_work_day',w:12},{h:'근속',k:'service_text',w:12},
+  {h:'첫 적립',k:'first_accrual_year',w:9},{h:'판정',k:'judgement',w:24},{h:'비고',k:'exclude_reason',w:40}]; }
+function W_COLS(){ return [{h:'사번',k:'emp_no',w:10},{h:'성명',k:'name',w:12},
+  {h:'유형',k:'worker_type',w:10},{h:'지급합계',k:'gross_total',w:14},{h:'제외',k:'excluded_total',w:12},
+  {h:'임금총액',k:'wage_total',w:14},{h:'개월',k:'months_counted',w:7},
+  {h:'급여DB',k:'from_payroll',w:8},{h:'보조표',k:'from_manual',w:8},
+  {h:'포함 월',k:'month_list',w:22},{h:'추계액',k:'estimate',w:14}]; }
+function S_COLS(){ return [{h:'사번',k:'emp_no',w:10},{h:'유형',k:'worker_type',w:10},
+  {h:'임금총액',k:'wage_total',w:14},{h:'추계액',k:'estimate',w:13},{h:'소급',k:'carry_estimate',w:13},
+  {h:'납입 예정',k:'payable',w:14},{h:'기납입',k:'paid_sum',w:13},{h:'미납',k:'unpaid',w:13},
+  {h:'상태',k:'pay_status',w:12}]; }
+
+async function dlTarget(){ var wb=new ExcelJS.Workbook();
+  sheetFrom(wb,'대상 판정',T_COLS(),G.target.map(function(t){
+    return Object.assign({},t,{join_date:ymd(t.join_date),last_work_day:ymd(t.last_work_day)}); }));
+  await saveWb(wb,'퇴직연금_대상판정_'+G.year+'.xlsx'); }
+async function dlWage(){ var wb=new ExcelJS.Workbook();
+  sheetFrom(wb,'임금총액',W_COLS(),G.wage.map(function(w){
+    return Object.assign({},w,{name:G.nameOf[w.emp_no]||w.name||''}); }));
+  await saveWb(wb,'퇴직연금_임금총액_'+G.year+'.xlsx'); }
+async function dlStatus(){ var wb=new ExcelJS.Workbook();
+  sheetFrom(wb,'납입 현황',S_COLS(),G.status);
+  await saveWb(wb,'퇴직연금_납입현황_'+G.year+'.xlsx'); }
+async function dlAll(){
+  var wb=new ExcelJS.Workbook();
+  wb.creator='CRESCOM 퇴직연금 관리';
+  sheetFrom(wb,'대상 판정',T_COLS(),G.target.map(function(t){
+    return Object.assign({},t,{join_date:ymd(t.join_date),last_work_day:ymd(t.last_work_day)}); }));
+  sheetFrom(wb,'임금총액·추계',W_COLS(),G.wage.map(function(w){
+    return Object.assign({},w,{name:G.nameOf[w.emp_no]||w.name||''}); }));
+  sheetFrom(wb,'납입 현황',S_COLS(),G.status);
+  sheetFrom(wb,'퇴사자 정산',[{h:'사번',k:'emp_no',w:10},{h:'성명',k:'name',w:12},
+    {h:'입사일',k:'join_date',w:12},{h:'퇴사일',k:'last_work_day',w:12},{h:'근속',k:'service_text',w:12},
+    {h:'지급의무',k:'pay_required',w:9},{h:'임금총액',k:'wage_total_ytd',w:14},
+    {h:'추계액',k:'estimate_ytd',w:13},{h:'기한',k:'settle_due',w:12},
+    {h:'초과일',k:'days_over',w:8},{h:'상태',k:'status_text',w:22}],
+    G.settle.map(function(s){ return Object.assign({},s,{join_date:ymd(s.join_date),
+      last_work_day:ymd(s.last_work_day),settle_due:ymd(s.settle_due)}); }));
+  sheetFrom(wb,'납입 이력',[{h:'납입일',k:'paid_on',w:12},{h:'사번',k:'emp_no',w:10},
+    {h:'성명',k:'name',w:12},{h:'금액',k:'amount',w:14},{h:'구분',k:'method',w:14},
+    {h:'기한초과',k:'is_late',w:9},{h:'메모',k:'memo',w:30}],
+    G.pay.map(function(p){ return Object.assign({},p,{paid_on:ymd(p.paid_on),
+      name:G.nameOf[p.emp_no]||''}); }));
+  await saveWb(wb,'퇴직연금_종합_'+G.year+'.xlsx');
+}
+
+/* ══ 탭 ══ */
+function go(i,btn){
+  document.querySelectorAll('.pnl').forEach(function(p,j){ p.classList.toggle('on',j===i); });
+  document.querySelectorAll('.snav button').forEach(function(b){ b.classList.remove('on'); });
+  btn.classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+boot();
+</script>
+</body>
+</html>
